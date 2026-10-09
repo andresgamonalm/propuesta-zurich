@@ -17,7 +17,8 @@ import { migas } from '../marco.js';
 import { esc, icono, avisar, promoVigente, fechaLarga, hoyISO } from '../ui.js';
 
 /** Orígenes que la política de seguridad permite cargar en un marco. */
-const ORIGENES_PERMITIDOS = [/\.zurich\.cl$/, /^zurich\.cl$/, /^edge\.sitecorecloud\.io$/];
+// www9.chilena.cl: ahí vive el formulario de «Pago en línea» de zurich.cl.
+const ORIGENES_PERMITIDOS = [/\.zurich\.cl$/, /^zurich\.cl$/, /\.chilena\.cl$/, /^edge\.sitecorecloud\.io$/];
 
 const PESTANAS = [
   { id: 'contenidos', texto: 'Contenidos' },
@@ -30,7 +31,7 @@ const PESTANAS = [
 const DECISIONES = [
   { grupo: 'Acceso y administración', items: ['Método definitivo de autenticación (correo, sesión privada de Banco BICE o inicio de sesión único).', 'Alcance del perfil administrador y vigencia del correo indicado.', 'Relación entre la sesión privada de Banco BICE y las herramientas de Zurich.'] },
   { grupo: 'Marca y asuntos legales', items: ['Manual vigente de Banco BICE y excepciones aprobadas para esta experiencia.', 'Validación conjunta de los usos de la paleta referencial de Banco BICE.', 'Composición definitiva de los identificadores de ambas compañías.', 'Biblioteca oficial de íconos de Zurich (hoy se usa una familia de trazo propia).'] },
-  { grupo: 'Integraciones y operación', items: ['Permisos para cargar cada herramienta dentro de un marco embebido y encabezados de seguridad de los dominios de origen.', 'Comunicación de eventos entre el mini sitio y los contenidos embebidos (contrato postMessage propuesto).', 'Herramienta de analítica y nomenclatura de eventos.', 'Responsables de actualizar productos, promociones y textos legales.'] },
+  { grupo: 'Integraciones y operación', items: ['Direcciones que son solo el formulario de cada cotizador (versión para marco). Hoy faltan Auto Digital, Hogar Fácil Plus y Protección Urgencias.', 'Permisos para cargar cada herramienta dentro de un marco embebido y encabezados de seguridad de los dominios de origen.', 'Pasarelas de pago dentro del marco: si un flujo lleva el pago a un dominio que no es de Zurich, ese dominio se agrega a la lista permitida o ese paso se abre en una ventana aparte.', 'Comunicación de eventos entre el mini sitio y los contenidos embebidos (contrato postMessage propuesto).', 'Herramienta de analítica y nomenclatura de eventos.', 'Responsables de actualizar productos, promociones y textos legales.'] },
   { grupo: 'Arquitectura', items: ['Dominio y nombre del segmento del mini sitio (hoy: /personas).', 'Nomenclatura definitiva de pasos y reglas de seguimiento por flujo.', 'Integración futura del portal de clientes de Zurich.'] },
 ];
 
@@ -149,7 +150,7 @@ function validarDestino(url) {
   let u;
   try { u = new URL(url); } catch { return 'Escribe una dirección completa, que empiece con https://'; }
   if (u.protocol !== 'https:') return 'La dirección debe empezar con https://';
-  if (!ORIGENES_PERMITIDOS.some((r) => r.test(u.hostname))) return 'Este dominio no está entre los orígenes permitidos (zurich.cl). Agregarlo exige actualizar la política de seguridad.';
+  if (!ORIGENES_PERMITIDOS.some((r) => r.test(u.hostname))) return 'Este dominio no está entre los orígenes permitidos (zurich.cl y chilena.cl). Agregarlo exige actualizar la política de seguridad.';
   return '';
 }
 
@@ -188,7 +189,7 @@ function panelContenidos() {
     return `<div class="fila-config">
       <div class="fila-config__nombre"><strong><a href="${item.ruta}">${esc(item.nombre)}</a></strong><small>${esc(item.ruta)}</small><div class="chips">${chips}</div></div>
       <div class="fila-config__destino">
-        ${integrable ? `<div class="campo"><label for="d-${item.id}" class="sr">Dirección de la herramienta a embeber</label>
+        ${integrable ? `<div class="campo"><label for="d-${item.id}" class="sr">Dirección del formulario a cargar dentro del sitio</label>
           <input id="d-${item.id}" type="url" value="${esc(a.destino)}" data-id="${item.id}" data-campo="destino" placeholder="https://…" aria-describedby="de-${item.id}">
           <p class="campo__error" id="de-${item.id}">${icono('alerta')}<span></span></p></div>` : `<small class="texto-suave">Página de referencia: <a href="${esc(item.referencia)}" target="_blank" rel="noopener">${esc(item.referencia.replace('https://', ''))}</a></small>`}
       </div>
@@ -200,7 +201,7 @@ function panelContenidos() {
   };
 
   return `
-  <div class="aviso aviso--info">${icono('info')}<div><strong>Regla del brief</strong>Lo que no tiene un destino activo se oculta en lugar de publicarse incompleto. «Cargar dentro del sitio» carga la herramienta oficial en un marco: si el dominio de origen no lo permite, el recuadro queda en blanco y es una condición a validar con Zurich.</div></div>
+  <div class="aviso aviso--info">${icono('info')}<div><strong>Regla del brief</strong>Lo que no tiene un destino activo se oculta en lugar de publicarse incompleto. «Cargar dentro del sitio» carga la herramienta oficial en un marco, al lado de la promoción o del aviso. Usa la dirección que es <em>solo el formulario</em>, no la página del producto: una página de otro sitio no se puede recortar y su menú taparía la propuesta. Si el dominio de origen no permite cargarse dentro de otro sitio, el recuadro queda en blanco y es una condición a validar con Zurich.</div></div>
   <div class="grupo-config mt-6"><h2>Promociones de portada</h2><p>Una promoción vencida se retira sola: el carrusel muestra el producto sin la oferta.</p>${promos}</div>
   <div class="grupo-config"><h2>Seguros</h2><p>Los de contratación en línea cargan su cotizador; los de asesoría llevan a la solicitud de contacto.</p>${PRODUCTOS.map((p) => fila(p, p.modalidad === 'digital')).join('')}</div>
   <div class="grupo-config"><h2>Servicios en línea</h2><p>Acceso directo al trámite, sin página informativa intermedia.</p>${SERVICIOS.map((s) => fila(s, true)).join('')}</div>

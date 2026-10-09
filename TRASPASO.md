@@ -124,7 +124,7 @@ publicado.
    siniestro?»** Se revisó, herramienta por herramienta, si los sitios de
    Zurich permiten cargarse dentro de otro sitio (detalle en la sección 7).
 6. **«Usa solo la parte de los formularios o los flujos… El flujo a un lado y
-   al otro una promoción o un aviso.»** En curso: sección 8.
+   al otro una promoción o un aviso.»** Hecho: sección 8.
 7. **«Deja escrito de qué se trata y todo lo que hiciste para abrir luego otro
    chat»:** este documento.
 
@@ -137,12 +137,13 @@ estas direcciones lo hace.
 
 | Herramienta | Dirección revisada | Resultado |
 |---|---|---|
-| Auto Digital, SOAP, Celular Protegido, Hogar Fácil Plus, Protección Urgencias | páginas de producto en `www.zurich.cl` | Se pueden cargar. La política de seguridad de zurich.cl está solo en modo informe |
+| Auto Digital, SOAP, Celular Protegido, Hogar Fácil Plus, Protección Urgencias | páginas de producto en `www.zurich.cl` | Se pueden cargar. La política de seguridad de zurich.cl está solo en modo informe. **No se usan:** traen el menú y el pie de zurich.cl |
+| Cotizador de Celular Protegido | `celularprotegido.zurich.cl/cl/` (lleva a un recorrido nuevo en cada visita) | Se puede cargar. Es solo el flujo |
 | Denuncia de vehículo | `clientes.zurich.cl/Portalclientes/denuncios/motors` | Se puede cargar. Sus cookies no declaran `SameSite`: puede perder la sesión dentro del marco |
 | Siniestro de vida | `www9.zurich.cl/vida/web/Portal/productos/life/reembolso/0` | Se puede cargar |
 | Reembolso (PDF) | `edge.sitecorecloud.io/…/formulario-reembolso-asistencia-gi-zchnov2022.pdf` | Se puede cargar. En iPhone un PDF dentro de un marco se ve mal: se mantiene el botón de descarga |
 | Pago | La página `www.zurich.cl/conocenos/pago-en-linea` informa. El formulario real de pago está en `www9.chilena.cl/vida/web/Portal/pagoexpress/ingreso` | Ambas se pueden cargar |
-| Portal de compra del SOAP | `soap.zurich.cl` | No se pudo revisar: su filtro de seguridad (Imperva) bloqueó el escáner |
+| Portal de compra del SOAP | `soap.zurich.cl` (arranca pidiendo la patente) | No se pudo revisar: su filtro de seguridad (Imperva) bloqueó el escáner. Se carga igual; si no aparece, se apaga en Configuración |
 
 **Límites de esta revisión**
 
@@ -154,12 +155,14 @@ estas direcciones lo hace.
     Imperva, pueden cortar un flujo a mitad de camino.
   - Puede haber código que intente sacar la página del marco. El marco lo
     bloquea porque no tiene permiso para navegar la página principal.
-  - Falta la dirección directa de cada cotizador, sin la página de producto
-    alrededor.
+  - Falta la dirección directa del cotizador de Auto Digital, Hogar Fácil
+    Plus y Protección Urgencias, sin la página de producto alrededor.
+  - Si un flujo lleva el pago a otro dominio (Webpay u otro), ese paso no
+    carga dentro del marco hasta agregar ese dominio o abrirlo aparte.
   - El contrato de eventos por paso (`postMessage`) tiene que implementarlo
     Zurich.
 
-## 8 · En qué quedó (trabajo en curso)
+## 8 · En qué quedó
 
 **Lo que se pidió:** dentro del sitio, mostrar **solo el formulario o el flujo**
 de Zurich, no la página completa con su menú y su pie, para que la cabecera,
@@ -167,28 +170,61 @@ los pasos y el pie de la propuesta se mantengan. Al lado del flujo va una
 promoción o un aviso.
 
 **La limitación técnica, dicha en simple:** una página de otro dominio cargada
-en un marco no se puede recortar desde fuera. No se puede elegir «solo el
-formulario» de una página que trae menú, fotos y pie. Hay tres caminos:
+en un marco no se puede recortar desde fuera. «Solo el formulario» exige la
+dirección que ya es solo el formulario. Recortar por posición se descartó: se
+rompe cuando Zurich cambia su página o el ancho de la pantalla y puede tapar
+textos legales.
 
-1. **Usar la dirección que ya es solo el formulario,** cuando existe:
-   - denuncia de vehículo (`clientes.zurich.cl/…/denuncios/motors`);
-   - siniestro de vida (`www9.zurich.cl/…`);
-   - pago (`www9.chilena.cl/…/pagoexpress/ingreso`);
-   - el PDF de reembolso.
-2. **Pedir a TI de Zurich la versión «para marco» de cada cotizador:** la misma
-   herramienta sin menú ni pie, por ejemplo con un parámetro en la dirección.
-   Es la práctica habitual con corredores y aliados, y es lo que se propone.
-3. Recortar la página por posición, escondiendo el menú con un desplazamiento.
-   **Se descarta:** se rompe cada vez que Zurich cambia su página o el ancho
-   de la pantalla, y puede tapar textos legales.
+**Lo que se hizo (9 de octubre de 2026):**
 
-El avance de la implementación se registra en la sección 9.
+| Herramienta | Qué se ve dentro del marco | Al lado |
+|---|---|---|
+| SOAP 2026 | Portal de compra `soap.zurich.cl` | Promoción «Tu SOAP 2026 desde $5.690*» |
+| Celular Protegido | Cotizador `celularprotegido.zurich.cl/cl/` | Promoción «Protege tu celular desde $29.990*» |
+| Auto Digital | Vista referencial (primera pantalla): falta la dirección del formulario | Oferta Zurich Days, hasta el 10-10-2026 |
+| Hogar Fácil Plus | Vista referencial: falta la dirección del formulario | Gancho «5 planes · Incendio, sismo y robo» |
+| Protección Urgencias | Vista referencial: falta la dirección del formulario | Concurso «Año de supermercado» y «Desde $13.900*» |
+| Denuncia de vehículo | Formulario del Portal de Clientes | Aviso «Antes de denunciar» y Mundo Zurich |
+| Denuncia de vida | Formulario de `www9.zurich.cl` | Mundo Zurich |
+| Reembolso | El PDF oficial, con botón de descarga siempre a la vista | Aviso «Cómo se envía» y Mundo Zurich |
+| Pago | Formulario de pago de `www9.chilena.cl` | Aviso «Antes de pagar» y Mundo Zurich |
+
+- En celular, el flujo va primero y la promoción o el aviso debajo.
+- **El marco tiene tres ayudas:**
+  - un aviso «Cargando…» mientras llega el formulario;
+  - un enlace para abrirlo en una pestaña nueva;
+  - si a los 15 segundos no cargó, el aviso deja de tapar y ofrece la
+    pestaña nueva.
+- **Desde Configuración** el administrador puede pegar otra dirección de
+  formulario o volver a la vista referencial. Es lo que hay que hacer cuando
+  TI de Zurich entregue las tres direcciones que faltan.
+- **Verificación:** 637 comprobaciones, 0 fallas. El verificador sirve el
+  sitio con la misma política de seguridad que se publica. Así encontró un
+  choque real: el permiso de pago solo se delegaba a `www.zurich.cl`. Ya está
+  corregido.
+
+**Lo que queda pendiente:**
+
+1. **Andrés** prueba en su computador con el lanzador. Esto no se pudo ver
+   desde el entorno de trabajo porque la red bloquea zurich.cl.
+   - Revisar que carguen SOAP, Celular Protegido, la denuncia de vehículo, la
+     denuncia de vida, el reembolso y el pago.
+   - Si alguno sale en blanco, se apaga en Configuración › Contenidos.
+2. **Pedir a TI de Zurich:**
+   - la dirección del formulario de Auto Digital, Hogar Fácil Plus y
+     Protección Urgencias;
+   - la pasarela de pago de cada flujo;
+   - si la sesión se mantiene dentro del marco en Safari;
+   - si implementan el aviso de pasos (`postMessage`).
+3. **Lo demás está en Configuración › Pendientes:** 50 definiciones antes de
+   producción.
 
 ## 9 · Registro de cambios posteriores
 
 | Fecha | Cambio |
 |---|---|
 | 9-10-2026 | Se crea este traspaso (antes de implementar la sección 8) |
+| 9-10-2026 | Solo el formulario dentro del marco, con promoción o aviso al lado; verificador con las cabeceras de `_headers`; documentos y captura actualizados |
 
 ## 10 · Para empezar el próximo chat
 

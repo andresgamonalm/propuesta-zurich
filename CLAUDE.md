@@ -38,6 +38,11 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   público: los logos y fotos vienen de sus carpetas de Drive.
 - **Contenido con lógica promocional:** en cada producto, el gancho (precio o
   promoción) va arriba junto al nombre y al botón.
+- **Cotizadores y trámites dentro del sitio:** en el marco va **solo el
+  formulario o el flujo** de Zurich, nunca la página completa de zurich.cl
+  (su menú taparía la propuesta). Al lado: la promoción (cotizadores) o el
+  aviso (trámites). Sin dirección de formulario (`formulario` en
+  `catalogo.js`), el marco queda en vista referencial.
 
 ## Lo que nunca se hace
 
@@ -61,7 +66,9 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
 - Lo que decide el administrador se guarda **solo como diferencia** sobre el
   catálogo (`estado.js`).
 - Orígenes que pueden cargarse en el marco: `ORIGENES_PERMITIDOS` en
-  `paginas/configuracion.js` **y** `frame-src` en `_headers`. Se cambian juntos.
+  `paginas/configuracion.js`, `frame-src` **y** `payment` de
+  `Permissions-Policy` en `_headers`. Se cambian juntos. Hoy: `*.zurich.cl`,
+  `*.chilena.cl` (formulario de pago) y `edge.sitecorecloud.io` (PDF).
 - Sin estilos ni scripts en línea: la política de seguridad los bloquea.
 
 ## Antes de cada commit
@@ -72,7 +79,10 @@ node _herramientas/verificar.mjs
 
 Debe terminar en 0 fallas. Recorre todo de forma recursiva (nunca una lista
 escrita a mano), en 1440, 820 y 390 px, prueba los flujos y mide el contraste
-de lo pintado. Si se agrega una página, se agrega sola al recorrido.
+de lo pintado. Si se agrega una página, se agrega sola al recorrido. Sirve el
+sitio con las cabeceras de `_headers` y reemplaza las herramientas de Zurich
+por una página simulada (desde aquí zurich.cl está bloqueado). En esta
+máquina: `PLAYWRIGHT_MODULE=/opt/node-tools/node_modules/playwright/index.mjs`.
 
 ## Trampas conocidas
 
@@ -83,3 +93,10 @@ de lo pintado. Si se agrega una página, se agrega sola al recorrido.
   en el celular.
 - Las columnas de una rejilla de una sola pista van en `minmax(0, 1fr)`, no
   `1fr`: con `1fr` un contenido largo empuja la página.
+- Un `allow="payment"` en un marco cuyo dominio no está en `payment` de
+  `Permissions-Policy` hace que el navegador avise en consola.
+- Chrome no muestra un PDF dentro de un marco con `sandbox`: el del reembolso
+  va sin aislar.
+- Una página de otro dominio no se puede recortar desde fuera. Para «solo el
+  formulario» se necesita la dirección del formulario, no un truco de
+  posición.

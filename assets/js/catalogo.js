@@ -16,6 +16,13 @@
  *    «Propuesta de contenidos Zurich–BICE», octubre 2026.
  * 3. `porValidar`: lo que el brief pide confirmar antes de publicar, más los
  *    hallazgos de la lectura de las fuentes. Aparece en Configuración.
+ * 4. `formulario`: la dirección que es SOLO el formulario o el flujo, sin la
+ *    página de producto alrededor (menú, fotos y pie de zurich.cl). Es lo que
+ *    se carga dentro del sitio. Encontradas y revisadas el 9 de octubre de
+ *    2026: ninguna trae `X-Frame-Options` ni `frame-ancestors` (salvo
+ *    soap.zurich.cl, que no se pudo revisar). Donde no hay `formulario`, el
+ *    marco queda en vista referencial: cargar la página completa del producto
+ *    taparía la propuesta con la navegación de zurich.cl.
  */
 
 export const FECHA_FUENTES = '9 de octubre de 2026';
@@ -192,7 +199,7 @@ export const PRODUCTOS = [
     },
     porValidar: [
       'Vigencia y condiciones de «Zurich Days» para clientes de Banco BICE: las bases oficiales dicen 2 cuotas gratis (N°3 y N°6) + gift card $60.000, del 1 al 10 de octubre de 2026. La página del producto dice «3 cuotas gratis»: se usó lo que dicen las bases.',
-      'Código de referencia y condiciones técnicas para embeber el cotizador.',
+      'Dirección del cotizador sin la página del producto alrededor (versión para marco): no es pública. Las cabeceras de zurich.cl permiten cargarse dentro de otro sitio (revisado el 9 de octubre de 2026).',
       'Enlace a la ficha del producto (zurich.cl lo publica, la URL no está en el brief).',
     ],
   },
@@ -261,12 +268,15 @@ export const PRODUCTOS = [
       pasos: ['patente', 'datos', 'pago', 'listo'],
       etiquetas: ['Patente', 'Tus datos', 'Pago', 'Listo'],
       referencia: 'https://www.zurich.cl/seguros-auto/soap',
+      // Portal de compra del SOAP: arranca pidiendo la patente.
+      formulario: 'https://soap.zurich.cl/',
       previa: [{ etiqueta: 'Ingresa tu patente', tipo: 'text', ayuda: 'Ej.: ABCD12' }],
       necesitas: ['La patente de tu vehículo.', 'Un medio de pago para la contratación online.'],
     },
     porValidar: [
       'Precio «desde» y vigencia para clientes de Banco BICE.',
-      'Herramienta oficial a embeber (la compra parte en zurich.cl/soap con la patente).',
+      'El portal de compra soap.zurich.cl se carga dentro del sitio, pero no se pudo confirmar que lo permita: su filtro de seguridad bloqueó la revisión. Probarlo en el navegador; si no carga, se vuelve a la vista referencial en Configuración.',
+      'Pasarela de pago del SOAP: si lleva a un dominio que no es de Zurich, ese paso no carga dentro del marco.',
     ],
   },
 
@@ -340,6 +350,8 @@ export const PRODUCTOS = [
       pasos: ['equipo', 'datos', 'planes', 'inspeccion', 'pago', 'listo'],
       etiquetas: ['Tu equipo', 'Tus datos', 'Planes', 'Inspección', 'Pago', 'Listo'],
       referencia: 'https://www.zurich.cl/bienes-y-viaje/celular-protegido',
+      // Cotizador propio del producto: abre un recorrido nuevo en cada visita.
+      formulario: 'https://celularprotegido.zurich.cl/cl/',
       previa: [
         { etiqueta: 'Marca', tipo: 'text', ayuda: 'Samsung, Apple, Motorola, Xiaomi…' },
         { etiqueta: 'Modelo', tipo: 'text' },
@@ -351,6 +363,7 @@ export const PRODUCTOS = [
     porValidar: [
       'Moneda, referencia temporal y vigencia de «Desde $29.990» (dato del brief). El valor publicado en zurich.cl no se pudo leer como texto: su nota oficial lo refiere a un iPhone 17 256 GB, plan básico, 12 meses.',
       'Modalidad de contratación: el brief la deja «por confirmar»; zurich.cl la ofrece 100% online.',
+      'El cotizador celularprotegido.zurich.cl permite cargarse dentro de otro sitio (revisado el 9 de octubre de 2026). Confirmar con TI que la inspección del equipo y el pago funcionan dentro del marco.',
     ],
   },
 
@@ -426,7 +439,7 @@ export const PRODUCTOS = [
     },
     porValidar: [
       'Nombre y URL oficial: el brief dice «Seguro de Hogar» con URL pendiente. La página pública vigente es «Seguro Hogar Fácil Plus»; existe además un «Seguro Hogar Digital» que solo aparece en el Centro de Ayuda.',
-      'Mecanismo de contratación digital y cotizador a embeber.',
+      'Mecanismo de contratación digital y dirección del cotizador sin la página del producto alrededor (no es pública).',
     ],
   },
 
@@ -503,6 +516,7 @@ export const PRODUCTOS = [
       'Modalidad: el brief la deja «digital por confirmar»; zurich.cl la ofrece 100% online.',
       'Nombre oficial: «Seguro Protección Urgencias» (el brief dice «Protección de Urgencias»).',
       'Concurso «Año de supermercado»: confirmar si aplica a clientes de Banco BICE.',
+      'Dirección del cotizador sin la página del producto alrededor (no es pública).',
     ],
   },
 
@@ -682,6 +696,9 @@ export const SERVICIOS = [
     cta: 'Iniciar denuncia',
     bajada: 'Da aviso de un choque, robo o daño de tu vehículo asegurado.',
     referencia: 'https://clientes.zurich.cl/Portalclientes/denuncios/motors',
+    formulario: 'https://clientes.zurich.cl/Portalclientes/denuncios/motors',
+    // Texto de zurich.cl (preguntas de Auto Digital: «¿Cómo activo mi seguro en caso de accidente?»).
+    aviso: { titulo: 'Antes de denunciar', texto: 'En caso de robo, hurto o lesiones a personas, realiza de inmediato la denuncia en Carabineros. Si hay solo daños materiales, da aviso dentro de los 10 días corridos desde que ocurrió.' },
     pasos: ['identificacion', 'siniestro', 'relato', 'documentos', 'listo'],
     etiquetas: ['Asegurado', 'Siniestro', 'Relato', 'Documentos', 'Listo'],
     previa: [
@@ -691,11 +708,11 @@ export const SERVICIOS = [
       { etiqueta: 'Tipo de siniestro', tipo: 'text', ayuda: 'Choque, robo, daño…' },
     ],
     necesitas: [
-      'Si hay solo daños materiales, avisa dentro de los 10 días corridos desde que ocurrió.',
+      'RUT del asegurado y patente del vehículo.',
+      'Fecha y tipo de siniestro: choque, robo o daño.',
       'Si hay otros autos involucrados: marca, modelo, patente, nombre y RUT del conductor, teléfono y correo.',
-      'En caso de robo, hurto o lesiones: denuncia primero en Carabineros.',
     ],
-    porValidar: ['Permisos para cargar el formulario del Portal de Clientes dentro de un marco embebido.'],
+    porValidar: ['El formulario permite cargarse dentro de otro sitio (revisado el 9 de octubre de 2026). Sus cookies no declaran «SameSite»: confirmar con TI que la sesión se mantiene dentro del marco, sobre todo en Safari.'],
   },
   {
     id: 'denuncia-vida',
@@ -706,6 +723,7 @@ export const SERVICIOS = [
     cta: 'Iniciar denuncia',
     bajada: 'Inicia el aviso de un siniestro de un seguro de vida o salud.',
     referencia: 'https://www9.zurich.cl/vida/web/Portal/productos/life/reembolso/0',
+    formulario: 'https://www9.zurich.cl/vida/web/Portal/productos/life/reembolso/0',
     pasos: ['identificacion', 'siniestro', 'documentos', 'listo'],
     etiquetas: ['Asegurado', 'Siniestro', 'Documentos', 'Listo'],
     previa: [
@@ -726,7 +744,9 @@ export const SERVICIOS = [
     cta: 'Solicitar reembolso',
     bajada: 'Pide el reembolso de un gasto cubierto por tu seguro.',
     referencia: 'https://edge.sitecorecloud.io/zurichinsurf8c0-zwpshared-prod-d824/media/project/zurich-headless/chile/docs/formularios/formulario-reembolso-asistencia-gi-zchnov2022.pdf',
+    formulario: 'https://edge.sitecorecloud.io/zurichinsurf8c0-zwpshared-prod-d824/media/project/zurich-headless/chile/docs/formularios/formulario-reembolso-asistencia-gi-zchnov2022.pdf',
     documento: { titulo: 'Solicitud de Reembolso para Asistencia Vehicular, Hogar y Asistencia de Viaje', formato: 'PDF' },
+    aviso: { titulo: 'Cómo se envía', texto: 'Formulario oficial en PDF. Se completa, se firma y se envía con los comprobantes del gasto.' },
     pasos: ['formulario', 'envio', 'listo'],
     etiquetas: ['Formulario', 'Envío', 'Listo'],
     previa: [],
@@ -734,6 +754,7 @@ export const SERVICIOS = [
     porValidar: [
       'El PDF entregado es para asistencias (vehicular, hogar y viaje). Los reembolsos de salud y vida se hacen en el portal de cliente: definir cuál corresponde a este acceso.',
       'Definir si se descarga el PDF o si existe un flujo transaccional para integrar (brief).',
+      'En celulares un PDF dentro de un marco se ve incompleto o no se ve: por eso el botón de descarga queda siempre a la vista.',
     ],
   },
   {
@@ -745,6 +766,10 @@ export const SERVICIOS = [
     cta: 'Ir al pago',
     bajada: 'Paga tus cuotas atrasadas o adelanta el pago de ellas de manera simple y segura.',
     referencia: 'https://www.zurich.cl/conocenos/pago-en-linea',
+    // El formulario de «Pago en línea» de zurich.cl vive en este dominio.
+    formulario: 'https://www9.chilena.cl/vida/web/Portal/pagoexpress/ingreso',
+    // Texto de zurich.cl (preguntas de Auto Digital y formulario de pago).
+    aviso: { titulo: 'Antes de pagar', texto: 'El comprobante de pago llega al correo que ingreses. Para adelantar cuotas, en el detalle de los pagos de tu póliza elige «Adelanta tus cuotas».' },
     pasos: ['identificacion', 'poliza', 'pago', 'listo'],
     etiquetas: ['Tus datos', 'Póliza', 'Pago', 'Listo'],
     previa: [
@@ -752,7 +777,10 @@ export const SERVICIOS = [
       { etiqueta: 'RUT del contratante', tipo: 'text', ayuda: 'Ej.: 12.345.678-9' },
     ],
     necesitas: ['Correo y RUT del contratante de la póliza.', 'Medio de pago: Webpay o convenios con Banco de Chile, Santander, BancoEstado y BCI.'],
-    porValidar: ['Herramienta de pago que se integrará (el brief la deja pendiente). Se propone la de «Pago en línea» de zurich.cl.'],
+    porValidar: [
+      'Herramienta de pago que se integrará (el brief la deja pendiente). Se propone la de «Pago en línea» de zurich.cl, cuyo formulario está en www9.chilena.cl y permite cargarse dentro de otro sitio (revisado el 9 de octubre de 2026).',
+      'Pasarela de pago (Webpay u otra): si lleva a un dominio que no es de Zurich, ese paso no carga dentro del marco. Confirmar con TI cuál usa y si se abre en una ventana aparte.',
+    ],
   },
 ];
 

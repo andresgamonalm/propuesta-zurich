@@ -19,12 +19,20 @@ const CLAVE_SOLICITUDES = 'solicitudes';
 
 /** @typedef {{ visible: boolean, destino: string, embebido: boolean }} Ajuste */
 
-/** Valores de la propuesta para cada contenido configurable. */
+/**
+ * Valores de la propuesta para cada contenido configurable.
+ * Si el catálogo conoce la dirección que es solo el formulario, se carga
+ * dentro del sitio desde el inicio. Si no, el destino es la página pública y
+ * el marco queda en vista referencial hasta que Zurich entregue esa dirección.
+ */
 function porOmision(/** @type {string} */ id) {
   const p = PRODUCTOS.find((x) => x.id === id);
-  if (p) return { visible: true, destino: p.flujo?.referencia ?? p.referencia, embebido: false };
+  if (p) {
+    const f = p.flujo?.formulario;
+    return { visible: true, destino: f ?? p.flujo?.referencia ?? p.referencia, embebido: Boolean(f) };
+  }
   const s = SERVICIOS.find((x) => x.id === id);
-  if (s) return { visible: true, destino: s.referencia, embebido: false };
+  if (s) return { visible: true, destino: s.formulario ?? s.referencia, embebido: Boolean(s.formulario) };
   if (id === MUNDO_ZURICH.id) return { visible: true, destino: MUNDO_ZURICH.referencia, embebido: false };
   if (id.startsWith('promo:')) return { visible: true, destino: '', embebido: false };
   return { visible: true, destino: '', embebido: false };

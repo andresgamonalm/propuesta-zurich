@@ -641,7 +641,29 @@ a:hover { color: var(--z-azul-hover); }
 .marco__origen { display: inline-flex; align-items: center; gap: var(--e2); color: var(--texto-suave); min-width: 0; }
 .marco__origen svg { width: 16px; height: 16px; flex: none; }
 .marco__origen code { font-family: inherit; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46ch; display: inline-block; vertical-align: bottom; }
-.marco iframe { display: block; width: 100%; height: 760px; border: 0; background: #fff; }
+/* Solo el formulario de Zurich: alto suficiente para un paso completo sin
+   doble barra de desplazamiento en escritorio, y que no pase de la pantalla. */
+.marco__lienzo { position: relative; }
+.marco iframe { display: block; width: 100%; height: clamp(560px, 78vh, 880px); border: 0; background: #fff; }
+.marco__carga {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: var(--e3);
+  padding: var(--e6); background: #fff; color: var(--texto-suave); font-size: var(--t-sm); text-align: center;
+}
+.marco__giro { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--z-blanco); border-top-color: var(--z-azul); animation: girar 800ms linear infinite; }
+.marco__lienzo[data-estado="listo"] .marco__carga { display: none; }
+/* Si tarda, el aviso deja de tapar el marco y pasa arriba como una franja. */
+.marco__lienzo[data-estado="lento"] .marco__carga {
+  position: static; display: flex; justify-content: center; padding: var(--e3) var(--e4);
+  background: var(--aviso-fondo); color: var(--aviso); font-weight: 600;
+}
+.marco__lienzo[data-estado="lento"] .marco__giro { display: none; }
+.marco__pie {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--e3); flex-wrap: wrap;
+  padding: var(--e3) var(--e4); border-top: 1px solid var(--linea); background: var(--z-blanco); font-size: var(--t-xs);
+}
+.marco__pie p { display: inline-flex; align-items: center; gap: var(--e2); color: var(--texto-suave); }
+.marco__pie p svg { width: 16px; height: 16px; flex: none; }
+.marco__pie .enlace-flecha { font-size: var(--t-sm); }
 .marco__referencial { padding: var(--e6); display: grid; gap: var(--e5); }
 .vista-previa { border: 2px dashed var(--linea-control); border-radius: var(--radio); padding: var(--e5); display: grid; gap: var(--e4); background: var(--z-blanco); }
 .vista-previa__titulo { display: flex; align-items: center; justify-content: space-between; gap: var(--e3); flex-wrap: wrap; }
@@ -650,6 +672,36 @@ a:hover { color: var(--z-azul-hover); }
 @media (max-width: 600px) { .campos-previa { grid-template-columns: 1fr; } }
 
 .lateral { display: grid; gap: var(--e4); position: sticky; top: calc(var(--cabecera-h) + 16px); }
+@media (max-width: 960px) { .lateral { position: static; } }
+
+/* Al lado del flujo: la promoción del producto. Azul de Zúrich con texto
+   blanco, lo único que cumple sobre ese azul [skill de marca]. */
+.promo-lateral {
+  display: grid; gap: var(--e2); padding: var(--e5); border-radius: var(--radio);
+  background: var(--z-azul); color: #fff;
+}
+.promo-lateral__etiqueta {
+  display: inline-flex; align-items: center; gap: var(--e2); font-size: var(--t-xs); font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: #fff;
+}
+.promo-lateral__etiqueta svg { width: 18px; height: 18px; flex: none; }
+.promo-lateral__titulo { font-size: var(--t-xl); line-height: 1.15; letter-spacing: -0.02em; color: #fff; }
+.promo-lateral p { font-size: var(--t-sm); color: #fff; }
+.promo-lateral__titulo--largo { font-size: var(--t-lg); }
+.promo-lateral__precio { padding-top: var(--e2); border-top: 1px solid rgba(255, 255, 255, .35); }
+.promo-lateral__vigencia { font-weight: 600; }
+.promo-lateral .por-validar { background: var(--aviso-fondo); color: var(--aviso); }
+/* Versión para trámites: quien denuncia o paga no necesita una oferta encima. */
+.promo-lateral--suave { background: #fff; color: var(--texto); border: 1px solid var(--linea); }
+.promo-lateral--suave .promo-lateral__etiqueta { color: var(--z-azul); }
+.promo-lateral--suave .promo-lateral__titulo { color: var(--texto); font-size: var(--t-lg); }
+.promo-lateral--suave p { color: var(--texto-suave); }
+.bases-lateral { font-size: var(--t-xs); color: var(--texto-suave); }
+.bases-lateral summary { cursor: pointer; font-weight: 600; color: var(--texto); min-height: 32px; display: flex; align-items: center; gap: var(--e1); list-style: none; }
+.bases-lateral summary::-webkit-details-marker { display: none; }
+.bases-lateral summary svg { width: 16px; height: 16px; flex: none; color: var(--z-azul); transition: transform var(--transicion); }
+.bases-lateral[open] summary svg { transform: rotate(180deg); }
+.bases-lateral p { margin-top: var(--e2); }
 .caja { border-radius: var(--radio); background: var(--z-blanco); padding: var(--e5); display: grid; gap: var(--e3); }
 .caja h2, .caja h3 { font-size: var(--t-md); }
 .caja :is(h2, h3) > svg { width: 22px; height: 22px; vertical-align: -5px; margin-right: 4px; color: var(--z-azul); }

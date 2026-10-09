@@ -23,7 +23,8 @@ Python o Node instalados en el equipo (el lanzador lo resuelve solo).
 | Contenido | Tomado de las páginas oficiales de zurich.cl el 9 de octubre de 2026 (`assets/js/catalogo.js`) |
 | Marca | `lineamientos-marca-zurich`, con cabecera blanca y bloqueo de co-branding Zurich–Banco BICE |
 | Medición | Eventos `pag` / `click` / `rec` en `window.dataLayer`, visibles en Configuración › Medición |
-| Pendientes | 43 definiciones antes de producción, listadas en Configuración › Pendientes |
+| Integraciones | Dentro del marco va solo el formulario de Zurich, con la promoción o el aviso al lado. Seis herramientas cargan su formulario; Auto Digital, Hogar Fácil Plus y Protección Urgencias esperan esa dirección de Zurich |
+| Pendientes | 50 definiciones antes de producción, listadas en Configuración › Pendientes |
 
 ## Verificar
 
@@ -32,13 +33,19 @@ node _herramientas/verificar.mjs
 ```
 
 Recorre todas las rutas en escritorio, tablet y celular, prueba los flujos y
-audita el contraste. Última ejecución: **622 comprobaciones, 0 fallas**.
+audita el contraste, con las mismas cabeceras de seguridad que se publican.
+Última ejecución: **637 comprobaciones, 0 fallas**.
 Detalle en `REVISION.md`.
 
 ## Publicar
 
 Cloudflare Pages, sin comando de compilación, con la raíz del repositorio como
 salida. Las cabeceras de seguridad están en `_headers`.
+
+## Retomar el trabajo
+
+`TRASPASO.md` explica de qué se trata, qué se decidió, qué se hizo y en qué
+quedó. Sirve para abrir otro chat sin perder nada.
 
 ## Documentos
 
