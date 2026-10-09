@@ -1,0 +1,11 @@
+# Cabeceras de seguridad para Cloudflare Pages.
+# frame-src: solo los orígenes oficiales de Zurich pueden cargarse en el marco
+# de integración. Agregar otro dominio exige cambiar esta línea y la lista
+# ORIGENES_PERMITIDOS de assets/js/paginas/configuracion.js, juntas.
+# frame-ancestors no se fija a propósito: el mini sitio podría cargarse desde el
+# espacio privado de Banco BICE; se define cuando se conozca ese dominio.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), payment=(self "https://www.zurich.cl")
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src https://zurich.cl https://*.zurich.cl https://edge.sitecorecloud.io; form-action 'self'; base-uri 'self'; object-src 'none'
