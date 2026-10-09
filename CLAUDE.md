@@ -1,6 +1,8 @@
 # Reglas de este proyecto
 
 Memoria del proyecto: lo que hay que saber **antes** de tocar nada.
+La historia, el estado y lo que sigue están en `TRASPASO.md`: leerlo al
+retomar en un chat nuevo y agregar una línea a su registro con cada cambio.
 
 ## Con quién se trabaja
 
