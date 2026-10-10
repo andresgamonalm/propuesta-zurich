@@ -283,3 +283,63 @@ con MatIAs hasta los planes.
 - El reconocimiento por RUT usa la base ficticia del cotizador; en
   producción requiere la validación de Legal (pendiente).
 - El traspaso a un ejecutivo no está conectado: MatIAs entrega los canales.
+
+## Revisión 5 · 10 de octubre de 2026
+
+**Pedido:** «¿Podrías agregar los datos para probar en el mismo aplicativo?
+Pero que la persona los vea, porque hasta ahora se ha vuelto muy difícil.
+¿Arreglaste los tamaños, verdad? (la altura excesiva)».
+
+### 1 · Qué cambió
+
+| | |
+|---|---|
+| Botón fijo | «Datos para probar», abajo a la izquierda en todas las páginas y en el acceso. Panel con correos de acceso, clientes ficticios, cédula y frases para MatIAs; cada dato con «Copiar» (portapapeles; si el navegador no lo permite, queda seleccionado) |
+| Junto al cotizador | Datos del paso en que va la persona y «Completar este paso». En escritorio al lado (fijo al desplazar); en el celular arriba del cotizador |
+| Acceso y MatIAs | Los datos se escriben con un clic; ingresar y buscar siguen siendo de la persona |
+| Contrato del marco | Del sitio al cotizador `{ fuente: 'zurich-sitio', tipo: 'rellenar' }`; responde `{ tipo: 'rellenado', campos }` |
+| Configuración | «Datos para probar» se apaga en Contenidos › Secciones |
+| Diseño | Firma apagada de Auto y Hogar en gris sólido (quedaba una transparencia); aire bajo el pie y el acceso para los botones fijos; segunda pasada de alturas |
+
+### 2 · Verificación automática
+
+`node _herramientas/verificar.mjs` → **1.051 comprobaciones correctas, 0 fallas.**
+Contraste AA de lo pintado: 4.918 textos, ahora también con el panel de datos
+para probar abierto.
+
+Novedades del verificador:
+
+- El acceso ofrece los dos correos y un clic los escribe; el panel abre,
+  muestra los dos clientes, copia al portapapeles, avisa «Copiado» y se
+  cierra con Escape.
+- Junto al cotizador: en escritorio va al lado y en el celular arriba;
+  «Completar este paso» escribe los datos en el cotizador y avisa cuántos;
+  el recuadro sigue al paso nuevo y dice cuál es; la patente de prueba se
+  encuentra al completar el paso.
+- En el celular el botón fijo no choca con MatIAs y no hay desborde.
+- El cliente ficticio de MatIAs escribe RUT y comuna con un clic.
+- Apagar los datos para probar en Configuración los saca de las páginas, de
+  los cotizadores y del acceso.
+
+### 3 · Defectos encontrados y corregidos
+
+| Defecto | Corrección |
+|---|---|
+| La firma de Auto y Hogar se atenuaba con transparencia antes de leer los documentos | Clase con gris sólido, la misma de Urgencias, en la hoja de estilos común |
+| Sobre el pie azul oscuro el botón fijo se confundía con el fondo | Aro blanco alrededor del botón |
+| En el celular, en la ficha del producto, el botón fijo tapaba el botón «Cotizar» | Ahí no se muestra: esa página no pide datos |
+| Los botones fijos tapaban la última línea del pie y del acceso | Aire debajo del pie y del acceso |
+
+### 4 · Revisión visual
+
+Acceso a 1440 y 390 (con el panel abierto y los correos de prueba); Auto en
+escritorio completando cada paso hasta la póliza; Hogar y Urgencias en el
+celular completando cada paso (beneficiarios incluido); MatIAs con los
+clientes ficticios; pie de la portada en el celular.
+
+### 5 · Lo que no se pudo comprobar
+
+- El botón «Copiar» depende del permiso del navegador para el portapapeles;
+  en un sitio publicado con https funciona. Sin permiso, el dato queda
+  seleccionado para copiarlo a mano.
+

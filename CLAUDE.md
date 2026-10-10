@@ -65,6 +65,12 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   alturas y fotos contenidas; los trámites de la portada son una franja bajo
   el carrusel, con estado al pasar el mouse, y los controles del carrusel van
   dentro del panel azul.
+- **Datos para probar a la vista** (10-10-2026, «que la persona los vea»):
+  botón fijo abajo a la izquierda en todas las páginas (también el acceso),
+  recuadro junto a cada cotizador de demostración con el paso en que va y
+  «Completar este paso», y datos que se escriben con un clic en el acceso y
+  en MatIAs. Todo con «Copiar». Se apaga en Configuración. **Nunca marca por
+  la persona** una autorización, una declaración ni la lectura de documentos.
 
 ## Lo que nunca se hace
 
@@ -118,6 +124,12 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   catálogo: productos, y `AYUDA`/`CANALES` (Centro de Ayuda de zurich.cl,
   leído el 10-10-2026). Para que responda algo nuevo: el texto va al
   catálogo y los disparadores a la biblioteca. Se apaga en Configuración.
+- **Datos para probar** (`assets/js/datos-prueba.js`): los datos de cada paso
+  están en **una sola tabla**, `herramientas/assets/js/prueba-pasos.js`, que
+  leen el sitio (para mostrarlos) y el cotizador (para «Completar este paso»,
+  `{ fuente: 'zurich-sitio', tipo: 'rellenar' }` → responde
+  `{ tipo: 'rellenado', campos }`). Los clientes salen de `clientes-demo.js`.
+  Si un paso cambia sus campos, se cambia esa tabla.
 
 ## Antes de cada commit
 
@@ -164,3 +176,10 @@ máquina: `PLAYWRIGHT_MODULE=/opt/node-tools/node_modules/playwright/index.mjs`.
 - Las respuestas de MatIAs se cuentan en todo el panel
   (`.matias .burbuja--bot`): una pregunta de servicio cambia de espacio y su
   respuesta aparece en la otra conversación.
+- El recuadro de datos para probar va dos veces (al lado en escritorio,
+  arriba del cotizador en el celular) y el CSS muestra uno: en las pruebas,
+  usar `.caja-prueba--lateral` o `.caja-prueba--arriba` según el ancho.
+  «Completar este paso» es asíncrono: esperar su aviso
+  (`[data-prueba-estado]`) antes de leer los campos.
+- En el celular, con la barra de «Cotizar» abajo (ficha del producto), el
+  botón fijo de datos para probar no se muestra: taparía la página.

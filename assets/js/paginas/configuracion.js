@@ -11,6 +11,7 @@
  *   #pendientes   todo lo que el brief y la lectura de fuentes dejan por validar
  */
 import { PRODUCTOS, SERVICIOS, PROMOCIONES, MUNDO_ZURICH, ALIANZA, MATIAS, producto } from '../catalogo.js';
+import { ID as ID_PRUEBA } from '../datos-prueba.js';
 import { ajuste, guardarAjuste, restablecer, hayCambios, solicitudes, borrarSolicitudes } from '../estado.js';
 import { registros, borrarRegistros, CLAVES, registrar } from '../medicion.js';
 import { migas } from '../marco.js';
@@ -210,6 +211,7 @@ function panelContenidos() {
   <div class="grupo-config"><h2>Secciones</h2>
     <div class="fila-config"><div class="fila-config__nombre"><strong><a href="${MUNDO_ZURICH.ruta}">${MUNDO_ZURICH.nombre}</a></strong><small>${MUNDO_ZURICH.ruta}</small></div><div class="fila-config__destino"><small class="texto-suave">Contenido oficial de zurich.cl/mundo-zurich.</small></div><div class="fila-config__controles">${interruptor(MUNDO_ZURICH.id, 'visible', ajuste(MUNDO_ZURICH.id).visible, 'Visible para clientes')}</div></div>
     <div class="fila-config"><div class="fila-config__nombre"><strong>${MATIAS.nombre}, ${MATIAS.oficio}</strong><small>Botón abajo a la derecha, en todas las páginas</small></div><div class="fila-config__destino"><small class="texto-suave">Vende Auto y Hogar y responde dudas de servicio con el Centro de Ayuda de zurich.cl. Elige entre respuestas aprobadas: no inventa.</small></div><div class="fila-config__controles">${interruptor(MATIAS.id, 'visible', ajuste(MATIAS.id).visible, 'Visible para clientes')}</div></div>
+    <div class="fila-config"><div class="fila-config__nombre"><strong>Datos para probar</strong><small>Botón abajo a la izquierda, junto a cada cotizador, en el acceso y en MatIAs</small></div><div class="fila-config__destino"><small class="texto-suave">Clientes ficticios, correos de acceso y «Completar este paso». Solo para la maqueta: en producción no va.</small></div><div class="fila-config__controles">${interruptor(ID_PRUEBA, 'visible', ajuste(ID_PRUEBA).visible, 'Visible')}</div></div>
   </div>
   <div class="acciones">${hayCambios() ? '<span class="chip chip--info">Hay cambios respecto de la propuesta</span>' : ''}
     <button class="btn btn--fantasma btn--chico" type="button" data-accion="restablecer" data-confirmar="¿Seguro? Toca de nuevo para restablecer" data-original="Restablecer valores de la propuesta">Restablecer valores de la propuesta</button></div>`;

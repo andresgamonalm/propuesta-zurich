@@ -54,6 +54,8 @@ async function arrancar() {
     const mod = await import(`./paginas/${pagina}.js`);
     await mod.render({ main, id, ambito });
   }
+  /* Datos para probar: el botón abajo a la izquierda, también en el acceso. */
+  import('./datos-prueba.js').then((m) => m.montar()).catch(() => {});
   registrar(`${ambito}_pag_vista`);
   main.removeAttribute('aria-busy');
 }

@@ -151,7 +151,7 @@ function revisarSecuencia() {
 
   pintarContratos();
 
-  $('#bloque-firma').style.opacity = paso.contratos ? '1' : '.5';
+  $('#bloque-firma').classList.toggle('bloque-apagado', !paso.contratos);
   $('#cedula').disabled = !paso.contratos;
   $('#validar').setAttribute('aria-disabled', String(!paso.contratos || paso.firmado));
   $('#btn-pagar').setAttribute('aria-disabled', String(!paso.firmado));

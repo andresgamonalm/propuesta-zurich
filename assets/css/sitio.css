@@ -315,7 +315,7 @@ a:hover { color: var(--z-azul-hover); }
 .pie-alianza__fila { display: grid; grid-template-columns: auto 1fr auto; gap: var(--e6); align-items: center; padding-block: var(--e6); }
 .pie-alianza__logo { height: 18px; width: auto; }
 .pie-alianza p { color: var(--texto-suave); font-size: var(--t-sm); max-width: 720px; }
-@media (max-width: 860px) { .pie-alianza__fila { grid-template-columns: 1fr; gap: var(--e4); } }
+@media (max-width: 860px) { .pie-alianza__fila { grid-template-columns: 1fr; gap: var(--e3); padding-block: var(--e5); } }
 
 .pie { background: var(--z-azul-oscuro); color: var(--texto-invertido); padding-block: var(--e10) var(--e6); }
 .pie a { color: #fff; text-decoration: none; }
@@ -331,7 +331,15 @@ a:hover { color: var(--z-azul-hover); }
   display: grid; gap: var(--e2); font-size: var(--t-xs); color: var(--texto-invertido-suave);
 }
 @media (max-width: 900px) { .pie__rejilla { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 560px) { .pie__rejilla { grid-template-columns: 1fr 1fr; gap: var(--e5) var(--e4); } .pie__marca { grid-column: 1 / -1; } .pie { padding-block: var(--e8) var(--e5); } }
+@media (max-width: 560px) {
+  .pie__rejilla { grid-template-columns: minmax(0, 1fr); gap: var(--e4); }
+  .pie { padding-block: var(--e7) var(--e5); }
+  .pie__logo { margin-bottom: var(--e2); }
+  /* Los enlaces van en línea, separados: la misma lista en un tercio del alto. */
+  .pie ul { display: flex; flex-wrap: wrap; gap: 6px var(--e4); }
+  .pie h2 { margin-bottom: var(--e2); }
+  .pie__legal { margin-top: var(--e5); }
+}
 
 /* §7 · Lenguaje de formas -------------------------------------------------
    [Brandbook] Formas de puesta a tierra: al menos tres, de escalas distintas,
@@ -350,6 +358,8 @@ a:hover { color: var(--z-azul-hover); }
 .portada__texto > p { font-size: var(--t-md); color: var(--texto-suave); max-width: 520px; }
 .portada__saludo { font-weight: 600; color: var(--z-azul); }
 @media (max-width: 960px) { .portada__rejilla { grid-template-columns: minmax(0, 1fr); gap: var(--e5); } .portada { padding-block: var(--e5) var(--e10); } }
+/* En el celular los dos botones de la portada caben en una fila. */
+@media (max-width: 600px) { .portada__texto .acciones .btn { min-height: 44px; padding-inline: var(--e4); font-size: var(--t-sm); } .portada__texto { gap: var(--e3); } }
 
 /* Carrusel de promociones: el texto nunca va encima de la foto [Brandbook:
    sin superposiciones gráficas]. Foto y panel de mensaje van lado a lado. */
@@ -488,7 +498,10 @@ a:hover { color: var(--z-azul-hover); }
 .fila-asesoria h3 a:hover { color: var(--z-azul); text-decoration: underline; }
 .fila-asesoria p { color: var(--texto-suave); font-size: var(--t-sm); margin-top: var(--e1); }
 @media (max-width: 960px) { .asesoria-portada { grid-template-columns: minmax(0, 1fr); } .asesoria-portada__foto { min-height: 0; aspect-ratio: 5 / 2; } }
-@media (max-width: 600px) { .fila-asesoria { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .fila-asesoria { grid-template-columns: 1fr; gap: var(--e3); padding: var(--e4); }
+  .fila-asesoria .btn { justify-self: start; min-height: 40px; padding-inline: var(--e4); font-size: var(--t-sm); }
+}
 
 /* §9 · Tarjetas de producto ---------------------------------------------- */
 .productos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e5); }
@@ -518,7 +531,7 @@ a:hover { color: var(--z-azul-hover); }
 }
 .banda-blanco .tarjeta { background: #fff; border-color: #e4e6ea; }
 .tarjeta:hover { box-shadow: var(--sombra); transform: translateY(-2px); }
-.tarjeta__foto { aspect-ratio: 16 / 9; overflow: hidden; background: var(--z-paloma); }
+.tarjeta__foto { aspect-ratio: 2 / 1; overflow: hidden; background: var(--z-paloma); }
 .tarjeta__foto img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms cubic-bezier(.22, .61, .36, 1); }
 .tarjeta:hover .tarjeta__foto img { transform: scale(1.03); }
 .tarjeta__cuerpo { display: grid; gap: var(--e2); padding: var(--e4) var(--e5); flex: 1; align-content: start; }
@@ -529,11 +542,20 @@ a:hover { color: var(--z-azul-hover); }
 .tarjeta__cuerpo p { color: var(--texto-suave); font-size: var(--t-sm); }
 .tarjeta__cuerpo .tarjeta__gancho { font-weight: 700; color: var(--z-azul); font-size: var(--t-md); }
 .tarjeta__pie { padding: 0 var(--e5) var(--e4); position: relative; z-index: 2; }
-/* En el celular la foto es una franja: la tarjeta se lee igual con menos alto. */
+/* En el celular la foto pasa a ser una miniatura al lado del nombre: la
+   tarjeta se lee igual con la mitad del alto (pedido de Andrés, 10-10-2026:
+   las fotos estaban bien, pero enormes). */
 @media (max-width: 600px) {
-  .tarjeta__foto, .productos--destacado > :first-child .tarjeta__foto { aspect-ratio: 5 / 2; }
-  .tarjeta__cuerpo { padding: var(--e4); }
-  .tarjeta__pie { padding: 0 var(--e4) var(--e4); }
+  .tarjeta, .productos--destacado > :first-child { display: grid; grid-template-columns: 84px minmax(0, 1fr); grid-template-rows: auto auto; }
+  .tarjeta__foto, .productos--destacado > :first-child .tarjeta__foto {
+    grid-column: 1; grid-row: 1; aspect-ratio: 1; height: auto; margin: var(--e4) 0 0 var(--e4); border-radius: var(--radio);
+  }
+  .tarjeta__cuerpo, .productos--destacado > :first-child .tarjeta__cuerpo { grid-column: 2; grid-row: 1; padding: var(--e4); gap: 6px; }
+  .tarjeta__cuerpo h3, .productos--destacado > :first-child h3 { font-size: var(--t-md); }
+  .tarjeta__cuerpo .tarjeta__gancho, .productos--destacado > :first-child .tarjeta__gancho { font-size: var(--t-sm); }
+  .tarjeta__pie { grid-column: 1 / -1; grid-row: 2; padding: 0 var(--e4) var(--e4); }
+  .tarjeta__pie .btn { min-height: 44px; }
+  .productos { gap: var(--e3); }
 }
 .tarjeta__pie .btn { pointer-events: auto; }
 
@@ -601,7 +623,14 @@ a:hover { color: var(--z-azul-hover); }
 .beneficio__icono { width: 48px; height: 48px; border-radius: 50%; background: var(--z-azul); color: #fff; display: grid; place-items: center; }
 .beneficio__icono svg { width: 24px; height: 24px; }
 .beneficio p { color: var(--texto-suave); font-size: var(--t-sm); }
-@media (max-width: 860px) { .beneficios { grid-template-columns: 1fr; } }
+@media (max-width: 860px) {
+  .beneficios { grid-template-columns: 1fr; gap: var(--e3); }
+  /* Ícono al lado del texto: tres beneficios en una pantalla y no en dos. */
+  .beneficio { padding: var(--e4); }
+  .beneficio:has(.beneficio__icono) { grid-template-columns: 40px minmax(0, 1fr); column-gap: var(--e3); row-gap: 2px; }
+  .beneficio__icono { width: 40px; height: 40px; grid-row: span 2; }
+  .beneficio__icono svg { width: 20px; height: 20px; }
+}
 
 .promo-banda {
   display: grid; grid-template-columns: auto 1fr auto; gap: var(--e5); align-items: center;
@@ -1059,3 +1088,122 @@ fieldset.campo { border: 0; padding: 0; margin: 0; }
 .matias__pie { display: flex; justify-content: space-between; gap: var(--e3); padding: 0 var(--e4) var(--e2); background: #fff; font-size: var(--t-xs); color: var(--texto-suave); }
 @media (max-width: 620px) { .matias__compositor input { font-size: 16px; } }
 
+
+/* §18 · Datos para probar --------------------------------------------------
+   Pedido de Andrés: que quien prueba la maqueta vea los datos sin buscarlos.
+   Va en azul oscuro para no confundirse con MatIAs (Azul de Zúrich), y todo
+   en colores sólidos. Botón abajo a la izquierda en todas las páginas;
+   junto al cotizador, el paso en que va; en el acceso y en MatIAs, los
+   datos que se escriben con un clic. Se apaga en Configuración. */
+.prueba {
+  position: fixed; left: 20px; bottom: 20px; z-index: 46;
+  display: flex; flex-direction: column-reverse; align-items: flex-start; gap: var(--e2);
+}
+.prueba__boton {
+  display: inline-flex; align-items: center; gap: var(--e2); min-height: 44px; padding: 0 var(--e4) 0 var(--e3);
+  border: 0; border-radius: var(--pill); cursor: pointer;
+  background: var(--z-azul-oscuro); color: #fff; font-size: var(--t-sm); font-weight: 700;
+  /* El aro blanco lo separa del pie, que es del mismo azul. */
+  box-shadow: 0 0 0 2px #fff, var(--sombra);
+  transition: background-color var(--transicion), transform var(--transicion);
+}
+.prueba__boton:hover, .prueba__boton[aria-expanded="true"] { background: #1a2856; }
+.prueba__boton:hover { transform: translateY(-2px); }
+.prueba__boton svg { width: 20px; height: 20px; flex: none; }
+.prueba__panel {
+  width: 380px; max-width: calc(100vw - 40px); max-height: min(640px, calc(100vh - 120px));
+  display: flex; flex-direction: column; overflow: hidden;
+  background: #fff; border: 1px solid var(--linea); border-radius: var(--radio-lg); box-shadow: var(--sombra-lg);
+}
+.prueba__cabeza {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: var(--e3);
+  padding: var(--e4) var(--e4) var(--e4) var(--e5); background: var(--z-azul-oscuro); color: #fff;
+}
+.prueba__cabeza h2 { font-size: var(--t-md); color: #fff; }
+.prueba__cabeza p { font-size: var(--t-xs); color: var(--texto-invertido-suave); margin-top: 2px; }
+.prueba__cerrar {
+  width: 36px; height: 36px; flex: none; display: grid; place-items: center; cursor: pointer;
+  border: 0; border-radius: 50%; background: var(--z-azul-oscuro); color: #fff; box-shadow: inset 0 0 0 1px #6f7ca3;
+}
+.prueba__cerrar:hover { background: #1a2856; }
+.prueba__cerrar svg { width: 18px; height: 18px; }
+.prueba__cuerpo { position: relative; overflow-y: auto; padding: var(--e2) var(--e5) var(--e5); display: grid; gap: var(--e3); }
+.prueba__cuerpo section { display: grid; gap: var(--e2); padding-top: var(--e3); border-top: 1px solid var(--linea); }
+.prueba__cuerpo section:first-child { border-top: 0; }
+.prueba__cuerpo h3 { font-size: var(--t-sm); }
+.prueba__cuerpo p, .prueba-frases li { font-size: var(--t-xs); color: var(--texto-suave); }
+.prueba-frases { display: grid; gap: 4px; padding-left: 18px; list-style: disc; }
+.prueba-cliente { display: grid; padding: var(--e2) var(--e3); border-radius: var(--radio); background: var(--superficie); }
+.prueba-cliente strong { font-size: var(--t-sm); padding-top: 4px; }
+@media (max-width: 760px) {
+  .prueba { left: 16px; bottom: 16px; }
+  /* Con la barra de «Cotizar» abajo, el botón taparía la página: en la ficha
+     del producto no hay nada que escribir, así que ahí no va. */
+  .prueba[data-sobre-barra="si"] { display: none; }
+  .prueba__boton { padding: 0 var(--e3); font-size: var(--t-xs); }
+  .prueba__panel { position: fixed; left: 8px; right: 8px; bottom: 72px; width: auto; max-width: none; max-height: calc(100dvh - 96px); }
+}
+
+/* Un dato: rótulo, valor (con su nota) y el botón de copiar. */
+.prueba-dato { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--e2); padding: 6px 0; }
+.prueba-dato + .prueba-dato { border-top: 1px solid var(--linea); }
+.prueba-dato__texto { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--e2); min-width: 0; }
+.prueba-dato__rotulo { flex-basis: 100%; font-size: var(--t-xs); color: var(--texto-suave); }
+.prueba-dato__valor { font-family: inherit; font-size: var(--t-sm); font-weight: 700; color: var(--texto); overflow-wrap: anywhere; }
+.prueba-dato__nota { font-size: var(--t-xs); color: var(--texto-suave); }
+.prueba-dato__copiar {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 0 10px; cursor: pointer;
+  border: 1px solid var(--z-azul); border-radius: var(--pill); background: #fff; color: var(--z-azul);
+  font-size: var(--t-xs); font-weight: 700; transition: background-color var(--transicion);
+}
+.prueba-dato__copiar:hover { background: var(--info-fondo); }
+.prueba-dato__copiar svg { width: 14px; height: 14px; }
+.prueba-dato__copiar[data-copiado="si"] { border-color: var(--exito); background: var(--exito-fondo); color: var(--exito); }
+
+/* Junto al cotizador: el paso en que va. En el celular, arriba del marco. */
+.caja-prueba {
+  display: grid; gap: var(--e3); padding: var(--e4) var(--e4) var(--e4) var(--e5); border-radius: var(--radio);
+  background: #fff; border: 1px solid var(--linea); box-shadow: inset 4px 0 0 var(--z-azul-oscuro);
+}
+.caja-prueba__cabeza { display: flex; align-items: center; gap: var(--e3); }
+.caja-prueba__icono { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--z-azul-oscuro); color: #fff; }
+.caja-prueba__icono svg { width: 20px; height: 20px; }
+.caja-prueba h2 { font-size: var(--t-md); }
+.caja-prueba__paso { font-size: var(--t-xs); font-weight: 600; color: var(--texto-suave); }
+.caja-prueba__grupo { display: grid; gap: var(--e3); }
+.caja-prueba__datos summary {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--e2); min-height: 32px;
+  cursor: pointer; list-style: none; font-size: var(--t-sm); font-weight: 700; color: var(--z-azul);
+}
+.caja-prueba__datos summary::-webkit-details-marker { display: none; }
+.caja-prueba__datos summary svg { width: 18px; height: 18px; flex: none; transition: transform var(--transicion); }
+.caja-prueba__datos[open] summary svg { transform: rotate(180deg); }
+.caja-prueba__nota { font-size: var(--t-xs); color: var(--texto-suave); }
+.caja-prueba__estado { font-size: var(--t-xs); font-weight: 600; color: var(--exito); }
+.caja-prueba__estado:empty { display: none; }
+.caja-prueba--arriba { display: none; }
+@media (max-width: 960px) {
+  .caja-prueba--arriba { display: grid; }
+  .caja-prueba--lateral { display: none; }
+}
+
+/* En el acceso y en MatIAs: los datos que se escriben con un clic. */
+.acceso-prueba, .matias-prueba {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: var(--e3);
+  border-radius: var(--radio); background: var(--superficie);
+}
+.acceso-prueba__rotulo, .matias-prueba > span {
+  flex-basis: 100%; display: flex; align-items: center; gap: 6px; font-size: var(--t-xs); font-weight: 700; color: var(--texto);
+}
+.acceso-prueba__rotulo svg { width: 16px; height: 16px; flex: none; }
+.matias-prueba { margin-bottom: var(--e2); }
+.chip-prueba {
+  min-height: 32px; padding: 6px var(--e3); cursor: pointer; text-align: left; overflow-wrap: anywhere;
+  border: 1px dashed var(--z-azul); border-radius: var(--pill); background: #fff; color: var(--z-azul);
+  font-size: var(--t-xs); font-weight: 700; transition: background-color var(--transicion);
+}
+.chip-prueba:hover { background: var(--info-fondo); border-style: solid; }
+/* Los botones fijos (datos para probar, MatIAs) no tapan la última línea:
+   el pie y el acceso dejan aire debajo. */
+body:has(.prueba) .acceso__panel { padding-bottom: 88px; }
+body:has(.prueba, .matias-lanzador) .pie { padding-bottom: calc(var(--e6) + 64px); }

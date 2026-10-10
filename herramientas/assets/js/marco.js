@@ -15,11 +15,15 @@
                                                      plan, el deducible y los
                                                      precios que está mirando,
                                                      para que MatIAs hable de eso
-   Y uno de vuelta, del sitio al cotizador (marca `fuente: 'zurich-sitio'`):
+   Y dos de vuelta, del sitio al cotizador (marca `fuente: 'zurich-sitio'`):
      { tipo: 'elegir', plan?, deducible? }           MatIAs elige por la persona
                                                      lo que ella le pidió («¿y el
                                                      premium?»). Se hace con los
                                                      mismos botones de la pantalla.
+     { tipo: 'rellenar' }                            «Completar este paso» con los
+                                                     datos para probar
+                                                     (prueba-pasos.js). Responde
+                                                     { tipo: 'rellenado', paso, campos }.
 
    Con `alto`, el sitio ajusta el marco al contenido y no hay una segunda
    barra de desplazamiento. Con `foco`, el sitio desplaza su página hasta
@@ -88,7 +92,15 @@ export function avisarContexto(datos) {
 if (ORIGEN_SITIO) {
   addEventListener('message', (e) => {
     const d = e.data;
-    if (e.origin !== ORIGEN_SITIO || !d || d.fuente !== 'zurich-sitio' || d.tipo !== 'elegir') return;
+    if (e.origin !== ORIGEN_SITIO || !d || d.fuente !== 'zurich-sitio') return;
+    if (d.tipo === 'rellenar') {
+      /* «Completar este paso», desde los datos para probar del sitio. */
+      const producto = location.pathname.split('/').filter(Boolean)[1] || '';
+      const paso = pasoActual();
+      import('./prueba-pasos.js').then((m) => enviar({ tipo: 'rellenado', paso, campos: m.rellenar(producto, paso) }));
+      return;
+    }
+    if (d.tipo !== 'elegir') return;
     if (d.deducible !== undefined && d.deducible !== null) {
       /** @type {HTMLElement|null} */ (document.querySelector(`[data-deducible="${Number(d.deducible)}"]`))?.click();
     }

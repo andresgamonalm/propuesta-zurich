@@ -33,6 +33,7 @@
  *   { fuente: 'zurich', tipo: 'alto', alto: <px> }          → el marco toma ese alto
  *   { fuente: 'zurich', tipo: 'foco', y: <px>, alto: <px> } → mostrar esa zona
  *   { fuente: 'zurich', tipo: 'contexto', … }               → lo que mira en planes (MatIAs)
+ *   { fuente: 'zurich', tipo: 'rellenado', campos }         → completó el paso con datos de prueba
  *
  * `?paso=<paso>` abre el cotizador de demostración directo en ese paso: es
  * como MatIAs deja a la persona en sus precios después de reconocerla. Solo
@@ -48,6 +49,7 @@ import { esc, icono, porValidar, promoVigente, fechaLarga } from '../ui.js';
 import { pendientesAdmin, promoActiva, ganchoDe } from '../piezas.js';
 import { registrar, normalizar } from '../medicion.js';
 import { recibir } from '../matias/puente.js';
+import { cajaPrueba, activarCajas } from '../datos-prueba.js';
 
 /** Si a los 15 s el marco no avisó que cargó, se ofrece la pestaña nueva. */
 const ESPERA_LENTA = 15000;
@@ -92,6 +94,7 @@ export function render({ main, id, sesion }) {
   </section>
 
   <div class="contenedor integracion">
+    ${demo ? cajaPrueba(item.id, datos.pasos, datos.etiquetas, pasoInicial, 'arriba') : ''}
     <div class="marco">
       <div class="marco__barra">
         <span class="marco__origen">${icono('candado')}<span>${demo ? 'Cotizador de demostración · en producción, la herramienta oficial de Zurich' : `Herramienta oficial de Zurich · <code>${esc(origen.replace(/^https?:\/\//, '') || 'origen por definir')}</code>`}</span></span>
@@ -101,6 +104,7 @@ export function render({ main, id, sesion }) {
     </div>
 
     <aside class="lateral" aria-label="${esCotizador ? 'Promoción y ayuda' : 'Aviso y ayuda'}">
+      ${demo ? cajaPrueba(item.id, datos.pasos, datos.etiquetas, pasoInicial, 'lateral') : ''}
       ${esCotizador ? promocion(p) : avisoTramite(s)}
       <div class="caja"><h2>Lo que necesitas</h2><ul>${datos.necesitas.map((/** @type {string} */ t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
       ${esCotizador ? '' : mundo()}
@@ -126,6 +130,9 @@ export function render({ main, id, sesion }) {
     marco.addEventListener('load', () => { clearTimeout(espera); lienzo.dataset.estado = 'listo'; });
   }
 
+  /* Datos para probar: el paso en que va y «Completar este paso». */
+  const prueba = activarCajas(main, marco, datos.pasos, datos.etiquetas, item.id);
+
   /* ---- Medición por paso: contrato postMessage ---- */
   const lista = /** @type {HTMLElement[]} */ ([...main.querySelectorAll('.pasos-flujo li')]);
   const marcar = (/** @type {string} */ paso) => {
@@ -135,15 +142,18 @@ export function render({ main, id, sesion }) {
       li.classList.toggle('hecho', j < i);
       if (j === i) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
     });
+    prueba.paso(paso);
     return true;
   };
   /* La cabecera del sitio es fija: lo que se muestra queda bajo ella. */
   const bajoCabecera = () => (document.querySelector('.cabecera')?.getBoundingClientRect().height ?? 72) + 16;
   /* Al cambiar de paso dentro del marco, la página sube hasta el comienzo
-     del marco si quedó fuera de la vista. La primera carga no mueve nada. */
+     del marco si quedó fuera de la vista. La primera carga no mueve nada.
+     En el celular, los datos para probar van arriba del marco: se sube
+     hasta ellos, para que se vean los del paso nuevo. */
   let pasosVistos = 0;
   const alinearMarco = () => {
-    const caja = main.querySelector('.marco');
+    const caja = [...main.querySelectorAll('.caja-prueba--arriba, .marco')].find((el) => el.getClientRects().length > 0);
     if (!caja) return;
     const r = caja.getBoundingClientRect();
     if (r.top < bajoCabecera() || r.top > innerHeight * 0.5) {
@@ -175,6 +185,9 @@ export function render({ main, id, sesion }) {
       if (!(pasosVistos === 1 && d.paso === pasoInicial)) {
         registrar(`${amb}_rec_avance_paso`, { paso: d.paso, ruta_virtual: `${base}${d.paso}/`, ...extra });
       }
+    } else if (d.tipo === 'rellenado' && demo && !simulado) {
+      /* El cotizador escribió los datos para probar. */
+      prueba.rellenado(d);
     } else if (d.tipo === 'contexto' && demo && !simulado) {
       /* Lo que la persona mira en planes: lo lee MatIAs (matias/puente.js). */
       recibir(item.id, d);

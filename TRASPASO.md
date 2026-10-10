@@ -146,17 +146,21 @@ demostración** y **MatIAs** en todas las páginas privadas:
 
 **Entregables** en `_entregables/`:
 
-- documentación general y técnica (Word, versión 1.3);
+- documentación general y técnica (Word, versión 1.4);
 - descripción publicitaria (Word);
-- 8 capturas de pantalla (entre ellas el cotizador de Auto dentro del sitio,
-  en «Tus datos» y en «Planes» con Zurich Days, y MatIAs comparando los
-  planes) y una portada de presentación;
+- 9 capturas de pantalla (entre ellas el cotizador de Auto dentro del sitio,
+  en «Tus datos» y en «Planes» con Zurich Days, MatIAs comparando los
+  planes y el panel de datos para probar) y una portada de presentación.
+  Las demás capturas muestran el producto sin los datos para probar;
 - íconos (`.ico` y PNG de 1000 px).
 
 ## 5 · Cómo verlo y comprobarlo
 
 - **Verlo:** doble clic en `Abrir-el-sitio.cmd` (Windows) o
   `Abrir-el-sitio.command` (Mac). Abre `http://127.0.0.1:5178/login/`.
+- **Probarlo:** los datos están a la vista en el propio sitio (botón «Datos
+  para probar» abajo a la izquierda, y «Completar este paso» junto a cada
+  cotizador).
 - **Comprobarlo:** `node _herramientas/verificar.mjs` (en esta máquina, con
   `PLAYWRIGHT_MODULE=/opt/node-tools/node_modules/playwright/index.mjs`).
   Recorre todas las páginas en 1440, 820 y 390 px, prueba los flujos y mide el
@@ -301,6 +305,43 @@ textos legales.
 - **Verificación:** 1.027 comprobaciones, 0 fallas (ver REVISION.md,
   Revisión 4).
 
+**Datos para probar a la vista y segunda pasada de alturas (10 de octubre de 2026):**
+
+Pedido: «agregar los datos para probar en el mismo aplicativo, pero que la
+persona los vea, porque hasta ahora se ha vuelto muy difícil» y confirmar
+que se arregló la altura excesiva.
+
+| Dónde | Qué se ve |
+|---|---|
+| Todas las páginas, también el acceso | Botón «Datos para probar» abajo a la izquierda. Abre un panel con los correos para entrar (cliente y administrador), los dos clientes ficticios (RUT, patente con su auto, comuna), la cédula para firmar y frases para conversar con MatIAs. Cada dato con «Copiar» |
+| Junto a cada cotizador de demostración | Los datos del paso en que va la persona («Paso 2 de 6 · Tu vehículo») y el botón **«Completar este paso»**, que los escribe en el cotizador. La persona revisa y presiona «Continuar». En el celular va arriba del cotizador, y al cambiar de paso la página sube hasta él |
+| El acceso | «Para probar, entra como: Cliente · Administrador»: un clic escribe el correo |
+| MatIAs | Al pedir los dos datos, los dos clientes ficticios: un clic escribe RUT y patente (o comuna) |
+
+- **Lo que nunca completa por la persona:** la autorización de datos, la
+  declaración de Hogar y la lectura de los documentos antes de firmar.
+- **Una sola fuente:** los datos de cada paso están en
+  `herramientas/assets/js/prueba-pasos.js`; los clientes, en
+  `clientes-demo.js`. Son ficticios.
+- **Se apaga** en Configuración › Contenidos › Secciones › «Datos para
+  probar». En el celular, en la ficha del producto, el botón fijo no aparece
+  para no tapar la barra de «Cotizar».
+- **De paso:** la firma de Auto y Hogar todavía se atenuaba con
+  transparencia antes de leer los documentos; ahora es gris sólido, igual
+  que Urgencias. Los botones fijos ya no tapan la última línea del pie.
+- **Alturas, segunda pasada** (tarjetas de producto en el celular con la
+  foto chica al lado, pie y beneficios más compactos):
+
+  | Página | Al comienzo | Ahora |
+  |---|---|---|
+  | Portada, computador | 5.243 px | 4.640 px |
+  | Portada, celular | 9.901 px | 6.993 px |
+  | Seguros, celular | 5.813 px | 4.581 px |
+  | Auto Digital, celular | 9.182 px | 7.887 px |
+
+- **Verificación:** 1.051 comprobaciones, 0 fallas (ver REVISION.md,
+  Revisión 5).
+
 **Lo que queda pendiente:**
 
 1. **Andrés** prueba en su computador con el lanzador. Esto no se pudo ver
@@ -329,6 +370,7 @@ textos legales.
 | 9-10-2026 | Solo el formulario dentro del marco, con promoción o aviso al lado; verificador con las cabeceras de `_headers`; documentos y captura actualizados |
 | 10-10-2026 | Cotizadores de demostración que funcionan completos dentro del sitio: Auto y Hogar con el flujo del piloto, Protección Urgencias nuevo (`/herramientas/`). Verificador con las tres compras completas: 996 comprobaciones, 0 fallas. Documentos y capturas actualizados |
 | 10-10-2026 | MatIAs (venta de Auto y Hogar + «Ayuda con mi seguro») y correcciones de diseño: gris `#f5f5f5`, sin transparencias, alturas contenidas, franja de trámites. 1.027 comprobaciones, 0 fallas |
+| 10-10-2026 | Datos para probar a la vista (botón fijo, junto a cada cotizador con «Completar este paso», en el acceso y en MatIAs), firma sin transparencia en Auto y Hogar, segunda pasada de alturas. 1.051 comprobaciones, 0 fallas. Documentos v1.4 y capturas actualizados |
 
 ## 10 · Para empezar el próximo chat
 

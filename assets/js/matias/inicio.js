@@ -32,6 +32,8 @@ import { guardar, reiniciar } from '/herramientas/assets/js/comun.js';
 import { guardarHogar, reiniciarHogar } from '/herramientas/assets/js/comun-hogar.js';
 import { regionDe } from '/herramientas/assets/js/datos-hogar.js';
 import { dato, LLAMAR, respuestaCanales, FUENTE_PRODUCTO } from './comun.js';
+import { CLIENTES_DEMO } from '/herramientas/assets/js/clientes-demo.js';
+import { activos as hayDatosPrueba, nombreCorto } from '../datos-prueba.js';
 
 const AUTO = /** @type {any} */ (producto('auto-digital'));
 const HOGAR = /** @type {any} */ (producto('hogar-facil-plus'));
@@ -98,16 +100,23 @@ function formulario(ramo) {
   const f = SEGUNDO[ramo];
   const n = ++nFormulario;
   const error = '<span class="campo__error" role="alert"></span>';
-  return `
+  /* Datos para probar: los dos clientes ficticios, a la vista. Un clic
+     escribe los dos datos; buscar sigue siendo de la persona. */
+  const prueba = hayDatosPrueba() ? `<div class="matias-prueba"><span>Para probar, usa un cliente ficticio:</span>
+      ${CLIENTES_DEMO.map((c) => {
+        const factor = ramo === 'auto' ? c.patente : c.comunaDom;
+        return `<button type="button" class="chip-prueba" data-rut="${esc(c.rut)}" data-factor="${esc(factor)}">${esc(nombreCorto(c))} · ${esc(c.rut)} · ${esc(factor)}</button>`;
+      }).join('')}</div>` : '';
+  return `${prueba}
     <div class="campo" data-campo="rut">
       <label for="matias-rut-${n}">RUT</label>
       <input id="matias-rut-${n}" type="text" inputmode="text" autocomplete="off" placeholder="12345678-9" maxlength="12" aria-describedby="matias-rut-ayuda-${n}">
-      <span class="ayuda" id="matias-rut-ayuda-${n}">Sin puntos y con guion. Para probar: 10111222-5 o 20111222-2.</span>${error}
+      <span class="ayuda" id="matias-rut-ayuda-${n}">Sin puntos y con guion.</span>${error}
     </div>
     <div class="campo" data-campo="factor">
       <label for="matias-factor-${n}">${esc(f.rotulo)}</label>
       <input id="matias-factor-${n}" type="text" autocomplete="off" placeholder="${esc(f.ejemplo)}" aria-describedby="matias-factor-ayuda-${n}">
-      <span class="ayuda" id="matias-factor-ayuda-${n}">${esc(f.ayuda)}${ramo === 'auto' ? ' Para probar: AAAA11 o BBBB22.' : ' Para probar: Providencia o Las Condes.'}</span>${error}
+      <span class="ayuda" id="matias-factor-ayuda-${n}">${esc(f.ayuda)}</span>${error}
     </div>
     <button class="btn btn--primario btn--bloque btn--chico" type="button" data-accion="buscar">Buscar mis datos</button>`;
 }
@@ -177,6 +186,14 @@ function montarCaptura(ramo, burbuja, api) {
     }, 260);
   };
   boton.addEventListener('click', enviar);
+  burbuja.querySelector('.matias-prueba')?.addEventListener('click', (e) => {
+    const b = /** @type {HTMLElement|null} */ (e.target instanceof Element ? e.target.closest('[data-rut]') : null);
+    if (!b || iRut.readOnly) return;
+    iRut.value = b.dataset.rut || ''; iFactor.value = b.dataset.factor || '';
+    [iRut, iFactor].forEach((i) => i.dispatchEvent(new Event('input', { bubbles: true })));
+    boton.focus();
+    registrar('matias_click_dato_prueba', { ramo });
+  });
   [iRut, iFactor].forEach((i) => i.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); enviar(); } }));
   setTimeout(() => iRut.focus(), 80);
 }

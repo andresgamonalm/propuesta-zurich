@@ -1368,6 +1368,10 @@ body[data-pagina="home"] main { padding-bottom: 0; }
 /* Bloqueado: gris sólido y texto suave, sin transparencia. */
 .contrato[data-estado="bloqueado"] { background: var(--z-gris); }
 .contrato[data-estado="bloqueado"] .contrato__texto, .contrato[data-estado="bloqueado"] .contrato__texto * { color: var(--texto-suave); }
+/* La firma antes de leer los documentos: gris sólido y texto suave, sin
+   transparencia (los lineamientos no la permiten). Auto, Hogar y Urgencias. */
+.bloque-apagado { background: #f5f5f5; border-radius: 12px; padding: 12px; }
+.bloque-apagado :is(label, p, span, strong, h3) { color: #4b5a78; }
 .contrato[data-estado="visto"] { background: var(--exito-fondo); border-color: #236b30; }
 .contrato__icono { flex: none; color: var(--azul); display: grid; place-items: center; }
 .contrato[data-estado="visto"] .contrato__icono { color: var(--exito); }

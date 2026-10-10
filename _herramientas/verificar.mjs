@@ -198,7 +198,14 @@ console.log('Flujos');
   await p.locator('input[data-id="matias"][data-campo="visible"]').uncheck(); await p.waitForSelector('.aviso-flotante');
   await p.goto(`${BASE}/home/`); await listo(p); await p.waitForTimeout(300);
   ok(await p.locator('#matias-lanzador').count() === 0, 'MatIAs sigue visible después de apagarlo en Configuración');
+  /* Apagar los datos para probar los saca del sitio, de los cotizadores y del acceso. */
+  await p.goto(`${BASE}/configuracion/`); await listo(p);
+  await p.locator('input[data-id="datos-prueba"][data-campo="visible"]').uncheck(); await p.waitForSelector('.aviso-flotante');
+  await p.goto(`${BASE}/personas/auto/cotizador/auto-digital/datos/`); await listo(p); await p.waitForTimeout(300);
+  ok(await p.locator('#prueba-lanzador, .caja-prueba').count() === 0, 'los datos para probar siguen a la vista después de apagarlos');
   await p.evaluate(() => localStorage.removeItem('zb:sesion'));
+  await p.goto(`${BASE}/login/`); await listo(p); await p.waitForTimeout(300);
+  ok(await p.locator('.acceso-prueba, #prueba-lanzador').count() === 0, 'el acceso sigue ofreciendo los datos para probar apagados');
   await entrar(p, 'cliente@correo.cl');
   ok(!(await p.locator('.rapida[href="/servicios/pago/"]').count()), 'el trámite oculto sigue visible');
   await p.goto(`${BASE}/servicios/pago/`); await listo(p);
@@ -247,6 +254,63 @@ console.log('Flujos');
   ok(await p.isVisible('text=Está tardando más de lo normal'), 'el aviso de demora no se ve');
   await ctx.close();
 }
+/* ---- Datos para probar: a la vista, se copian y completan el paso ------ */
+{
+  const { ctx, p, errores } = await contexto({ width: 1440, height: 900 });
+  await ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+  await p.goto(`${BASE}/login/`); await listo(p);
+  ok(await p.locator('.acceso-prueba [data-correo]').count() === 2, 'el acceso no ofrece los correos de prueba');
+  await p.click(`.acceso-prueba [data-correo="${ADMIN}"]`);
+  ok(await p.inputValue('#correo') === ADMIN, 'el correo de prueba no se escribe con un clic');
+  ok(await p.waitForSelector('#prueba-lanzador', { timeout: 5000 }).then(() => true).catch(() => false), 'el acceso no tiene el botón de datos para probar');
+  await p.click('#prueba-lanzador');
+  ok(await p.isVisible('#prueba-panel') && await p.locator('#prueba-panel .prueba-cliente').count() === 2, 'el panel no abre o no muestra los dos clientes ficticios');
+  await p.click('#prueba-panel [data-copiar="10111222-5"]');
+  ok(await p.evaluate(() => navigator.clipboard.readText()) === '10111222-5', 'copiar no deja el dato en el portapapeles');
+  ok((await p.textContent('#prueba-panel [data-copiar="10111222-5"]')).includes('Copiado'), 'copiar no avisa que copió');
+  await p.keyboard.press('Escape');
+  ok(await p.isHidden('#prueba-panel'), 'Escape no cierra los datos para probar');
+  await p.fill('#correo', 'cliente@correo.cl'); await p.click('button[type=submit]'); await p.waitForURL('**/home/'); await listo(p);
+  ok(await p.waitForSelector('#prueba-lanzador', { timeout: 5000 }).then(() => true).catch(() => false), 'las páginas no tienen el botón de datos para probar');
+  /* Junto al cotizador: el paso en que va y «Completar este paso». */
+  await p.goto(`${BASE}/personas/auto/cotizador/auto-digital/datos/`); await listo(p);
+  await p.waitForSelector('.marco__lienzo[data-alto="auto"]', { timeout: 10000 });
+  ok(await p.isVisible('.caja-prueba--lateral') && await p.isHidden('.caja-prueba--arriba'), 'en escritorio los datos para probar no van al lado del cotizador');
+  const f = p.frameLocator('.marco iframe');
+  const completar = async (paso) => {
+    await p.click(`.caja-prueba--lateral [data-prueba-paso="${paso}"] [data-rellenar]`);
+    return p.waitForFunction(() => document.querySelector('.caja-prueba--lateral [data-prueba-estado]').textContent.includes('completamos'), null, { timeout: 5000 }).then(() => true).catch(() => false);
+  };
+  ok(await completar('datos'), '«Completar este paso» no avisa lo que completó');
+  ok(await f.locator('#rut').inputValue() === '10111222-5' && await f.locator('#nombres').inputValue() === 'Daniela', '«Completar este paso» no escribe los datos en el cotizador');
+  await f.locator('#continuar-p1').click();
+  ok(await p.waitForFunction(() => !document.querySelector('.caja-prueba--lateral [data-prueba-paso="vehiculo"]').hidden, null, { timeout: 8000 }).then(() => true).catch(() => false), 'los datos para probar no siguen al paso nuevo');
+  ok((await p.textContent('.caja-prueba--lateral [data-prueba-rotulo]')).startsWith('Paso 2 de 6'), 'los datos para probar no dicen en qué paso va');
+  await completar('vehiculo');
+  ok(await f.locator('#c-patente[data-estado="ok"]').waitFor({ timeout: 5000 }).then(() => true).catch(() => false), 'la patente de prueba no se encuentra al completar el paso');
+  ok(errores.length === 0, `[datos para probar] errores: ${errores.join(' | ')}`);
+  await ctx.close();
+}
+{
+  /* En el celular, arriba del cotizador; y el botón fijo no choca con MatIAs. */
+  const { ctx, p, errores } = await contexto({ width: 390, height: 844 });
+  await entrar(p, 'cliente@correo.cl');
+  await p.waitForSelector('#prueba-lanzador'); await p.waitForSelector('#matias-lanzador');
+  const [a, m] = [await p.locator('.prueba__boton').boundingBox(), await p.locator('.matias-lanzador__boton').boundingBox()];
+  ok(a.x + a.width <= m.x, 'en el celular el botón de datos para probar choca con MatIAs');
+  await p.goto(`${BASE}/personas/hogar/cotizador/hogar-facil-plus/datos/`); await listo(p);
+  await p.waitForSelector('.marco__lienzo[data-alto="auto"]', { timeout: 10000 });
+  const [c, mc] = [await p.locator('.caja-prueba--arriba').boundingBox(), await p.locator('.marco').boundingBox()];
+  ok(c && mc && c.y + c.height <= mc.y && await p.isHidden('.caja-prueba--lateral'), 'en el celular los datos para probar no van arriba del cotizador');
+  await p.click('.caja-prueba--arriba [data-prueba-paso="datos"] [data-rellenar]');
+  await p.waitForFunction(() => document.querySelector('.caja-prueba--arriba [data-prueba-estado]').textContent.includes('completamos'), null, { timeout: 5000 }).catch(() => {});
+  ok(await p.frameLocator('.marco iframe').locator('#rut').inputValue().then((v) => v === '20111222-2'), 'en el celular «Completar este paso» no escribe en el cotizador');
+  ok(await p.evaluate(() => document.documentElement.scrollWidth - innerWidth) <= 1, '[datos para probar celular] desborde horizontal');
+  ok(errores.length === 0, `[datos para probar celular] errores: ${errores.join(' | ')}`);
+  await ctx.close();
+}
+console.log('  Datos para probar: acceso, panel, copiar y completar el paso');
+
 /* ---- Las tres compras completas, dentro del sitio ---------------------- */
 const enPaso = (p, paso) => p.waitForSelector(`.pasos-flujo li[aria-current="step"][data-paso="${paso}"]`, { timeout: 10000 }).then(() => true).catch(() => false);
 async function comprar(nombre, ancho, ruta, amb, pasos, recorrer) {
@@ -410,8 +474,9 @@ async function tocar(p, selector) {
     /* Hogar: RUT y comuna, sin autorizar (la autorización es opcional). */
     await p.click('[data-modo="contratar"]'); await p.waitForSelector('#matias-oferta-hogar_cotizar');
     await tocar(p, '#matias-oferta-hogar_cotizar');
-    await p.locator('.matias__hilo:not([hidden]) [data-campo="rut"] input').last().fill('20111222-2');
-    await p.locator('.matias__hilo:not([hidden]) [data-campo="factor"] input').last().fill('Las Condes');
+    /* Con los datos para probar: el cliente ficticio se escribe con un clic. */
+    await p.click('.matias__hilo:not([hidden]) .matias-prueba [data-rut="20111222-2"] >> nth=-1');
+    ok(await p.locator('.matias__hilo:not([hidden]) [data-campo="factor"] input').last().inputValue() === 'Las Condes', 'el cliente ficticio de MatIAs no escribe RUT y comuna');
     await tocar(p, '.matias__hilo:not([hidden]) [data-accion="buscar"] >> nth=-1');
     await tocar(p, '#matias-chip-si_soy_yo');
     await tocar(p, '.matias__hilo:not([hidden]) [data-accion="sin-autorizar"]');
@@ -467,6 +532,13 @@ console.log('Contraste');
   });
   await p.goto(`${BASE}/login/`);
   let medidos = (await auditar()).n;
+  /* Los datos para probar, abiertos. */
+  await p.waitForSelector('#prueba-lanzador'); await p.click('#prueba-lanzador');
+  {
+    const r = await auditar();
+    ok(r.malos.length === 0, `contraste de los datos para probar: ${r.malos.join(' | ')}`); medidos += r.n;
+  }
+  await p.keyboard.press('Escape');
   await p.fill('#correo', ADMIN); await p.click('button[type=submit]'); await p.waitForURL('**/home/');
   const promoAuto = ['/herramientas/auto-digital/planes/?demo=1&meses=24', '/herramientas/auto-digital/confirmacion/?demo=1&meses=24', '/herramientas/auto-digital/pago/?demo=1&meses=24', '/herramientas/auto-digital/listo/?demo=1&meses=24'];
   for (const ruta of [...RUTAS.map(conEstado), ...promoAuto, '/configuracion/#solicitudes', '/configuracion/#medicion', '/configuracion/#pendientes']) {

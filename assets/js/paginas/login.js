@@ -5,6 +5,7 @@ import { correoValido, iniciar, consultar, vueltaSegura } from '../sesion.js';
 import { registrar } from '../medicion.js';
 import { icono, foto } from '../ui.js';
 import { TELEFONO_ZURICH } from '../catalogo.js';
+import { accesosPrueba } from '../datos-prueba.js';
 
 /** @param {{ main: HTMLElement }} ctx */
 export function render({ main }) {
@@ -34,6 +35,7 @@ export function render({ main }) {
             <input id="correo" name="correo" type="email" autocomplete="email" inputmode="email" required aria-describedby="error-correo" placeholder="nombre@correo.cl">
             <p class="campo__error" id="error-correo" aria-live="polite">${icono('alerta')}<span></span></p>
           </div>
+          ${accesosPrueba()}
           <button class="btn btn--primario btn--bloque" type="submit" data-medir="ingresar">Ingresar</button>
         </div>
       </form>
@@ -65,6 +67,15 @@ export function render({ main }) {
   };
   input.addEventListener('input', () => {
     if (campo.dataset.estado === 'error') { delete campo.dataset.estado; input.removeAttribute('aria-invalid'); error.textContent = ''; }
+  });
+  /* Datos para probar: un clic escribe el correo; ingresar sigue siendo de la persona. */
+  main.querySelector('.acceso-prueba')?.addEventListener('click', (e) => {
+    const b = /** @type {HTMLElement|null} */ (e.target instanceof Element ? e.target.closest('[data-correo]') : null);
+    if (!b) return;
+    input.value = b.dataset.correo || '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    boton.focus();
+    registrar('login_click_dato_prueba');
   });
 
   form.addEventListener('submit', (e) => {
