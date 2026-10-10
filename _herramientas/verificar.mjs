@@ -272,27 +272,32 @@ console.log('Flujos');
   ok(await p.isHidden('#prueba-panel'), 'Escape no cierra los datos para probar');
   await p.fill('#correo', 'cliente@correo.cl'); await p.click('button[type=submit]'); await p.waitForURL('**/home/'); await listo(p);
   ok(await p.waitForSelector('#prueba-lanzador', { timeout: 5000 }).then(() => true).catch(() => false), 'las páginas no tienen el botón de datos para probar');
-  /* Junto al cotizador: el paso en que va y «Completar este paso». */
+  /* En el marco, sobre el formulario: el paso en que va y «Completar este
+     paso». El costado queda para la promoción. */
   await p.goto(`${BASE}/personas/auto/cotizador/auto-digital/datos/`); await listo(p);
   await p.waitForSelector('.marco__lienzo[data-alto="auto"]', { timeout: 10000 });
-  ok(await p.isVisible('.caja-prueba--lateral') && await p.isHidden('.caja-prueba--arriba'), 'en escritorio los datos para probar no van al lado del cotizador');
+  const [cp, lz] = [await p.locator('.marco .caja-prueba').boundingBox(), await p.locator('.marco__lienzo').boundingBox()];
+  ok(cp && lz && cp.y + cp.height <= lz.y + 1, 'los datos para probar no van en el marco, sobre el cotizador');
+  ok(await p.locator('.lateral .caja-prueba').count() === 0 && await p.locator('.lateral > :first-child').evaluate((e) => e.classList.contains('promo-lateral')), 'los datos para probar le quitan el primer lugar del costado a la promoción');
+  await p.click('.caja-prueba [data-copiar="10111222-5"]');
+  ok(await p.evaluate(() => navigator.clipboard.readText()) === '10111222-5', 'las fichas del cotizador no copian el dato');
   const f = p.frameLocator('.marco iframe');
-  const completar = async (paso) => {
-    await p.click(`.caja-prueba--lateral [data-prueba-paso="${paso}"] [data-rellenar]`);
-    return p.waitForFunction(() => document.querySelector('.caja-prueba--lateral [data-prueba-estado]').textContent.includes('completamos'), null, { timeout: 5000 }).then(() => true).catch(() => false);
+  const completar = async () => {
+    await p.click('.caja-prueba [data-rellenar]');
+    return p.waitForFunction(() => document.querySelector('.caja-prueba [data-prueba-estado]').textContent.includes('completamos'), null, { timeout: 5000 }).then(() => true).catch(() => false);
   };
-  ok(await completar('datos'), '«Completar este paso» no avisa lo que completó');
+  ok(await completar(), '«Completar este paso» no avisa lo que completó');
   ok(await f.locator('#rut').inputValue() === '10111222-5' && await f.locator('#nombres').inputValue() === 'Daniela', '«Completar este paso» no escribe los datos en el cotizador');
   await f.locator('#continuar-p1').click();
-  ok(await p.waitForFunction(() => !document.querySelector('.caja-prueba--lateral [data-prueba-paso="vehiculo"]').hidden, null, { timeout: 8000 }).then(() => true).catch(() => false), 'los datos para probar no siguen al paso nuevo');
-  ok((await p.textContent('.caja-prueba--lateral [data-prueba-rotulo]')).startsWith('Paso 2 de 6'), 'los datos para probar no dicen en qué paso va');
-  await completar('vehiculo');
+  ok(await p.waitForFunction(() => !document.querySelector('.caja-prueba [data-prueba-paso="vehiculo"]').hidden, null, { timeout: 8000 }).then(() => true).catch(() => false), 'los datos para probar no siguen al paso nuevo');
+  ok((await p.textContent('.caja-prueba [data-prueba-rotulo]')).startsWith('Paso 2 de 6'), 'los datos para probar no dicen en qué paso va');
+  await completar();
   ok(await f.locator('#c-patente[data-estado="ok"]').waitFor({ timeout: 5000 }).then(() => true).catch(() => false), 'la patente de prueba no se encuentra al completar el paso');
   ok(errores.length === 0, `[datos para probar] errores: ${errores.join(' | ')}`);
   await ctx.close();
 }
 {
-  /* En el celular, arriba del cotizador; y el botón fijo no choca con MatIAs. */
+  /* En el celular, también en el marco; y el botón fijo no choca con MatIAs. */
   const { ctx, p, errores } = await contexto({ width: 390, height: 844 });
   await entrar(p, 'cliente@correo.cl');
   await p.waitForSelector('#prueba-lanzador'); await p.waitForSelector('#matias-lanzador');
@@ -300,10 +305,10 @@ console.log('Flujos');
   ok(a.x + a.width <= m.x, 'en el celular el botón de datos para probar choca con MatIAs');
   await p.goto(`${BASE}/personas/hogar/cotizador/hogar-facil-plus/datos/`); await listo(p);
   await p.waitForSelector('.marco__lienzo[data-alto="auto"]', { timeout: 10000 });
-  const [c, mc] = [await p.locator('.caja-prueba--arriba').boundingBox(), await p.locator('.marco').boundingBox()];
-  ok(c && mc && c.y + c.height <= mc.y && await p.isHidden('.caja-prueba--lateral'), 'en el celular los datos para probar no van arriba del cotizador');
-  await p.click('.caja-prueba--arriba [data-prueba-paso="datos"] [data-rellenar]');
-  await p.waitForFunction(() => document.querySelector('.caja-prueba--arriba [data-prueba-estado]').textContent.includes('completamos'), null, { timeout: 5000 }).catch(() => {});
+  const [c, lc] = [await p.locator('.marco .caja-prueba').boundingBox(), await p.locator('.marco__lienzo').boundingBox()];
+  ok(c && lc && c.y + c.height <= lc.y + 1, 'en el celular los datos para probar no van sobre el cotizador');
+  await p.click('.caja-prueba [data-rellenar]');
+  await p.waitForFunction(() => document.querySelector('.caja-prueba [data-prueba-estado]').textContent.includes('completamos'), null, { timeout: 5000 }).catch(() => {});
   ok(await p.frameLocator('.marco iframe').locator('#rut').inputValue().then((v) => v === '20111222-2'), 'en el celular «Completar este paso» no escribe en el cotizador');
   ok(await p.evaluate(() => document.documentElement.scrollWidth - innerWidth) <= 1, '[datos para probar celular] desborde horizontal');
   ok(errores.length === 0, `[datos para probar celular] errores: ${errores.join(' | ')}`);

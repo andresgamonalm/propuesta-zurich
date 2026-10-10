@@ -67,10 +67,20 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   dentro del panel azul.
 - **Datos para probar a la vista** (10-10-2026, «que la persona los vea»):
   botón fijo abajo a la izquierda en todas las páginas (también el acceso),
-  recuadro junto a cada cotizador de demostración con el paso en que va y
-  «Completar este paso», y datos que se escriben con un clic en el acceso y
-  en MatIAs. Todo con «Copiar». Se apaga en Configuración. **Nunca marca por
+  una franja **dentro del marco del cotizador, sobre el formulario**, con el
+  paso en que va y «Completar este paso», y datos que se escriben con un clic
+  en el acceso y en MatIAs. Todo se copia. Se apaga en Configuración. **El
+  costado del cotizador es de la promoción:** los datos no van ahí («le
+  estás quitando el espacio a lo que será la publicidad»). **Nunca marca por
   la persona** una autorización, una declaración ni la lectura de documentos.
+- **Toques de la paleta secundaria** (10-10-2026, «que no quede tan azul y
+  tan aburrido»; el brandbook permite en web aumentar los secundarios): se
+  eligieron dos, **Cerceta `#19BAB6`** (servicio, beneficios y el trazo antes
+  de cada antetítulo) y **Durazno `#FF7569`** (la promoción: punto de
+  «Oferta del mes», círculo del regalo, borde del gancho). Las formas llevan
+  dos azules y estos dos acentos. Solo toques: el Azul de Zúrich sigue
+  mandando. Encima solo azul oscuro (Cerceta 4,78:1; Durazno 4,38:1, solo
+  íconos), nunca texto blanco, nunca fondo completo sobre foto.
 
 ## Lo que nunca se hace
 
@@ -176,10 +186,10 @@ máquina: `PLAYWRIGHT_MODULE=/opt/node-tools/node_modules/playwright/index.mjs`.
 - Las respuestas de MatIAs se cuentan en todo el panel
   (`.matias .burbuja--bot`): una pregunta de servicio cambia de espacio y su
   respuesta aparece en la otra conversación.
-- El recuadro de datos para probar va dos veces (al lado en escritorio,
-  arriba del cotizador en el celular) y el CSS muestra uno: en las pruebas,
-  usar `.caja-prueba--lateral` o `.caja-prueba--arriba` según el ancho.
-  «Completar este paso» es asíncrono: esperar su aviso
-  (`[data-prueba-estado]`) antes de leer los campos.
+- «Completar este paso» es asíncrono: esperar su aviso
+  (`.caja-prueba [data-prueba-estado]`) antes de leer los campos.
+- En el CSS, una regla de celular para una pieza tiene que ir **después** de
+  su regla base: con la misma especificidad gana la última (las fichas de
+  datos para probar no se apilaban por eso).
 - En el celular, con la barra de «Cotizar» abajo (ficha del producto), el
   botón fijo de datos para probar no se muestra: taparía la página.

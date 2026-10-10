@@ -27,6 +27,15 @@
   --z-paloma: #dde4e3;        /* superficie · azul oscuro encima 8,90:1 */
   --z-arenisca: #dad2bd;      /* superficie puntual */
   --z-blanco: #eceeef;        /* SOLO PANTALLA [Brandbook] · ya no se usa como superficie */
+  /* Paleta secundaria [Brandbook]: acento, con moderación; en sitios web el
+     brandbook permite aumentar su uso (§9, Excepciones). Pedido de Andrés
+     (10-10-2026): toques para que no quede todo azul. Se eligen dos [C]:
+     Cerceta, fresco, para servicio, beneficios y la firma de los antetítulos;
+     Durazno, cálido, para la promoción. Nunca texto blanco encima ni fondo
+     completo sobre una foto. Azul oscuro encima: Cerceta 4,78:1 (AA),
+     Durazno 4,38:1 (solo íconos y gráficos, umbral 3:1). */
+  --z-cerceta: #19bab6;
+  --z-durazno: #ff7569;
   /* [C] Superficie gris de bandas y tarjetas: #f5f5f5, pedido de Andrés
      (10-10-2026): el Blanco de Zúrich se veía demasiado oscuro en pantalla.
      Azul oscuro encima 10,5:1 · texto suave 6,35:1 · Azul de Zúrich 5,33:1. */
@@ -165,6 +174,11 @@ table { border-collapse: collapse; }
 .antetitulo {
   font-size: var(--t-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
   color: var(--z-azul);
+}
+/* La firma de cada sección: un trazo corto en Cerceta antes del antetítulo [C]. */
+.antetitulo::before {
+  content: ""; display: inline-block; width: 20px; height: 3px; margin-right: 8px; border-radius: 2px;
+  background: var(--z-cerceta); vertical-align: middle; transform: translateY(-1px);
 }
 .banda-oscura .antetitulo { color: var(--texto-invertido-suave); }
 .banda-azul .antetitulo { color: #fff; }
@@ -376,9 +390,12 @@ a:hover { color: var(--z-azul-hover); }
 }
 .lamina:nth-child(2) .lamina__texto { background: var(--z-azul-oscuro); }
 .lamina__etiqueta {
-  justify-self: start; padding: 4px 10px; border-radius: var(--pill); background: var(--z-azul-oscuro); color: #fff;
+  justify-self: start; display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: var(--pill); background: var(--z-azul-oscuro); color: #fff;
   font-size: var(--t-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
 }
+/* La promoción lleva un punto Durazno [C]. */
+.lamina__etiqueta::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--z-durazno); flex: none; }
 .lamina:nth-child(2) .lamina__etiqueta { background: var(--z-azul); }
 /* Sobre el Azul de Zúrich solo cumple el blanco (5,81:1) [skill de marca]. */
 .lamina__producto { font-size: var(--t-sm); font-weight: 600; color: #fff; }
@@ -443,9 +460,10 @@ a:hover { color: var(--z-azul-hover); }
   height: 100%; min-height: 76px; padding: var(--e3) var(--e4); text-decoration: none; color: var(--texto);
   transition: background-color var(--transicion), color var(--transicion);
 }
+/* Servicio en Cerceta, con el ícono en azul oscuro (4,78:1) [C]. */
 .tramite__icono {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--info-fondo); color: var(--z-azul); transition: background-color var(--transicion), color var(--transicion);
+  background: var(--z-cerceta); color: var(--z-azul-oscuro); transition: background-color var(--transicion), color var(--transicion);
 }
 .tramite__icono svg { width: 20px; height: 20px; }
 .tramite strong { font-size: var(--t-sm); line-height: 1.3; }
@@ -478,6 +496,8 @@ a:hover { color: var(--z-azul-hover); }
 .banda-oscura .mundo { border-color: #fff; }
 @media (max-width: 600px) { .mundos { grid-template-columns: 1fr 1fr; gap: var(--e2); } .mundo { padding: var(--e3); } }
 .mundo strong { font-size: var(--t-sm); color: var(--texto); }
+/* Un trazo Cerceta sobre cada beneficio, la misma firma de los antetítulos [C]. */
+.mundo strong::before { content: ""; display: block; width: 20px; height: 3px; margin-bottom: 6px; border-radius: 2px; background: var(--z-cerceta); }
 .mundo span { font-size: var(--t-xs); color: var(--texto-suave); }
 
 /* Bloque asesoría (portada) */
@@ -606,7 +626,7 @@ a:hover { color: var(--z-azul-hover); }
 /* El gancho: el dato que decide, arriba y en grande [C]. */
 .gancho {
   display: grid; gap: var(--e1); padding: var(--e4) var(--e5); border-radius: var(--radio);
-  background: var(--superficie); border-left: 0; justify-self: start; max-width: 100%;
+  background: var(--superficie); box-shadow: inset 4px 0 0 var(--z-durazno); justify-self: start; max-width: 100%;
 }
 .gancho__etiqueta { font-size: var(--t-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--z-azul); }
 .gancho__valor { font-size: var(--t-xl); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; }
@@ -620,7 +640,7 @@ a:hover { color: var(--z-azul-hover); }
 .beneficios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e5); }
 .beneficio { display: grid; gap: var(--e3); align-content: start; padding: var(--e5); border-radius: var(--radio); background: var(--superficie); }
 .banda-blanco .beneficio { background: #fff; }
-.beneficio__icono { width: 48px; height: 48px; border-radius: 50%; background: var(--z-azul); color: #fff; display: grid; place-items: center; }
+.beneficio__icono { width: 48px; height: 48px; border-radius: 50%; background: var(--z-cerceta); color: var(--z-azul-oscuro); display: grid; place-items: center; }
 .beneficio__icono svg { width: 24px; height: 24px; }
 .beneficio p { color: var(--texto-suave); font-size: var(--t-sm); }
 @media (max-width: 860px) {
@@ -636,7 +656,8 @@ a:hover { color: var(--z-azul-hover); }
   display: grid; grid-template-columns: auto 1fr auto; gap: var(--e5); align-items: center;
   padding: var(--e5) var(--e6); border-radius: var(--radio-lg); background: var(--z-azul); color: #fff;
 }
-.promo-banda__icono { width: 56px; height: 56px; border-radius: 50%; background: #fff; color: var(--z-azul); display: grid; place-items: center; }
+/* [Brandbook] Un secundario puede ser fondo de un círculo con pictograma. */
+.promo-banda__icono { width: 56px; height: 56px; border-radius: 50%; background: var(--z-durazno); color: var(--z-azul-oscuro); display: grid; place-items: center; }
 .promo-banda__icono svg { width: 28px; height: 28px; }
 .promo-banda p { color: #fff; font-size: var(--t-sm); }
 .promo-banda h2, .promo-banda h3 { font-size: var(--t-lg); }
@@ -776,7 +797,10 @@ a:hover { color: var(--z-azul-hover); }
   display: inline-flex; align-items: center; gap: var(--e2); font-size: var(--t-xs); font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: #fff;
 }
-.promo-lateral__etiqueta svg { width: 18px; height: 18px; flex: none; }
+.promo-lateral__etiqueta svg {
+  width: 30px; height: 30px; padding: 6px; flex: none; border-radius: 50%;
+  background: var(--z-durazno); color: var(--z-azul-oscuro);
+}
 .promo-lateral__titulo { font-size: var(--t-xl); line-height: 1.15; letter-spacing: -0.02em; color: #fff; }
 .promo-lateral p { font-size: var(--t-sm); color: #fff; }
 .promo-lateral__titulo--largo { font-size: var(--t-lg); }
@@ -786,6 +810,7 @@ a:hover { color: var(--z-azul-hover); }
 /* Versión para trámites: quien denuncia o paga no necesita una oferta encima. */
 .promo-lateral--suave { background: #fff; color: var(--texto); border: 1px solid var(--linea); }
 .promo-lateral--suave .promo-lateral__etiqueta { color: var(--z-azul); }
+.promo-lateral--suave .promo-lateral__etiqueta svg { background: var(--z-cerceta); }
 .promo-lateral--suave .promo-lateral__titulo { color: var(--texto); font-size: var(--t-lg); }
 .promo-lateral--suave p { color: var(--texto-suave); }
 .bases-lateral { font-size: var(--t-xs); color: var(--texto-suave); }
@@ -1160,31 +1185,46 @@ fieldset.campo { border: 0; padding: 0; margin: 0; }
 .prueba-dato__copiar svg { width: 14px; height: 14px; }
 .prueba-dato__copiar[data-copiado="si"] { border-color: var(--exito); background: var(--exito-fondo); color: var(--exito); }
 
-/* Junto al cotizador: el paso en que va. En el celular, arriba del marco. */
+/* En el marco del cotizador, sobre el formulario: el paso en que va. No va
+   al costado, que es de la promoción (pedido de Andrés, 10-10-2026). */
 .caja-prueba {
-  display: grid; gap: var(--e3); padding: var(--e4) var(--e4) var(--e4) var(--e5); border-radius: var(--radio);
-  background: #fff; border: 1px solid var(--linea); box-shadow: inset 4px 0 0 var(--z-azul-oscuro);
+  display: grid; gap: var(--e2); padding: var(--e3) var(--e4) var(--e3) var(--e5);
+  background: #fff; border-bottom: 1px solid var(--linea); box-shadow: inset 4px 0 0 var(--z-azul-oscuro);
 }
-.caja-prueba__cabeza { display: flex; align-items: center; gap: var(--e3); }
-.caja-prueba__icono { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--z-azul-oscuro); color: #fff; }
-.caja-prueba__icono svg { width: 20px; height: 20px; }
-.caja-prueba h2 { font-size: var(--t-md); }
-.caja-prueba__paso { font-size: var(--t-xs); font-weight: 600; color: var(--texto-suave); }
-.caja-prueba__grupo { display: grid; gap: var(--e3); }
-.caja-prueba__datos summary {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--e2); min-height: 32px;
-  cursor: pointer; list-style: none; font-size: var(--t-sm); font-weight: 700; color: var(--z-azul);
-}
-.caja-prueba__datos summary::-webkit-details-marker { display: none; }
-.caja-prueba__datos summary svg { width: 18px; height: 18px; flex: none; transition: transform var(--transicion); }
-.caja-prueba__datos[open] summary svg { transform: rotate(180deg); }
+.caja-prueba__cabeza { display: flex; align-items: center; flex-wrap: wrap; gap: var(--e2) var(--e3); }
+.caja-prueba__icono { width: 32px; height: 32px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--z-azul-oscuro); color: #fff; }
+.caja-prueba__icono svg { width: 18px; height: 18px; }
+.caja-prueba__titulos { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--e2); font-size: var(--t-sm); }
+.caja-prueba__titulos strong { color: var(--texto); }
+.caja-prueba__titulos span { font-size: var(--t-xs); font-weight: 600; color: var(--texto-suave); }
+.caja-prueba__completar svg { width: 16px; height: 16px; }
+.caja-prueba__grupo { display: grid; gap: var(--e2); }
+.caja-prueba__fichas { display: flex; flex-wrap: wrap; gap: 6px; }
 .caja-prueba__nota { font-size: var(--t-xs); color: var(--texto-suave); }
 .caja-prueba__estado { font-size: var(--t-xs); font-weight: 600; color: var(--exito); }
 .caja-prueba__estado:empty { display: none; }
-.caja-prueba--arriba { display: none; }
-@media (max-width: 960px) {
-  .caja-prueba--arriba { display: grid; }
-  .caja-prueba--lateral { display: none; }
+
+/* Un dato en ficha: todo el botón copia. */
+.prueba-ficha {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-height: 32px; padding: 4px 10px; cursor: pointer;
+  border: 1px solid var(--linea); border-radius: var(--pill); background: var(--superficie); color: var(--texto);
+  font-size: var(--t-xs); text-align: left; transition: background-color var(--transicion), border-color var(--transicion);
+}
+.prueba-ficha__rotulo { font-weight: 600; color: var(--texto-suave); }
+.prueba-ficha strong { font-size: var(--t-sm); overflow-wrap: anywhere; }
+.prueba-ficha svg { width: 14px; height: 14px; flex: none; color: var(--z-azul); }
+.prueba-ficha:hover { border-color: var(--z-azul); background: var(--info-fondo); }
+.prueba-ficha[data-copiado="si"] { border-color: var(--exito); background: var(--exito-fondo); }
+.prueba-ficha[data-copiado="si"] .prueba-ficha__rotulo, .prueba-ficha[data-copiado="si"] svg { color: var(--exito); }
+/* En el celular: dos fichas por fila, con el rótulo arriba del dato. Va
+   después de la regla base para ganarle. */
+@media (max-width: 600px) {
+  .caja-prueba__completar { width: 100%; }
+  .caja-prueba__fichas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prueba-ficha { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 6px; border-radius: var(--radio-sm); padding: 6px 10px; }
+  .prueba-ficha__rotulo { grid-column: 1; grid-row: 1; }
+  .prueba-ficha strong { grid-column: 1; grid-row: 2; }
+  .prueba-ficha svg { grid-column: 2; grid-row: 1 / span 2; }
 }
 
 /* En el acceso y en MatIAs: los datos que se escriben con un clic. */

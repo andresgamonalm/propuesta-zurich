@@ -343,3 +343,47 @@ clientes ficticios; pie de la portada en el celular.
   en un sitio publicado con https funciona. Sin permiso, el dato queda
   seleccionado para copiarlo a mano.
 
+## Revisión 6 · 10 de octubre de 2026
+
+**Pedido:** «Si pones los datos para probar de esa forma, le estás quitando
+el espacio a lo que será la publicidad»; y usar levemente la paleta
+secundaria de Zurich, eligiendo el o los colores más adecuados, para que no
+quede «tan azul y tan aburrido».
+
+**Fuentes:** skill `lineamientos-marca-zurich`: paleta secundaria (acento,
+con moderación; puede ser fondo de un círculo con pictograma; nunca fondo
+completo sobre imagen), §9 Excepciones (en sitios web se puede aumentar el
+uso de los secundarios) y la tabla de contraste de los secundarios.
+
+### 1 · Qué cambió
+
+| | |
+|---|---|
+| Datos para probar | Del costado a una franja dentro del marco del cotizador, sobre el formulario. El costado vuelve a empezar por la promoción. Los datos van como fichas que se copian con un clic; en el celular, dos por fila |
+| Cerceta `#19BAB6` | Trazo antes de cada antetítulo, círculos de los trámites, íconos de beneficios, trazo de cada beneficio de Mundo Zurich, una forma |
+| Durazno `#FF7569` | Punto de «Oferta del mes», círculo del regalo de la promoción, borde del gancho, una forma |
+
+Encima de los dos solo va azul oscuro: Cerceta 4,78:1 (AA para texto) y
+Durazno 4,38:1 (aquí solo en íconos y gráficos, umbral 3:1). Ningún texto
+blanco sobre ellos y ninguno como fondo de una foto.
+
+### 2 · Verificación automática
+
+`node _herramientas/verificar.mjs` → **1.053 comprobaciones correctas, 0 fallas.**
+Contraste AA de lo pintado: 4.901 textos.
+
+Novedades: los datos para probar van en el marco, sobre el cotizador, en
+computador y en celular; el costado empieza por la promoción y no contiene
+los datos; las fichas copian el dato.
+
+### 3 · Defectos encontrados y corregidos
+
+| Defecto | Corrección |
+|---|---|
+| En el celular las fichas no se apilaban: la regla de celular estaba antes que la regla base y perdía | La regla de celular va después (anotado en las trampas de `CLAUDE.md`) |
+
+### 4 · Revisión visual
+
+Portada y Auto Digital completas a 1440; cotizador de Auto a 1440 y de
+Hogar a 390 con la franja; Mundo Zurich a 1440; portada a 390.
+

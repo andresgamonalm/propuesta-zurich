@@ -9,9 +9,10 @@
  * Dónde aparecen, todos con la misma fuente:
  *   1. Un botón fijo «Datos para probar», abajo a la izquierda en todas las
  *      páginas (también en el acceso). Abre un panel con todo.
- *   2. Al lado de cada cotizador de demostración, los datos del paso en que
- *      va la persona y el botón «Completar este paso», que los escribe en el
- *      cotizador. En el celular va arriba del cotizador, no al final.
+ *   2. En el marco de cada cotizador de demostración, sobre el formulario,
+ *      los datos del paso en que va la persona y el botón «Completar este
+ *      paso», que los escribe en el cotizador. No va al costado: ese espacio
+ *      es de la promoción (pedido de Andrés, 10-10-2026).
  *   3. En el acceso, dos botones que escriben el correo de prueba.
  *   4. En MatIAs, los dos clientes ficticios para que la reconozca
  *      (matias/inicio.js).
@@ -42,8 +43,14 @@ export function copiable(rotulo, valor, nota = '') {
   return `<div class="prueba-dato">
     <div class="prueba-dato__texto"><span class="prueba-dato__rotulo">${esc(rotulo)}</span>
       <code class="prueba-dato__valor">${esc(valor)}</code>${nota ? `<span class="prueba-dato__nota">${esc(nota)}</span>` : ''}</div>
-    <button type="button" class="prueba-dato__copiar" data-copiar="${esc(valor)}" aria-label="Copiar ${esc(rotulo)}: ${esc(valor)}">${icono('copiar')}<span>Copiar</span></button>
+    <button type="button" class="prueba-dato__copiar" data-copiar="${esc(valor)}" aria-label="Copiar ${esc(rotulo)}: ${esc(valor)}">${icono('copiar')}<span data-aviso>Copiar</span></button>
   </div>`;
+}
+
+/** Un dato en ficha: todo el botón copia. Para la franja del cotizador. @param {string} rotulo @param {string} valor @param {string} [nota] */
+export function ficha(rotulo, valor, nota = '') {
+  return `<button type="button" class="prueba-ficha" data-copiar="${esc(valor)}" aria-label="Copiar ${esc(rotulo)}: ${esc(valor)}"${nota ? ` title="${esc(nota)}"` : ''}>
+    <span class="prueba-ficha__rotulo" data-aviso>${esc(rotulo)}</span><strong>${esc(valor)}</strong>${icono('copiar')}</button>`;
 }
 
 /* ── 1 · El botón fijo y su panel ──────────────────────────────────────── */
@@ -67,7 +74,7 @@ function contenidoPanel() {
       ${CLIENTES_DEMO.map(cliente).join('')}
     </section>
     <section><h3>En los cotizadores</h3>
-      <p>Al lado de cada cotizador verás los datos del paso en que vas y el botón <strong>«Completar este paso»</strong>, que los escribe por ti.</p>
+      <p>En cada cotizador, sobre el formulario, verás los datos del paso en que vas y el botón <strong>«Completar este paso»</strong>, que los escribe por ti.</p>
       ${copiable('Cédula para firmar', CEDULA, 'nueve dígitos cualesquiera')}
       <p>El pago es simulado: no se cobra nada.</p>
     </section>
@@ -94,14 +101,15 @@ function escucharCopiar() {
     try { await navigator.clipboard.writeText(valor); ok = true; } catch { ok = false; }
     if (!ok) {
       /* Sin permiso para el portapapeles: queda seleccionado para copiarlo a mano. */
-      const codigo = b.closest('.prueba-dato')?.querySelector('code');
-      if (codigo) { const r = document.createRange(); r.selectNodeContents(codigo); getSelection()?.removeAllRanges(); getSelection()?.addRange(r); }
+      const valorVisible = b.querySelector('strong') ?? b.closest('.prueba-dato')?.querySelector('code');
+      if (valorVisible) { const r = document.createRange(); r.selectNodeContents(valorVisible); getSelection()?.removeAllRanges(); getSelection()?.addRange(r); }
     }
-    const t = b.querySelector('span');
-    if (t) {
+    const t = /** @type {HTMLElement|null} */ (b.querySelector('[data-aviso]'));
+    if (t && !b.dataset.copiado) {
+      const original = t.textContent || '';
       t.textContent = ok ? 'Copiado' : 'Selecciónalo';
       b.dataset.copiado = ok ? 'si' : 'no';
-      setTimeout(() => { t.textContent = 'Copiar'; delete b.dataset.copiado; }, 1800);
+      setTimeout(() => { t.textContent = original; delete b.dataset.copiado; }, 1800);
     }
     aviso.textContent = ok ? `Copiado: ${valor}` : `Quedó seleccionado: ${valor}`;
     registrar('prueba_click_copiar');
@@ -141,32 +149,31 @@ export function montar() {
   document.addEventListener('click', (e) => { if (!panel.hidden && e.target instanceof Node && !caja.contains(e.target)) abrir(false); });
 }
 
-/* ── 2 · Al lado del cotizador, paso por paso ──────────────────────────── */
+/* ── 2 · En el marco del cotizador, paso por paso ─────────────────────── */
 
 /**
- * El recuadro del cotizador. Va dos veces: al lado (escritorio) y arriba
- * del cotizador (celular); el CSS muestra uno.
+ * La franja de datos para probar, dentro del marco y sobre el formulario.
+ * Va en todos los anchos en el mismo lugar: el costado es de la promoción.
  * @param {string} producto @param {string[]} pasos @param {string[]} etiquetas @param {string} inicial
- * @param {'lateral'|'arriba'} donde
  */
-export function cajaPrueba(producto, pasos, etiquetas, inicial, donde) {
+export function cajaPrueba(producto, pasos, etiquetas, inicial) {
   const tabla = PASOS_PRUEBA[producto];
   if (!activos() || !tabla) return '';
   const grupos = pasos.map((paso) => {
     const p = tabla[paso] ?? { datos: [], nota: '' };
-    return `<div class="caja-prueba__grupo" data-prueba-paso="${esc(paso)}"${paso === inicial ? '' : ' hidden'}>
-      ${p.datos.length ? `<button type="button" class="btn btn--linea btn--chico btn--bloque" data-rellenar>${icono('check')} Completar este paso</button>
-        <details class="caja-prueba__datos"${donde === 'lateral' ? ' open' : ''}><summary>Los datos de este paso ${icono('chevron')}</summary>
-          ${p.datos.map((d) => copiable(d.rotulo, d.valor, d.nota)).join('')}</details>` : ''}
+    return `<div class="caja-prueba__grupo" data-prueba-paso="${esc(paso)}" data-con-datos="${p.datos.length ? 'si' : 'no'}"${paso === inicial ? '' : ' hidden'}>
+      ${p.datos.length ? `<div class="caja-prueba__fichas">${p.datos.map((d) => ficha(d.rotulo, d.valor, d.nota)).join('')}</div>` : ''}
       ${p.nota ? `<p class="caja-prueba__nota">${esc(p.nota)}</p>` : ''}
     </div>`;
   }).join('');
   const i = Math.max(0, pasos.indexOf(inicial));
-  return `<section class="caja-prueba caja-prueba--${donde}" aria-labelledby="caja-prueba-${donde}">
+  const conDatos = Boolean(tabla[inicial]?.datos.length);
+  return `<section class="caja-prueba" aria-labelledby="caja-prueba-titulo">
     <div class="caja-prueba__cabeza">
       <span class="caja-prueba__icono">${icono('matraz')}</span>
-      <div><h2 id="caja-prueba-${donde}">Datos para probar</h2>
-        <p class="caja-prueba__paso" data-prueba-rotulo>Paso ${i + 1} de ${pasos.length} · ${esc(etiquetas[i] ?? '')}</p></div>
+      <p class="caja-prueba__titulos"><strong id="caja-prueba-titulo">Datos para probar</strong>
+        <span data-prueba-rotulo>Paso ${i + 1} de ${pasos.length} · ${esc(etiquetas[i] ?? '')}</span></p>
+      <button type="button" class="btn btn--linea btn--chico caja-prueba__completar" data-rellenar${conDatos ? '' : ' hidden'}>${icono('check')} Completar este paso</button>
     </div>
     ${grupos}
     <p class="caja-prueba__estado" role="status" data-prueba-estado></p>
@@ -174,19 +181,18 @@ export function cajaPrueba(producto, pasos, etiquetas, inicial, donde) {
 }
 
 /**
- * Da vida a los recuadros: «Completar este paso» le pide al cotizador que
+ * Da vida a la franja: «Completar este paso» le pide al cotizador que
  * escriba los datos, y cada aviso de paso muestra los del paso nuevo.
  * @param {HTMLElement} main @param {HTMLIFrameElement|null} marco @param {string[]} pasos @param {string[]} etiquetas @param {string} producto
  */
 export function activarCajas(main, marco, pasos, etiquetas, producto) {
-  const cajas = /** @type {HTMLElement[]} */ ([...main.querySelectorAll('.caja-prueba')]);
-  if (!cajas.length) return { paso: (/** @type {string} */ _p) => {}, rellenado: (/** @type {any} */ _d) => {} };
-  const estados = cajas.map((c) => /** @type {HTMLElement} */ (c.querySelector('[data-prueba-estado]')));
-  const decir = (/** @type {string} */ t) => estados.forEach((e) => { e.textContent = t; });
-  main.addEventListener('click', (e) => {
-    const b = e.target instanceof Element ? e.target.closest('[data-rellenar]') : null;
-    if (!b || !marco?.contentWindow) return;
-    decir('');
+  const caja = /** @type {HTMLElement|null} */ (main.querySelector('.caja-prueba'));
+  if (!caja) return { paso: (/** @type {string} */ _p) => {}, rellenado: (/** @type {any} */ _d) => {} };
+  const estado = /** @type {HTMLElement} */ (caja.querySelector('[data-prueba-estado]'));
+  const completar = /** @type {HTMLElement} */ (caja.querySelector('[data-rellenar]'));
+  completar.addEventListener('click', () => {
+    if (!marco?.contentWindow) return;
+    estado.textContent = '';
     marco.contentWindow.postMessage({ fuente: 'zurich-sitio', tipo: 'rellenar' }, location.origin);
     registrar('prueba_click_completar', { producto });
   });
@@ -195,19 +201,23 @@ export function activarCajas(main, marco, pasos, etiquetas, producto) {
     paso(paso) {
       const i = pasos.indexOf(paso);
       if (i < 0) return;
-      cajas.forEach((c) => {
-        c.querySelectorAll('[data-prueba-paso]').forEach((g) => { /** @type {HTMLElement} */ (g).hidden = g.getAttribute('data-prueba-paso') !== paso; });
-        const r = c.querySelector('[data-prueba-rotulo]');
-        if (r) r.textContent = `Paso ${i + 1} de ${pasos.length} · ${etiquetas[i] ?? ''}`;
+      let conDatos = false;
+      caja.querySelectorAll('[data-prueba-paso]').forEach((g) => {
+        const es = g.getAttribute('data-prueba-paso') === paso;
+        /** @type {HTMLElement} */ (g).hidden = !es;
+        if (es) conDatos = g.getAttribute('data-con-datos') === 'si';
       });
-      decir('');
+      completar.hidden = !conDatos;
+      const r = caja.querySelector('[data-prueba-rotulo]');
+      if (r) r.textContent = `Paso ${i + 1} de ${pasos.length} · ${etiquetas[i] ?? ''}`;
+      estado.textContent = '';
     },
     /** El cotizador terminó de escribir. @param {{ campos?: number }} d */
     rellenado(d) {
       const n = Number(d.campos) || 0;
-      decir(n === 1 ? 'Listo: completamos un dato. Revísalo y sigue en el cotizador.'
+      estado.textContent = n === 1 ? 'Listo: completamos un dato. Revísalo y sigue en el cotizador.'
         : n ? `Listo: completamos ${n} datos. Revísalos y sigue en el cotizador.`
-          : 'No hay campos a la vista para completar en esta pantalla.');
+          : 'No hay campos a la vista para completar en esta pantalla.';
     },
   };
 }

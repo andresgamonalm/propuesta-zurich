@@ -94,17 +94,16 @@ export function render({ main, id, sesion }) {
   </section>
 
   <div class="contenedor integracion">
-    ${demo ? cajaPrueba(item.id, datos.pasos, datos.etiquetas, pasoInicial, 'arriba') : ''}
     <div class="marco">
       <div class="marco__barra">
         <span class="marco__origen">${icono('candado')}<span>${demo ? 'Cotizador de demostración · en producción, la herramienta oficial de Zurich' : `Herramienta oficial de Zurich · <code>${esc(origen.replace(/^https?:\/\//, '') || 'origen por definir')}</code>`}</span></span>
         ${demo ? '<span class="chip chip--info">' + icono('info') + 'Demostración</span>' : embebido ? '<span class="chip chip--exito">' + icono('check') + 'Integración activa</span>' : '<span class="chip chip--aviso">' + icono('reloj') + 'Vista referencial</span>'}
       </div>
+      ${demo ? cajaPrueba(item.id, datos.pasos, datos.etiquetas, pasoInicial) : ''}
       ${embebido ? marcoActivo(destino, titulo, item, demo) : referencial(item, datos, esCotizador)}
     </div>
 
     <aside class="lateral" aria-label="${esCotizador ? 'Promoción y ayuda' : 'Aviso y ayuda'}">
-      ${demo ? cajaPrueba(item.id, datos.pasos, datos.etiquetas, pasoInicial, 'lateral') : ''}
       ${esCotizador ? promocion(p) : avisoTramite(s)}
       <div class="caja"><h2>Lo que necesitas</h2><ul>${datos.necesitas.map((/** @type {string} */ t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
       ${esCotizador ? '' : mundo()}
@@ -130,7 +129,7 @@ export function render({ main, id, sesion }) {
     marco.addEventListener('load', () => { clearTimeout(espera); lienzo.dataset.estado = 'listo'; });
   }
 
-  /* Datos para probar: el paso en que va y «Completar este paso». */
+  /* Datos para probar, en el marco: el paso en que va y «Completar este paso». */
   const prueba = activarCajas(main, marco, datos.pasos, datos.etiquetas, item.id);
 
   /* ---- Medición por paso: contrato postMessage ---- */
@@ -148,12 +147,11 @@ export function render({ main, id, sesion }) {
   /* La cabecera del sitio es fija: lo que se muestra queda bajo ella. */
   const bajoCabecera = () => (document.querySelector('.cabecera')?.getBoundingClientRect().height ?? 72) + 16;
   /* Al cambiar de paso dentro del marco, la página sube hasta el comienzo
-     del marco si quedó fuera de la vista. La primera carga no mueve nada.
-     En el celular, los datos para probar van arriba del marco: se sube
-     hasta ellos, para que se vean los del paso nuevo. */
+     del marco si quedó fuera de la vista (con los datos para probar del
+     paso nuevo, que van arriba). La primera carga no mueve nada. */
   let pasosVistos = 0;
   const alinearMarco = () => {
-    const caja = [...main.querySelectorAll('.caja-prueba--arriba, .marco')].find((el) => el.getClientRects().length > 0);
+    const caja = main.querySelector('.marco');
     if (!caja) return;
     const r = caja.getBoundingClientRect();
     if (r.top < bajoCabecera() || r.top > innerHeight * 0.5) {

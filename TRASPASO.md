@@ -314,7 +314,7 @@ que se arregló la altura excesiva.
 | Dónde | Qué se ve |
 |---|---|
 | Todas las páginas, también el acceso | Botón «Datos para probar» abajo a la izquierda. Abre un panel con los correos para entrar (cliente y administrador), los dos clientes ficticios (RUT, patente con su auto, comuna), la cédula para firmar y frases para conversar con MatIAs. Cada dato con «Copiar» |
-| Junto a cada cotizador de demostración | Los datos del paso en que va la persona («Paso 2 de 6 · Tu vehículo») y el botón **«Completar este paso»**, que los escribe en el cotizador. La persona revisa y presiona «Continuar». En el celular va arriba del cotizador, y al cambiar de paso la página sube hasta él |
+| Dentro de cada cotizador de demostración | Una franja en el marco, sobre el formulario, con los datos del paso en que va la persona («Paso 2 de 6 · Tu vehículo») como fichas que se copian con un clic, y el botón **«Completar este paso»**, que los escribe en el cotizador. La persona revisa y presiona «Continuar». Al cambiar de paso la página sube hasta ella. (Primero fue al costado; Andrés pidió sacarla de ahí: ese espacio es de la promoción) |
 | El acceso | «Para probar, entra como: Cliente · Administrador»: un clic escribe el correo |
 | MatIAs | Al pedir los dos datos, los dos clientes ficticios: un clic escribe RUT y patente (o comuna) |
 
@@ -341,6 +341,25 @@ que se arregló la altura excesiva.
 
 - **Verificación:** 1.051 comprobaciones, 0 fallas (ver REVISION.md,
   Revisión 5).
+
+**Toques de la paleta secundaria y datos para probar fuera del costado (10 de octubre de 2026):**
+
+Pedidos: «Si pones los datos para probar de esa forma, le estás quitando el
+espacio a lo que será la publicidad» y usar levemente la paleta secundaria
+de Zurich, eligiendo los colores más adecuados, para que el sitio no quede
+«tan azul y tan aburrido» (el brandbook permite en web aumentar los
+secundarios).
+
+| | |
+|---|---|
+| Datos para probar | Salen del costado (vuelve a ser solo de la promoción y la ayuda) y pasan a una franja compacta dentro del marco del cotizador, sobre el formulario, igual en computador y celular |
+| Colores elegidos | **Cerceta `#19BAB6`** (fresco: servicio y beneficios) y **Durazno `#FF7569`** (cálido: la promoción). Los demás secundarios no se usan |
+| Dónde va Cerceta | Trazo corto antes de cada antetítulo (la firma de las secciones), círculos de la franja de trámites, íconos de los beneficios de cada producto, trazo de cada beneficio de Mundo Zurich, ícono de Mundo Zurich al lado de los trámites, una de las cuatro formas |
+| Dónde va Durazno | Punto de «Oferta del mes» en el carrusel, círculo del regalo en la promoción (banda y costado del cotizador), borde del gancho de cada producto, una de las cuatro formas |
+| Reglas | Solo toques: el Azul de Zúrich sigue siendo el color principal. Encima de estos colores solo va azul oscuro (Cerceta 4,78:1; Durazno 4,38:1, que solo alcanza para íconos), nunca texto blanco, y nunca como fondo completo sobre una foto |
+
+- **Verificación:** 1.053 comprobaciones, 0 fallas (ver REVISION.md,
+  Revisión 6).
 
 **Lo que queda pendiente:**
 
@@ -371,6 +390,7 @@ que se arregló la altura excesiva.
 | 10-10-2026 | Cotizadores de demostración que funcionan completos dentro del sitio: Auto y Hogar con el flujo del piloto, Protección Urgencias nuevo (`/herramientas/`). Verificador con las tres compras completas: 996 comprobaciones, 0 fallas. Documentos y capturas actualizados |
 | 10-10-2026 | MatIAs (venta de Auto y Hogar + «Ayuda con mi seguro») y correcciones de diseño: gris `#f5f5f5`, sin transparencias, alturas contenidas, franja de trámites. 1.027 comprobaciones, 0 fallas |
 | 10-10-2026 | Datos para probar a la vista (botón fijo, junto a cada cotizador con «Completar este paso», en el acceso y en MatIAs), firma sin transparencia en Auto y Hogar, segunda pasada de alturas. 1.051 comprobaciones, 0 fallas. Documentos v1.4 y capturas actualizados |
+| 10-10-2026 | Datos para probar fuera del costado (franja dentro del marco del cotizador) y toques de la paleta secundaria: Cerceta y Durazno. 1.053 comprobaciones, 0 fallas. Documentos v1.5 y capturas actualizados |
 
 ## 10 · Para empezar el próximo chat
 

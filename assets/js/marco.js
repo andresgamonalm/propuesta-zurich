@@ -30,13 +30,15 @@ export function bloqueo(enlace = '/home/') {
 /**
  * Lenguaje de formas: cuatro formas, tres escalas, sin superponerse, sin dos
  * colores iguales juntos y apoyadas sobre la línea de base [Brandbook].
+ * Dos azules de marca y dos acentos de la paleta secundaria, Durazno y
+ * Cerceta (pedido de Andrés, 10-10-2026: que no quede todo azul) [C].
  */
 export function formas(clase = '') {
   return `<div class="formas ${clase}" aria-hidden="true"><svg viewBox="0 0 440 150" focusable="false">
     <path d="M14 150a70 70 0 0 1 140 0z" fill="#91bfe3"/>
     <path d="M166 150V52a98 98 0 0 1 98 98z" fill="#2167ae"/>
-    <circle cx="298" cy="128" r="22" fill="#1fb1e6"/>
-    <path d="M336 150V74a16 16 0 0 1 16-16h40a16 16 0 0 1 16 16v76z" fill="#5495cf"/>
+    <circle cx="298" cy="128" r="22" fill="#ff7569"/>
+    <path d="M336 150V74a16 16 0 0 1 16-16h40a16 16 0 0 1 16 16v76z" fill="#19bab6"/>
   </svg></div>`;
 }
 

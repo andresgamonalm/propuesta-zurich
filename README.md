@@ -23,10 +23,10 @@ Python o Node instalados en el equipo (el lanzador lo resuelve solo).
 | MatIAs, tu IA de seguros | Botón en todas las páginas: vende Auto y Hogar (reconoce al cliente y lo lleva a sus precios, conversa del plan en pantalla) y responde dudas de servicio con el Centro de Ayuda de zurich.cl. No inventa: elige entre respuestas aprobadas |
 | 3 cotizadores de demostración | Auto Digital y Hogar Fácil Plus (flujo del piloto de ecommerce) y Protección Urgencias: 17 pantallas en `/herramientas/` que funcionan de punta a punta dentro del sitio, con datos ficticios y sin cobro |
 | Contenido | Tomado de las páginas oficiales de zurich.cl el 9 de octubre de 2026 (`assets/js/catalogo.js`) |
-| Marca | `lineamientos-marca-zurich`, con cabecera blanca y bloqueo de co-branding Zurich–Banco BICE |
+| Marca | `lineamientos-marca-zurich`, con cabecera blanca y bloqueo de co-branding Zurich–Banco BICE; toques de la paleta secundaria (Cerceta y Durazno) |
 | Medición | Eventos `pag` / `click` / `rec` en `window.dataLayer`, visibles en Configuración › Medición |
 | Integraciones | Dentro del marco va solo el formulario, con la promoción o el aviso al lado. Seis herramientas cargan el formulario real de Zurich; Auto Digital, Hogar Fácil Plus y Protección Urgencias cargan su cotizador de demostración hasta que Zurich entregue la dirección del suyo |
-| Para probar | A la vista en el propio sitio: botón «Datos para probar» abajo a la izquierda (también en el acceso), junto a cada cotizador el paso en que vas con «Completar este paso», y en el acceso y en MatIAs los datos se escriben con un clic. Clientes ficticios: RUT `10111222-5` (patente `AAAA11`) o `20111222-2` (patente `BBBB22`); la cédula acepta nueve dígitos cualesquiera |
+| Para probar | A la vista en el propio sitio: botón «Datos para probar» abajo a la izquierda (también en el acceso), dentro de cada cotizador, sobre el formulario, el paso en que vas con «Completar este paso», y en el acceso y en MatIAs los datos se escriben con un clic. Clientes ficticios: RUT `10111222-5` (patente `AAAA11`) o `20111222-2` (patente `BBBB22`); la cédula acepta nueve dígitos cualesquiera |
 | Pendientes | 58 definiciones antes de producción, listadas en Configuración › Pendientes |
 
 ## Verificar
