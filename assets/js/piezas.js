@@ -72,11 +72,18 @@ export function filaAsesoria(p, admin) {
 }
 
 /** Accesos directos a trámites: sin página informativa intermedia (brief). */
-export function accionesRapidas(/** @type {boolean} */ admin) {
+/**
+ * Trámites de la portada: una franja compacta bajo el carrusel, con título a
+ * la izquierda y los trámites en fila. @param {boolean} admin @param {string} [idTitulo]
+ */
+export function accionesRapidas(/** @type {boolean} */ admin, idTitulo = 'titulo-rapidas') {
   const lista = SERVICIOS.filter((s) => admin || esVisible(s.id));
   if (!lista.length) return '';
-  return `<div class="rapidas">${lista.map((s) => `<a class="rapida" href="${s.ruta}" data-medir="acceso_rapido" data-ambito="${normalizar(s.id)}">
-      <span class="rapida__icono">${icono(s.icono)}</span><strong>${esc(s.nombre)}</strong>${icono('flecha-der')}</a>`).join('')}</div>`;
+  return `<nav class="tramites" aria-labelledby="${idTitulo}">
+    <h2 class="tramites__titulo" id="${idTitulo}"><span>¿Ya tienes un seguro Zurich?</span>Resuelve tu trámite</h2>
+    <ul class="tramites__lista">${lista.map((s) => `<li><a class="tramite rapida" href="${s.ruta}" data-medir="acceso_rapido" data-ambito="${normalizar(s.id)}">
+      <span class="tramite__icono">${icono(s.icono)}</span><strong>${esc(s.nombre)}</strong>${icono('flecha-der')}</a></li>`).join('')}</ul>
+  </nav>`;
 }
 
 /** Los siete mundos. @param {boolean} [conEnlace] */

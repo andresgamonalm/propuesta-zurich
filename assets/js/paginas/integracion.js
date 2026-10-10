@@ -32,6 +32,11 @@
  *   { fuente: 'zurich', tipo: 'fin' }                       → finalización
  *   { fuente: 'zurich', tipo: 'alto', alto: <px> }          → el marco toma ese alto
  *   { fuente: 'zurich', tipo: 'foco', y: <px>, alto: <px> } → mostrar esa zona
+ *   { fuente: 'zurich', tipo: 'contexto', … }               → lo que mira en planes (MatIAs)
+ *
+ * `?paso=<paso>` abre el cotizador de demostración directo en ese paso: es
+ * como MatIAs deja a la persona en sus precios después de reconocerla. Solo
+ * acepta los pasos del catálogo y solo para el cotizador del mismo sitio.
  * Solo se aceptan mensajes del origen exacto de la URL configurada.
  * Cada paso se registra además como vista virtual de la ruta
  * /…/cotizador/<producto>/<paso>/, que es la nomenclatura propuesta.
@@ -42,6 +47,7 @@ import { migas, noDisponible } from '../marco.js';
 import { esc, icono, porValidar, promoVigente, fechaLarga } from '../ui.js';
 import { pendientesAdmin, promoActiva, ganchoDe } from '../piezas.js';
 import { registrar, normalizar } from '../medicion.js';
+import { recibir } from '../matias/puente.js';
 
 /** Si a los 15 s el marco no avisó que cargó, se ofrece la pestaña nueva. */
 const ESPERA_LENTA = 15000;
@@ -65,6 +71,11 @@ export function render({ main, id, sesion }) {
   try { origen = new URL(a.destino || datos.referencia, location.origin).origin; } catch { origen = ''; }
   /* Mismo origen = cotizador de demostración de /herramientas/. */
   const demo = embebido && origen === location.origin;
+  /* ?paso= abre la demostración en ese paso (MatIAs ya dejó los datos). */
+  const pasoPedido = new URLSearchParams(location.search).get('paso') || '';
+  const pasoInicial = demo && datos.pasos.includes(pasoPedido) && /^\/herramientas\/[a-z0-9-]+\/[a-z0-9-]+\/$/.test(a.destino)
+    ? pasoPedido : datos.pasos[0];
+  const destino = pasoInicial === datos.pasos[0] ? a.destino : a.destino.replace(/[^/]+\/$/, `${pasoInicial}/`);
 
   const camino = esCotizador
     ? [{ texto: 'Seguros', href: '/personas/' }, { texto: ramo(p.ramo)?.nombre ?? '', href: ramo(p.ramo)?.ruta }, { texto: p.nombre, href: p.ruta }, { texto: p.modalidad === 'digital' ? 'Cotizar' : 'Contratar' }]
@@ -76,7 +87,7 @@ export function render({ main, id, sesion }) {
     <div class="contenedor cabeza-flujo">
       <h1 id="titulo-flujo">${esc(titulo)}</h1>
       <p class="texto-suave">${!esCotizador ? esc(s.bajada) : demo ? 'Cotiza y contrata sin salir de este espacio.' : 'La herramienta oficial de Zurich, dentro de este espacio: cotiza y contrata sin salir de aquí.'}</p>
-      <ol class="pasos-flujo" aria-label="Pasos">${datos.etiquetas.map((/** @type {string} */ e, /** @type {number} */ i) => `<li data-paso="${datos.pasos[i]}"${i === 0 ? ' aria-current="step"' : ''}>${esc(e)}</li>`).join('')}</ol>
+      <ol class="pasos-flujo" aria-label="Pasos">${datos.etiquetas.map((/** @type {string} */ e, /** @type {number} */ i) => `<li data-paso="${datos.pasos[i]}"${datos.pasos[i] === pasoInicial ? ' aria-current="step"' : ''}>${esc(e)}</li>`).join('')}</ol>
     </div>
   </section>
 
@@ -86,7 +97,7 @@ export function render({ main, id, sesion }) {
         <span class="marco__origen">${icono('candado')}<span>${demo ? 'Cotizador de demostración · en producción, la herramienta oficial de Zurich' : `Herramienta oficial de Zurich · <code>${esc(origen.replace(/^https?:\/\//, '') || 'origen por definir')}</code>`}</span></span>
         ${demo ? '<span class="chip chip--info">' + icono('info') + 'Demostración</span>' : embebido ? '<span class="chip chip--exito">' + icono('check') + 'Integración activa</span>' : '<span class="chip chip--aviso">' + icono('reloj') + 'Vista referencial</span>'}
       </div>
-      ${embebido ? marcoActivo(a.destino, titulo, item, demo) : referencial(item, datos, esCotizador)}
+      ${embebido ? marcoActivo(destino, titulo, item, demo) : referencial(item, datos, esCotizador)}
     </div>
 
     <aside class="lateral" aria-label="${esCotizador ? 'Promoción y ayuda' : 'Aviso y ayuda'}">
@@ -100,7 +111,7 @@ export function render({ main, id, sesion }) {
     </aside>
   </div>`;
 
-  registrar(`${amb}_rec_inicio_flujo`, { modo: demo ? 'demostracion' : embebido ? 'embebido' : 'referencial', ruta_virtual: `${base}${datos.pasos[0]}/` });
+  registrar(`${amb}_rec_inicio_flujo`, { modo: demo ? 'demostracion' : embebido ? 'embebido' : 'referencial', ruta_virtual: `${base}${pasoInicial}/`, ...(pasoInicial !== datos.pasos[0] ? { via: 'matias' } : {}) });
 
   /* ---- Carga del marco: aviso mientras llega y salida si tarda ---- */
   const lienzo = /** @type {HTMLElement|null} */ (main.querySelector('.marco__lienzo'));
@@ -160,10 +171,13 @@ export function render({ main, id, sesion }) {
     } else if (d.tipo === 'paso' && typeof d.paso === 'string' && marcar(d.paso)) {
       pasosVistos += 1;
       if (pasosVistos > 1) alinearMarco();
-      /* El primer aviso del primer paso es la carga, no un avance. */
-      if (!(pasosVistos === 1 && d.paso === datos.pasos[0])) {
+      /* El primer aviso del paso inicial es la carga, no un avance. */
+      if (!(pasosVistos === 1 && d.paso === pasoInicial)) {
         registrar(`${amb}_rec_avance_paso`, { paso: d.paso, ruta_virtual: `${base}${d.paso}/`, ...extra });
       }
+    } else if (d.tipo === 'contexto' && demo && !simulado) {
+      /* Lo que la persona mira en planes: lo lee MatIAs (matias/puente.js). */
+      recibir(item.id, d);
     } else if (d.tipo === 'fin' && !finRegistrado) {
       finRegistrado = !simulado;
       marcar(datos.pasos[datos.pasos.length - 1]);

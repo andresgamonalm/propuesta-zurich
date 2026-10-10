@@ -213,3 +213,73 @@ queda a la vista dentro del marco.
   cargando las herramientas reales de Zurich, que no se pueden abrir desde el
   entorno de trabajo.
 - Pendientes: 54 definiciones en Configuración › Pendientes.
+
+## Revisión 4 · 10 de octubre de 2026
+
+**Pedido:** traer a MatIAs del piloto («solo a Matías»), que venda Auto y
+Hogar y tenga un espacio de servicio; y cuatro correcciones de diseño: el
+gris demasiado oscuro (`#f5f5f5`), las tarjetas translúcidas sobre azul de la
+portada (prohibidas por los lineamientos), los elementos y fotos muy altos, y
+el menú de íconos bajo el carrusel (amateur, sin estado al pasar, muy grande).
+
+**Fuentes:** el repositorio del piloto (solo lectura: `asesor-motor.js`,
+`asesor.js`, `asesor-hogar.js`, `asesor-inicio.js`, `asesor.css`,
+`matias.svg`); el Centro de Ayuda y los Canales de Atención Remota de
+zurich.cl, leídos el 10 de octubre de 2026 (reembolsos, siniestros,
+asistencia, pagar seguro, duplicado de póliza, preguntas de Auto Digital y
+Hogar Fácil Plus); skill `lineamientos-marca-zurich` («sin superposiciones
+gráficas», color héroe, contraste).
+
+### 1 · Qué cambió
+
+| | |
+|---|---|
+| MatIAs | Botón abajo a la derecha en las páginas privadas, panel con «Contratar un seguro» y «Ayuda con mi seguro». Sin modelo generativo: elige entre respuestas aprobadas |
+| Contratar | Conserje: RUT + patente o RUT + comuna, confirmación, autorización opcional (la cláusula del cotizador), salto a los precios (`?paso=planes`) o a la vivienda (`?paso=vivienda`). En planes conversa del plan en pantalla y elige otro plan o deducible cuando se lo piden |
+| Ayuda | 21 preguntas del Centro de Ayuda, textuales, por tema, con botón al trámite del sitio o para llamar al 600 600 9090 |
+| Contrato del marco | El cotizador cuenta el contexto en planes (`tipo: 'contexto'`) y acepta `{ fuente: 'zurich-sitio', tipo: 'elegir' }` del sitio |
+| Diseño | `--superficie: #f5f5f5`; ningún color translúcido (Mundo Zurich, botones, bordes, deshabilitados, contratos bloqueados); secciones, carrusel y fotos más bajos; franja de trámites con estado al pasar; controles del carrusel dentro del panel azul |
+| Configuración | MatIAs se apaga en Contenidos › Secciones; sus pendientes en Pendientes (58 en total) |
+
+### 2 · Verificación automática
+
+`node _herramientas/verificar.mjs` → **1.027 comprobaciones correctas, 0 fallas.**
+Contraste AA de lo pintado: 4.776 textos, ahora también con MatIAs abierto
+en sus dos espacios y con una tabla de planes.
+
+Novedades del verificador:
+
+- MatIAs en computador: ofrece los tres caminos; rechaza una patente que no
+  es del RUT; reconoce al cliente de prueba; la autorización es opcional;
+  lleva a los planes con el marco en ese paso; sabe qué plan está en
+  pantalla; «¿y el premium?» y «deducible 10 uf» cambian la pantalla y el
+  precio que dice es el de la pantalla; una pregunta de reembolso pasa a
+  «Ayuda»; un choque lleva a la denuncia; un caso particular va a una
+  persona; lo desconocido no se inventa; Escape cierra; la medición no
+  lleva lo escrito.
+- MatIAs en celular: abre en «Ayuda» en Servicios en línea, ocupa la
+  pantalla, responde un daño en el hogar con la opción de llamar y lleva
+  Hogar a la vivienda sin marcar una autorización que no se dio.
+- Apagar MatIAs en Configuración lo saca de las páginas.
+
+### 3 · Defectos encontrados y corregidos
+
+| Defecto | Corrección |
+|---|---|
+| Cuando MatIAs cambiaba el plan, además de responder repetía «Ahora estamos viendo…» | El aviso solo sale cuando la persona cambia algo a mano |
+| Una pregunta de servicio hecha en «Contratar» dejaba la pregunta en una conversación y la respuesta en la otra | La pregunta se va con su respuesta |
+| El foco de los campos y varios bordes usaban azul translúcido | Colores sólidos equivalentes |
+| Botones deshabilitados, contratos bloqueados y la firma apagada usaban transparencia | Gris sólido con texto suave |
+
+### 4 · Revisión visual
+
+Portada a 1440, 820 y 390 (franja de trámites con el mouse encima, carrusel,
+Mundo Zurich); página de Auto Digital; MatIAs en la portada, en la
+autorización, en los planes conversando y en «Ayuda», a 1440 y 390; Hogar
+con MatIAs hasta los planes.
+
+### 5 · Lo que no se pudo comprobar
+
+- El reconocimiento por RUT usa la base ficticia del cotizador; en
+  producción requiere la validación de Legal (pendiente).
+- El traspaso a un ejecutivo no está conectado: MatIAs entrega los canales.

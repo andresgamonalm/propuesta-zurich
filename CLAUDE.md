@@ -51,6 +51,20 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   «Demostración»: datos ficticios, precios simulados o referenciales, sin
   cobro. En producción se reemplazan por la herramienta oficial de Zurich. El
   repositorio del piloto **no se toca**.
+- **MatIAs, tu IA de seguros** (10-10-2026, «Sí, avanza así»): solo Matías,
+  del piloto. Botón abajo a la derecha en todas las páginas privadas, con dos
+  espacios: **Contratar un seguro** (vende Auto y Hogar: reconoce con RUT +
+  patente o RUT + comuna, autorización opcional, deja a la persona en sus
+  precios y conversa del plan que está en pantalla) y **Ayuda con mi
+  seguro** (reembolsos, siniestros, asistencias, pagos, póliza, con el
+  Centro de Ayuda de zurich.cl y botón al trámite). **No usa un modelo
+  generativo:** elige entre respuestas aprobadas y nunca redacta coberturas.
+- **Diseño** (10-10-2026): gris de bandas y tarjetas **`#f5f5f5`**
+  (`--superficie`), no el Blanco de Zúrich; **nada translúcido** (ni tarjetas
+  sobre azul, ni rellenos, ni bordes con transparencia): colores sólidos;
+  alturas y fotos contenidas; los trámites de la portada son una franja bajo
+  el carrusel, con estado al pasar el mouse, y los controles del carrusel van
+  dentro del panel azul.
 
 ## Lo que nunca se hace
 
@@ -65,6 +79,8 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
 - **No publicar datos de personas reales** (el repositorio es público): los
   clientes de prueba de `/herramientas/` son ficticios.
 - **No usar colores de BICE** fuera del identificador de la alianza.
+- **No usar transparencias** sobre color (`rgba` en fondos, bordes o textos,
+  `opacity` en piezas visibles). Las sombras sí llevan transparencia.
 - **Sobre el Azul de Zúrich `#2167AE` solo va texto blanco** (5,81:1). El
   `--texto-invertido-suave` da 4,36:1 ahí y no cumple: es solo para azul oscuro.
 - **No tocar GitHub, Cloudflare ni dominios** sin que él lo pida.
@@ -92,6 +108,16 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   precios y la promoción Zurich Days (`promocion.js`: solo a 24 meses y solo
   en las fechas de sus bases), y la sesión del sitio para precargar el correo.
   Una sola UF para toda la maqueta (`datos.js › UF`), la que publica zurich.cl.
+  En planes cuentan además el contexto (`tipo: 'contexto'`: plan, deducible y
+  precios) y aceptan `{ fuente: 'zurich-sitio', tipo: 'elegir' }` del sitio.
+  `?paso=<paso>` en la página del cotizador abre la demostración en ese paso.
+- **MatIAs** (`assets/js/matias/`): `lanzador.js` (siempre, liviano),
+  `panel.js` (se carga al abrir), `motor.js` (interpreta y pinta; sin modelo
+  generativo), bibliotecas `inicio.js` (conserje), `auto.js`, `hogar.js`,
+  `servicio.js`, y `puente.js` (contexto del marco). Lo que dice sale del
+  catálogo: productos, y `AYUDA`/`CANALES` (Centro de Ayuda de zurich.cl,
+  leído el 10-10-2026). Para que responda algo nuevo: el texto va al
+  catálogo y los disparadores a la biblioteca. Se apaga en Configuración.
 
 ## Antes de cada commit
 
@@ -131,3 +157,10 @@ máquina: `PLAYWRIGHT_MODULE=/opt/node-tools/node_modules/playwright/index.mjs`.
 - Un botón que el módulo marca al cargar (volver a un paso) hacía un fundido
   que el medidor de contraste pillaba a medias: `temprano.js` pone `cargando`
   y el CSS apaga las transiciones hasta dos cuadros después de `load`.
+- El lanzador de MatIAs se monta después de pintar la página: en las pruebas,
+  esperarlo (`waitForSelector('#matias-lanzador')`), no darlo por puesto.
+- En el celular MatIAs no se abre solo sobre los precios (los taparía): la
+  conversación sigue cuando la persona toca el botón.
+- Las respuestas de MatIAs se cuentan en todo el panel
+  (`.matias .burbuja--bot`): una pregunta de servicio cambia de espacio y su
+  respuesta aparece en la otra conversación.

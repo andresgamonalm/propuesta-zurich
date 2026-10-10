@@ -6,7 +6,8 @@
  * 1. Encabezado + carrusel de promociones, juntos arriba: quien llega ve la
  *    oferta sin desplazarse.
  * 2. Accesos rápidos a trámites: quien ya es cliente y viene por un siniestro
- *    lo resuelve antes de ver el catálogo (brief §Acciones rápidas).
+ *    lo resuelve antes de ver el catálogo (brief §Acciones rápidas). Es una
+ *    franja pegada al carrusel, no una sección: ocupa una fila.
  * 3. Seguros en línea: Auto Digital destacado (oferta del mes), luego el resto.
  * 4. Seguros con asesoría.
  * 5. Mundo Zurich: el valor agregado que se lleva el cliente al contratar.
@@ -44,14 +45,8 @@ export function render({ main, sesion }) {
       </div>
       ${laminas.length ? carrusel(laminas) : ''}
     </div>
+    <div class="contenedor">${accionesRapidas(admin)}</div>
     ${formas()}
-  </section>
-
-  <section class="seccion seccion--compacta banda-blanco" aria-labelledby="titulo-rapidas">
-    <div class="contenedor">
-      ${encabezado('¿Ya tienes un seguro Zurich?', 'Resuelve tu trámite ahora', '', 'titulo-rapidas')}
-      ${accionesRapidas(admin)}
-    </div>
   </section>
 
   <section class="seccion" aria-labelledby="titulo-en-linea" id="en-linea">

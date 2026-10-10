@@ -10,7 +10,7 @@
  *   #medicion     los eventos registrados y los cuatro indicadores clave
  *   #pendientes   todo lo que el brief y la lectura de fuentes dejan por validar
  */
-import { PRODUCTOS, SERVICIOS, PROMOCIONES, MUNDO_ZURICH, ALIANZA, producto } from '../catalogo.js';
+import { PRODUCTOS, SERVICIOS, PROMOCIONES, MUNDO_ZURICH, ALIANZA, MATIAS, producto } from '../catalogo.js';
 import { ajuste, guardarAjuste, restablecer, hayCambios, solicitudes, borrarSolicitudes } from '../estado.js';
 import { registros, borrarRegistros, CLAVES, registrar } from '../medicion.js';
 import { migas } from '../marco.js';
@@ -209,6 +209,7 @@ function panelContenidos() {
   <div class="grupo-config"><h2>Servicios en línea</h2><p>Acceso directo al trámite, sin página informativa intermedia.</p>${SERVICIOS.map((s) => fila(s, true)).join('')}</div>
   <div class="grupo-config"><h2>Secciones</h2>
     <div class="fila-config"><div class="fila-config__nombre"><strong><a href="${MUNDO_ZURICH.ruta}">${MUNDO_ZURICH.nombre}</a></strong><small>${MUNDO_ZURICH.ruta}</small></div><div class="fila-config__destino"><small class="texto-suave">Contenido oficial de zurich.cl/mundo-zurich.</small></div><div class="fila-config__controles">${interruptor(MUNDO_ZURICH.id, 'visible', ajuste(MUNDO_ZURICH.id).visible, 'Visible para clientes')}</div></div>
+    <div class="fila-config"><div class="fila-config__nombre"><strong>${MATIAS.nombre}, ${MATIAS.oficio}</strong><small>Botón abajo a la derecha, en todas las páginas</small></div><div class="fila-config__destino"><small class="texto-suave">Vende Auto y Hogar y responde dudas de servicio con el Centro de Ayuda de zurich.cl. Elige entre respuestas aprobadas: no inventa.</small></div><div class="fila-config__controles">${interruptor(MATIAS.id, 'visible', ajuste(MATIAS.id).visible, 'Visible para clientes')}</div></div>
   </div>
   <div class="acciones">${hayCambios() ? '<span class="chip chip--info">Hay cambios respecto de la propuesta</span>' : ''}
     <button class="btn btn--fantasma btn--chico" type="button" data-accion="restablecer" data-confirmar="¿Seguro? Toca de nuevo para restablecer" data-original="Restablecer valores de la propuesta">Restablecer valores de la propuesta</button></div>`;
@@ -260,7 +261,7 @@ function panelMedicion() {
 
 function totalPendientes() {
   return [...PRODUCTOS, ...SERVICIOS].reduce((n, x) => n + (/** @type {any} */ (x).porValidar?.length || 0), 0)
-    + MUNDO_ZURICH.porValidar.length + ALIANZA.porValidar.length + DECISIONES.reduce((n, d) => n + d.items.length, 0);
+    + MUNDO_ZURICH.porValidar.length + MATIAS.porValidar.length + ALIANZA.porValidar.length + DECISIONES.reduce((n, d) => n + d.items.length, 0);
 }
 
 function panelPendientes() {
@@ -272,6 +273,7 @@ function panelPendientes() {
   <div class="dos-columnas mt-4">
     ${[...PRODUCTOS, ...SERVICIOS].filter((x) => /** @type {any} */ (x).porValidar?.length).map((x) => bloque(x.nombre, /** @type {any} */ (x).porValidar, x.ruta)).join('')}
     ${bloque('Mundo Zurich', MUNDO_ZURICH.porValidar, MUNDO_ZURICH.ruta)}
+    ${bloque('MatIAs, tu IA de seguros', MATIAS.porValidar)}
     ${bloque('La alianza y avisos legales', ALIANZA.porValidar, '/alianza/')}
   </div>
   <h2 class="h-lg mt-8">Decisiones generales del brief</h2>

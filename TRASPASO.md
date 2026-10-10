@@ -19,6 +19,8 @@ lugar:
   Hogar Fácil Plus y Protección Urgencias);
 - los trámites (denunciar un siniestro, pedir un reembolso, pagar);
 - las asesorías para los seguros de vida que no se contratan en línea;
+- **MatIAs, tu IA de seguros**: vende Auto y Hogar y responde las dudas de
+  servicio (reembolsos, siniestros, pagos) con el Centro de Ayuda de zurich.cl;
 - Mundo Zurich y la explicación de qué hace cada compañía en la alianza.
 
 Zurich es quien vende, emite y atiende. Banco BICE facilita el acceso. La marca
@@ -61,6 +63,19 @@ Chile). No es técnico. Se le habla en castellano y sin jerga.
    **«Sí, y suma Urgencias»**. Auto y Hogar usan el flujo del piloto,
    vestido de Zurich; Protección Urgencias se armó con las mismas piezas. Es
    la única excepción a «no reconstruir cotizadores».
+8. **MatIAs** (10 de octubre de 2026): «tienes que traer también a la IA
+   Matías, solo a Matías, que también tiene que vender hogar y auto, pero que
+   tiene que tener un espacio de servicio». Se le propuso el plan y respondió
+   **«Sí, avanza así»**: igual que en el piloto (no inventa; elige entre
+   respuestas aprobadas), en todas las páginas, con «Contratar un seguro» y
+   «Ayuda con mi seguro».
+9. **Correcciones de diseño** (10 de octubre de 2026):
+   - el gris de las secciones era demasiado oscuro: **`#f5f5f5`**;
+   - en la portada, las tarjetas translúcidas sobre azul (Mundo Zurich) están
+     prohibidas por los lineamientos: **nada translúcido**, todo sólido;
+   - los elementos y las fotos eran muy altos: menos desplazamiento;
+   - el menú de íconos bajo el carrusel se veía amateur, sin estado al pasar
+     el mouse y ocupaba mucho: se rehízo como una franja compacta.
 
 ## 4 · Qué se construyó
 
@@ -68,8 +83,8 @@ Repositorio `andresgamonalm/propuesta-zurich`, rama
 `claude/magical-newton-n0tjyb`. No se ha abierto solicitud de cambios ni se ha
 publicado.
 
-**34 páginas** (más la 404) y **17 pantallas de los cotizadores de
-demostración**:
+**34 páginas** (más la 404), **17 pantallas de los cotizadores de
+demostración** y **MatIAs** en todas las páginas privadas:
 
 | | Dirección |
 |---|---|
@@ -114,14 +129,28 @@ demostración**:
     cualesquiera; el pago es simulado;
   - se puede volver a la vista referencial desmarcando «Cargar dentro del
     sitio» en Configuración › Contenidos.
+- **MatIAs** (`assets/js/matias/`):
+  - `lanzador.js` pone el botón abajo a la derecha en todas las páginas
+    privadas (menos Configuración); `panel.js` se carga al abrirlo;
+  - `motor.js` entiende la pregunta y elige la respuesta aprobada; no hay
+    modelo generativo. `inicio.js` es el conserje (reconoce con dos datos,
+    autorización opcional, salto a los precios), `auto.js` y `hogar.js`
+    venden con el catálogo y la cotización en pantalla, `servicio.js` es
+    «Ayuda con mi seguro» con `AYUDA` y `CANALES` del catálogo;
+  - `puente.js` recibe del marco lo que la persona mira en planes (plan,
+    deducible, precios) y le pide al marco elegir otro plan o deducible;
+  - se apaga en Configuración › Contenidos › Secciones;
+  - mide `matias_click_abrir`, `matias_rec_pregunta` (qué intención, nunca
+    el texto), `matias_rec_captura`, `matias_click_consentimiento`,
+    `matias_click_ir` y la llegada al cotizador con `via: 'matias'`.
 
 **Entregables** en `_entregables/`:
 
-- documentación general y técnica (Word, versión 1.2);
+- documentación general y técnica (Word, versión 1.3);
 - descripción publicitaria (Word);
-- 7 capturas de pantalla (entre ellas el cotizador de Auto dentro del sitio,
-  en «Tus datos» y en «Planes» con Zurich Days) y una portada de
-  presentación;
+- 8 capturas de pantalla (entre ellas el cotizador de Auto dentro del sitio,
+  en «Tus datos» y en «Planes» con Zurich Days, y MatIAs comparando los
+  planes) y una portada de presentación;
 - íconos (`.ico` y PNG de 1000 px).
 
 ## 5 · Cómo verlo y comprobarlo
@@ -160,6 +189,9 @@ demostración**:
    perfecto… En el caso de Hogar y Auto Digital debieras usar el flujo que
    creamos nosotros».** Se le propuso el plan y respondió «Sí, y suma
    Urgencias». Hecho: sección 8.
+9. **«Tienes que traer también a la IA Matías… con un espacio de servicio»**,
+   más cuatro correcciones de diseño (gris, transparencias, altos, menú de
+   íconos). Plan aprobado: «Sí, avanza así». Hecho: sección 8.
 
 ## 7 · ¿Se pueden cargar las herramientas de Zurich dentro del sitio?
 
@@ -255,6 +287,20 @@ textos legales.
   completas dentro del sitio (Auto en escritorio, Hogar en tablet, Urgencias
   en celular) y el contraste de las 17 pantallas. Se revisaron además a ojo.
 
+**MatIAs y correcciones de diseño (10 de octubre de 2026):**
+
+| | |
+|---|---|
+| Dónde está | Botón «MatIAs, tu IA de seguros» abajo a la derecha, en todas las páginas privadas. En el celular el panel ocupa la pantalla |
+| Contratar un seguro | Ofrece Auto Digital (con Zurich Days mientras esté vigente), Hogar Fácil Plus y otros seguros en línea. Pide RUT + patente o RUT + comuna, muestra lo encontrado, pide la autorización de datos (opcional) y deja a la persona en sus precios (Auto) o en su vivienda (Hogar) |
+| En los planes | Sabe qué plan, deducible y precio están en pantalla; «¿y el premium?» o «con deducible 10 UF» lo elige en el cotizador y responde con el precio nuevo. Diferencias, cuál conviene, qué cubre, asistencias, promoción, inspección |
+| Ayuda con mi seguro | Reembolsos, siniestros (auto, hogar, vida, SOAP, celular), asistencias, pagos, póliza y canales. Textos del Centro de Ayuda de zurich.cl, con botón al trámite dentro del sitio o para llamar |
+| Lo que no hace | No inventa ni redacta coberturas; no dice un precio sin cotización; los casos particulares («lo uso para Uber») van a una persona |
+| Diseño | Gris `#f5f5f5`; Mundo Zurich con tarjetas blancas sólidas; ningún color translúcido; trámites en una franja bajo el carrusel; controles del carrusel dentro del panel azul; secciones y fotos más bajas (portada en computador: de 5.243 a 4.623 px de alto; en celular: de 9.901 a 7.972; página de Auto Digital en celular: de 9.182 a 8.243) |
+
+- **Verificación:** 1.027 comprobaciones, 0 fallas (ver REVISION.md,
+  Revisión 4).
+
 **Lo que queda pendiente:**
 
 1. **Andrés** prueba en su computador con el lanzador. Esto no se pudo ver
@@ -268,10 +314,12 @@ textos legales.
    - la pasarela de pago de cada flujo;
    - si la sesión se mantiene dentro del marco en Safari;
    - si implementan el aviso de pasos (`postMessage`).
-3. **Lo demás está en Configuración › Pendientes:** 54 definiciones antes de
-   producción. Las nuevas: qué planes de Hogar se contratan en línea, la
-   regla de designación de beneficiarios y la nota de demostración de cada
-   cotizador.
+3. **Lo demás está en Configuración › Pendientes:** 58 definiciones antes de
+   producción. Las últimas: qué planes de Hogar se contratan en línea, la
+   regla de designación de beneficiarios, la nota de demostración de cada
+   cotizador y cuatro de MatIAs (nombre e ícono con Marca, que no es un
+   modelo generativo, el reconocimiento con dos datos con Legal y el
+   traspaso a un ejecutivo).
 
 ## 9 · Registro de cambios posteriores
 
@@ -280,6 +328,7 @@ textos legales.
 | 9-10-2026 | Se crea este traspaso (antes de implementar la sección 8) |
 | 9-10-2026 | Solo el formulario dentro del marco, con promoción o aviso al lado; verificador con las cabeceras de `_headers`; documentos y captura actualizados |
 | 10-10-2026 | Cotizadores de demostración que funcionan completos dentro del sitio: Auto y Hogar con el flujo del piloto, Protección Urgencias nuevo (`/herramientas/`). Verificador con las tres compras completas: 996 comprobaciones, 0 fallas. Documentos y capturas actualizados |
+| 10-10-2026 | MatIAs (venta de Auto y Hogar + «Ayuda con mi seguro») y correcciones de diseño: gris `#f5f5f5`, sin transparencias, alturas contenidas, franja de trámites. 1.027 comprobaciones, 0 fallas |
 
 ## 10 · Para empezar el próximo chat
 

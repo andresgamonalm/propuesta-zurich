@@ -11,6 +11,7 @@ import { DEDUCIBLES, PLANES, COBERTURAS, MESES_OPCIONES,
 import { $, $$, estado, guardar, ev, exigir, montarComun, pintarPasos } from './comun.js';
 import { pintarBarra, cotizacion, clp } from './cotizacion.js';
 import { numerosTxt, enFrase } from './promocion.js';
+import { avisarContexto } from './marco.js';
 
 /* Sin el consentimiento entre los requisitos: ver p-vehiculo.js. */
 if (!exigir('rut', 'persona', 'vehiculo')) throw new Error('faltan pasos');
@@ -137,6 +138,28 @@ function pintar() {
     : `<strong>Ahorras ${clp(ahorro)} al mes</strong> frente a deducible 0 UF. Asumes hasta ${estado.deducible} UF por siniestro con culpa.`;
 
   pintarBarra();
+  contarContexto();
+}
+
+/* Lo que MatIAs necesita para hablar de esta pantalla: el plan y el
+   deducible elegidos, y el precio de cada plan con cada deducible. Los
+   números salen de la misma cuenta que pintan las tarjetas. */
+function contarContexto() {
+  const c = cotizacion(estado.plan, estado.deducible);
+  avisarContexto({
+    producto: 'auto-digital',
+    plan: estado.plan, deducible: estado.deducible, meses: c.meses, cuotas: c.cuotas,
+    vehiculo: `${v.marca} ${v.modelo} ${v.anio}`,
+    promo: { activa: c.promo.activa, disponible: c.promo.disponible, etiqueta: c.promo.etiqueta,
+             numeros: c.promo.numeros, beneficio: c.promo.beneficio, cuotasGratis: c.cuotasGratis },
+    deducibles: DEDUCIBLES,
+    planes: PLANES.map(p => ({
+      id: p.id, nombre: p.nombre, corto: p.corto, taller: p.taller, reemplazo: p.reemplazo,
+      rc: p.rc, asistencia: p.asistencia, exclusivas: p.exclusivas,
+      precios: Object.fromEntries(DEDUCIBLES.map(d => [d, cotizacion(p.id, d).mensual])),
+      descuento: cotizacion(p.id, estado.deducible).descuento
+    }))
+  });
 }
 
 function pesosDif(dA, dB) {

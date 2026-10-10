@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="MatIAs">
+  <title>MatIAs</title>
+  <!--
+       MatIAs · el asistente de la maqueta Zurich y Banco BICE
+
+       Viene del piloto de ecommerce: cabeza de fox terrier de pelo duro,
+       en blanco sobre el Azul de Zurich #2167ae. Dos colores y nada más:
+       se usa a 40 px en el lanzador y en la cabecera del panel.
+
+       Cuatro rasgos sostienen el parecido: la cabeza larga de lados
+       planos, las orejas de botón que caen hacia abajo con su pliegue en
+       azul, la barba que ensancha el hocico y las cejas.
+
+       OJO AL EDITAR ESTE COMENTARIO: un comentario XML no admite dos
+       guiones seguidos. Si se cuela uno, el navegador descarga el archivo
+       pero no lo dibuja, sin ningún error en la consola.
+  -->
+  <circle cx="32" cy="32" r="32" fill="#2167ae"/>
+
+  <!-- Cráneo, hocico y barba, en una sola silueta -->
+  <path d="M23.4 21 Q32 17 40.6 21 L41 31.2 Q43.8 36.8 43.2 43.6 Q43 50.6 32 50.6 Q21 50.6 20.8 43.6 Q20.2 36.8 23 31.2 Z" fill="#fff"/>
+
+  <!-- Orejas de botón. La derecha es la izquierda espejada en x=32 -->
+  <path d="M23.2 17.6 Q26.4 17.4 28.4 19.8 Q26.2 25.4 19.8 29 Q18 22.8 23.2 17.6 Z" fill="#fff"/>
+  <g transform="translate(64,0) scale(-1,1)">
+    <path d="M23.2 17.6 Q26.4 17.4 28.4 19.8 Q26.2 25.4 19.8 29 Q18 22.8 23.2 17.6 Z" fill="#fff"/>
+  </g>
+
+  <!-- El pliegue de la oreja, que la separa del cráneo -->
+  <path d="M28.4 19.8 Q26 24.8 20.6 28.4" stroke="#2167ae" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <g transform="translate(64,0) scale(-1,1)">
+    <path d="M28.4 19.8 Q26 24.8 20.6 28.4" stroke="#2167ae" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Cejas, ojos, trufa y boca, calados en azul -->
+  <path d="M26 27.4h3.6M38 27.4h-3.6" stroke="#2167ae" stroke-width="2.3" stroke-linecap="round"/>
+  <ellipse cx="28.1" cy="31.8" rx="1.9" ry="2.2" fill="#2167ae"/>
+  <ellipse cx="35.9" cy="31.8" rx="1.9" ry="2.2" fill="#2167ae"/>
+  <path d="M28.8 41.2q3.2-2.1 6.4 0Q35.4 45 32 45t-3.2-3.8Z" fill="#2167ae"/>
+  <path d="M32 45v2.1" stroke="#2167ae" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

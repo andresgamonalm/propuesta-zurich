@@ -31,6 +31,7 @@ import { $, $$, estadoHogar, guardarHogar, ev, exigirHogar, montarComun,
          pintarPasosHogar, escapar, fechaLarga } from './comun-hogar.js';
 import { cotizacionHogar, coberturasResueltas, pintarBarraHogar,
          clp, ufTxt } from './cotizacion-hogar.js';
+import { avisarContexto } from './marco.js';
 
 /* Sin el consentimiento entre los requisitos: ver h-vivienda.js. */
 if (!exigirHogar('rut', 'persona', 'vivienda', 'monto')) {
@@ -186,6 +187,26 @@ function pintar() {
 
   pintarTabla();
   pintarBarraHogar();
+  contarContexto();
+}
+
+/* Lo que MatIAs necesita para hablar de esta pantalla (ver p-planes.js). */
+function contarContexto() {
+  const c = cotizacionHogar(estadoHogar.plan, estadoHogar.deducible);
+  const tipo = v.tipo === 'departamento' ? 'un departamento' : 'una casa';
+  avisarContexto({
+    producto: 'hogar-facil-plus',
+    plan: estadoHogar.plan, deducible: estadoHogar.deducible, meses: c.meses, cuotas: c.cuotas,
+    vivienda: `${tipo} de ${v.m2} m² en ${v.comuna}`,
+    estructura: ufTxt(estructura), contenido: ufTxt(Number(estadoHogar.montoContenido) || 0),
+    deducibles: DEDUCIBLES_HOGAR.map(d => d.uf),
+    planes: PLANES_HOGAR.map(p => ({
+      id: p.id, nombre: p.nombre, corto: p.corto, materia: p.materia,
+      cubreContenido: p.cubreContenido, sinDeducibleEn: p.sinDeducibleEn,
+      asistencia: ASISTENCIAS[p.asistencia]?.nombre || '',
+      precios: Object.fromEntries(DEDUCIBLES_HOGAR.map(d => [d.uf, cotizacionHogar(p.id, d.uf).mensual]))
+    }))
+  });
 }
 
 function elegirPlan(id) {

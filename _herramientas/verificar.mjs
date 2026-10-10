@@ -193,6 +193,11 @@ console.log('Flujos');
   await p.goto(`${BASE}/personas/hogar/cotizador/hogar-facil-plus/datos/`); await listo(p);
   ok(await p.locator('.marco iframe').count() === 0 && await p.isVisible('.marco__referencial'), 'apagar la carga no vuelve a la vista referencial');
   ok(await p.isVisible('.lateral .promo-lateral'), 'la vista referencial no muestra la promoción al lado');
+  /* Apagar a MatIAs lo saca de todas las páginas. */
+  await p.goto(`${BASE}/configuracion/`); await listo(p);
+  await p.locator('input[data-id="matias"][data-campo="visible"]').uncheck(); await p.waitForSelector('.aviso-flotante');
+  await p.goto(`${BASE}/home/`); await listo(p); await p.waitForTimeout(300);
+  ok(await p.locator('#matias-lanzador').count() === 0, 'MatIAs sigue visible después de apagarlo en Configuración');
   await p.evaluate(() => localStorage.removeItem('zb:sesion'));
   await entrar(p, 'cliente@correo.cl');
   ok(!(await p.locator('.rapida[href="/servicios/pago/"]').count()), 'el trámite oculto sigue visible');
@@ -319,6 +324,107 @@ await comprar('urgencias', 390, '/personas/vida-y-salud/cotizador/proteccion-urg
   });
 console.log('  3 compras completas dentro del sitio');
 
+/* ---- MatIAs: vende, lleva a los precios, conversa del plan y ayuda ---- */
+const respuestas = (p) => p.locator('.matias .burbuja--bot').count();
+const ultimaRespuesta = (p) => p.locator('.matias__hilo:not([hidden]) .burbuja--bot').last();
+async function esperarRespuesta(p, antes) {
+  await p.waitForFunction((n) => document.querySelectorAll('.matias .burbuja--bot').length > n, antes, { timeout: 6000 });
+}
+async function conversar(p, texto) {
+  const antes = await respuestas(p);
+  await p.fill('#matias-entrada', texto); await p.press('#matias-entrada', 'Enter');
+  await esperarRespuesta(p, antes);
+  return (await ultimaRespuesta(p).textContent()) || '';
+}
+async function tocar(p, selector) {
+  const antes = await respuestas(p);
+  await p.click(selector);
+  await esperarRespuesta(p, antes);
+}
+{
+  const { ctx, p, errores } = await contexto({ width: 1440, height: 900 });
+  await entrar(p, 'cliente@correo.cl');
+  ok(await p.waitForSelector('#matias-lanzador', { timeout: 5000 }).then(() => true).catch(() => false), 'MatIAs no aparece en la portada');
+  await p.click('#matias-lanzador button'); await p.waitForSelector('#matias:not([hidden]) .burbuja--bot');
+  ok(await p.locator('#matias-oferta-auto_cotizar, #matias-oferta-hogar_cotizar, #matias-oferta-otros_seguros').count() === 3, 'MatIAs no ofrece Auto, Hogar y otros seguros al abrir');
+  ok(await p.getAttribute('[data-modo="contratar"]', 'aria-pressed') === 'true', 'MatIAs no abre en «Contratar un seguro» en la portada');
+  try {
+    await tocar(p, '#matias-oferta-auto_cotizar');
+    const hilo = '.matias__hilo:not([hidden])';
+    await p.locator(`${hilo} [data-campo="rut"] input`).last().fill('10111222-5');
+    await p.locator(`${hilo} [data-campo="factor"] input`).last().fill('ZZZZ99');
+    await tocar(p, `${hilo} [data-accion="buscar"] >> nth=-1`);
+    ok((await ultimaRespuesta(p).textContent()).includes('no coincide'), 'MatIAs reconoce a alguien con una patente que no es la suya');
+    await tocar(p, '#matias-chip-reintentar');
+    await p.locator(`${hilo} [data-campo="rut"] input`).last().fill('10111222-5');
+    await p.locator(`${hilo} [data-campo="factor"] input`).last().fill('AAAA11');
+    await tocar(p, `${hilo} [data-accion="buscar"] >> nth=-1`);
+    ok((await ultimaRespuesta(p).textContent()).includes('Daniela'), 'MatIAs no reconoce al cliente de prueba');
+    await tocar(p, '#matias-chip-si_soy_yo');
+    ok(await p.locator(`${hilo} [data-accion="sin-autorizar"]`).count() === 1, 'la autorización de datos no es opcional');
+    await tocar(p, `${hilo} [data-accion="acepto"]`);
+    await p.click(`${hilo} [data-accion="ir"]`);
+    await p.waitForURL('**/cotizador/auto-digital/datos/?paso=planes');
+    ok(await enPaso(p, 'planes'), 'el salto de MatIAs no deja a la persona en los planes');
+    ok((await p.getAttribute('.marco iframe', 'src')) === '/herramientas/auto-digital/planes/', 'el marco no abre en el paso de planes');
+    await p.waitForSelector('#matias:not([hidden]) .burbuja--bot', { timeout: 8000 });
+    ok((await p.textContent('#matias-contexto')).startsWith('Auto Digital ·'), 'MatIAs no sabe qué plan está en pantalla');
+    ok((await ultimaRespuesta(p).textContent()).includes('Toyota RAV4'), 'MatIAs no habla del auto de la persona');
+    const f = p.frameLocator('.marco iframe');
+    await conversar(p, '¿y el premium?');
+    await f.locator('.precio-col[data-plan="premium"][data-elegido="true"]').waitFor({ timeout: 5000 });
+    ok((await ultimaRespuesta(p).textContent()).includes('Plan Premium'), 'MatIAs no responde por el plan que se pidió');
+    await conversar(p, 'cuanto sale con deducible 10 uf');
+    await f.locator('#deducible-10[aria-pressed="true"]').waitFor({ timeout: 5000 });
+    const precioPantalla = (await f.locator('.precio-col[data-plan="premium"] .precio-col__monto').textContent()).replace(/\D/g, '');
+    ok((await ultimaRespuesta(p).textContent()).replace(/\./g, '').includes(precioPantalla), 'el precio que dice MatIAs no es el de la pantalla');
+    const ayuda = await conversar(p, '¿cómo pido un reembolso dental?');
+    ok(await p.getAttribute('[data-modo="ayuda"]', 'aria-pressed') === 'true' && ayuda.includes('dentales'), 'una pregunta de servicio no pasa al espacio de ayuda');
+    await conversar(p, 'me chocaron el auto');
+    ok(await ultimaRespuesta(p).locator('a[href="/servicios/denuncia-vehiculo/"]').count() === 1, 'la respuesta de un choque no lleva a la denuncia');
+    await p.click('[data-modo="contratar"]');
+    ok((await conversar(p, 'lo uso para uber')).includes('situación puntual'), 'un caso particular recibe una respuesta de catálogo');
+    ok((await conversar(p, 'qwerty asdfgh')).includes('no inventarte nada'), 'MatIAs inventa una respuesta a algo que no sabe');
+    await p.keyboard.press('Escape');
+    ok(await p.isHidden('#matias') && await p.isVisible('#matias-lanzador'), 'Escape no cierra a MatIAs');
+    const eventos = await p.evaluate(() => (window.dataLayer || []));
+    ok(eventos.some((x) => x.event === 'auto_digital_rec_inicio_flujo' && x.via === 'matias'), 'no queda medido que la persona llegó por MatIAs');
+    ok(eventos.some((x) => x.event === 'matias_rec_pregunta' && x.resultado === 'directo') && !eventos.some((x) => x.event === 'matias_rec_pregunta' && 'texto' in x), 'la medición de MatIAs falta o lleva el texto escrito');
+  } catch (e) { ok(false, `[matias] la conversación se cortó: ${e.message.split('\n')[0]}`); }
+  ok(errores.length === 0, `[matias] errores: ${errores.join(' | ')}`);
+  await ctx.close();
+}
+{
+  const { ctx, p, errores } = await contexto({ width: 390, height: 844 });
+  await entrar(p, 'cliente@correo.cl');
+  await p.goto(`${BASE}/servicios/`); await listo(p);
+  await p.click('#matias-lanzador button'); await p.waitForSelector('#matias:not([hidden]) .burbuja--bot');
+  ok(await p.getAttribute('[data-modo="ayuda"]', 'aria-pressed') === 'true', 'en Servicios en línea MatIAs no abre en «Ayuda»');
+  const caja = await p.locator('#matias').boundingBox();
+  ok(caja && caja.width >= 389 && caja.x <= 1, 'en el celular MatIAs no ocupa la pantalla completa');
+  try {
+    await tocar(p, '#matias-tema-srv_siniestros');
+    await tocar(p, '#matias-tema-srv_siniestro_hogar');
+    ok((await ultimaRespuesta(p).textContent()).includes('Bomberos'), 'la respuesta de un daño en el hogar no es la del Centro de Ayuda');
+    ok(await ultimaRespuesta(p).locator('a[href^="tel:"]').count() === 1, 'la respuesta de un siniestro sin trámite no ofrece llamar');
+    /* Hogar: RUT y comuna, sin autorizar (la autorización es opcional). */
+    await p.click('[data-modo="contratar"]'); await p.waitForSelector('#matias-oferta-hogar_cotizar');
+    await tocar(p, '#matias-oferta-hogar_cotizar');
+    await p.locator('.matias__hilo:not([hidden]) [data-campo="rut"] input').last().fill('20111222-2');
+    await p.locator('.matias__hilo:not([hidden]) [data-campo="factor"] input').last().fill('Las Condes');
+    await tocar(p, '.matias__hilo:not([hidden]) [data-accion="buscar"] >> nth=-1');
+    await tocar(p, '#matias-chip-si_soy_yo');
+    await tocar(p, '.matias__hilo:not([hidden]) [data-accion="sin-autorizar"]');
+    ok(await ultimaRespuesta(p).locator('[data-accion="ir"]').getAttribute('href') === '/personas/hogar/cotizador/hogar-facil-plus/datos/?paso=vivienda', 'MatIAs no lleva a la vivienda en Hogar');
+    const guardado = await p.evaluate(() => JSON.parse(localStorage.getItem('zurich_demo_hogar') || '{}').datos || {});
+    ok(guardado.vivienda?.direccion === 'Calle del Ensayo' && guardado.consentimiento === false, 'MatIAs no deja cargada la vivienda o marca una autorización que no se dio');
+  } catch (e) { ok(false, `[matias celular] ${e.message.split('\n')[0]}`); }
+  ok(await p.evaluate(() => document.documentElement.scrollWidth - innerWidth) <= 1, '[matias celular] desborde horizontal');
+  ok(errores.length === 0, `[matias celular] errores: ${errores.join(' | ')}`);
+  await ctx.close();
+}
+console.log('  MatIAs: venta, salto a los precios, conversación del plan y ayuda');
+
 /* ---- La promoción del cotizador respeta las fechas de sus bases -------- */
 for (const [fecha, debe] of [['2026-10-05T12:00:00', true], ['2026-10-15T12:00:00', false]]) {
   const { ctx, p } = await contexto({ width: 1280, height: 900 });
@@ -371,6 +477,18 @@ console.log('Contraste');
     ok(r.malos.length === 0, `contraste en ${ruta}: ${r.malos.join(' | ')}`);
     medidos += r.n;
   }
+  /* MatIAs abierto, en sus dos espacios y con una tabla de planes. */
+  await p.goto(`${BASE}/herramientas/auto-digital/planes/?demo=1`); await p.waitForSelector('.precio-col');
+  await p.goto(`${BASE}/personas/auto/cotizador/auto-digital/datos/?paso=planes`); await listo(p);
+  await p.waitForSelector('.marco__lienzo[data-alto="auto"]');
+  await p.click('#matias-lanzador button'); await p.waitForSelector('#matias:not([hidden]) .burbuja--bot');
+  await conversar(p, '¿en qué se diferencian los planes?');
+  let r = await auditar();
+  ok(r.malos.length === 0, `contraste de MatIAs (contratar): ${r.malos.join(' | ')}`); medidos += r.n;
+  await p.click('[data-modo="ayuda"]'); await p.waitForSelector('#matias-hilo-ayuda .burbuja--bot');
+  await tocar(p, '#matias-tema-srv_pagos'); await tocar(p, '#matias-tema-srv_pago_impaga');
+  r = await auditar();
+  ok(r.malos.length === 0, `contraste de MatIAs (ayuda): ${r.malos.join(' | ')}`); medidos += r.n;
   console.log(`  ${medidos} textos medidos`);
   await ctx.close();
 }

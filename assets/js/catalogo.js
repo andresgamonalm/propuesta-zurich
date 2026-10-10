@@ -26,6 +26,9 @@
  *    cargan los cotizadores de demostración de /herramientas/ (Auto y Hogar
  *    vienen del piloto de ecommerce; Urgencias se armó con las mismas
  *    piezas). Marcados con `demostracion: true`.
+ * 5. `AYUDA` y `CANALES`: Centro de Ayuda y Canales de Atención Remota de
+ *    zurich.cl, leídos el 10 de octubre de 2026. Son lo único que responde
+ *    MatIAs en su espacio de servicio: textuales, sin redactar nada.
  */
 
 export const FECHA_FUENTES = '9 de octubre de 2026';
@@ -810,6 +813,143 @@ export const PROMOCIONES = ['auto-digital', 'celular-protegido', 'soap'];
 /** Productos con contratación en línea, en el orden de la portada. */
 export const EN_LINEA = ['auto-digital', 'soap', 'celular-protegido', 'hogar-facil-plus', 'proteccion-urgencias'];
 export const CON_ASESORIA = ['oncologico-familiar', 'temporal-plus', 'vida-mas-salud'];
+
+/* ------------------------------------------------------------------------ */
+/* Centro de Ayuda de zurich.cl · lo que responde MatIAs en «Ayuda»          */
+/* ------------------------------------------------------------------------ */
+export const FECHA_AYUDA = '10 de octubre de 2026';
+
+const CA = 'https://www.zurich.cl/centro-de-ayuda/servicios/';
+
+/** Canales de Atención Remota (zurich.cl/conocenos/canales-atencion-remota). */
+export const CANALES = {
+  telefono: '600 600 9090',
+  telefonoEnlace: 'tel:6006009090',
+  horarioTelefono: 'de lunes a viernes, de 8:00 a 21:00 hrs.',
+  whatsapp: '+56 9 8790 2551',
+  horarioWhatsapp: 'las 24 horas, de lunes a domingo, excepto feriados',
+  fuente: 'https://www.zurich.cl/conocenos/canales-atencion-remota',
+};
+
+/**
+ * Preguntas del Centro de Ayuda, textuales. `tema` agrupa; `tramite` es el
+ * servicio de este sitio al que lleva el botón (si lo hay); `fuente`, la
+ * página de zurich.cl de donde sale. Lo que zurich.cl dice «ingresa aquí»
+ * o «Portal de Clientes» se deja tal cual: el portal no es parte del sitio.
+ * @type {{ id: string, tema: string, p: string, r: string[], lista?: string[], cierre?: string[], tramite?: string, fuente: string }[]}
+ */
+export const AYUDA = [
+  // Reembolsos
+  { id: 'reembolso-medico', tema: 'reembolsos', p: '¿Cómo solicito un reembolso médico?',
+    r: ['Utilizando la APP Zurich Chile (recomendado para reembolsos ambulatorios y dentales).',
+      'A través de la web www.zurich.cl (recomendado para todo tipo de reembolsos), ingresando al Portal de Clientes: selecciona la opción «Reembolsos de Salud» y completa la información que se solicita.',
+      'Además, puedes reembolsar tus gastos ambulatorios, dentales y hospitalarios mediante el WhatsApp +56 9 8790 2551. Es necesario iniciar la conversación con un saludo (Hola Zurich o buenos días), para que aparezcan las opciones.'],
+    fuente: `${CA}reembolsos` },
+  { id: 'reembolso-dental', tema: 'reembolsos', p: '¿Cómo solicito un reembolso dental?',
+    r: ['Puedes solicitar el reembolso de tus gastos dentales a través de la APP Zurich Chile y en www.zurich.cl, ingresando al Portal de Clientes: selecciona la opción «Reembolso de Salud» y completa la información que se solicita.'],
+    fuente: `${CA}reembolsos` },
+  { id: 'reembolso-estado', tema: 'reembolsos', p: '¿Dónde reviso el estado de mi reembolso?',
+    r: ['Si quieres tener más detalle de todas tus solicitudes de reembolso puedes:'],
+    lista: ['Ingresar a tu Portal de Clientes.', 'En el menú lateral selecciona la opción «Mis productos», luego haz clic en «Mis seguros y ahorros» y selecciona «Siniestros y reembolsos».', 'Verás los reembolsos registrados: selecciona el que necesitas consultar.', 'Podrás ver el estado de tu reembolso, el respaldo de los documentos que enviaste y descargar el detalle de la liquidación. En caso de haber sido rechazado, en la carta puedes revisar el motivo.'],
+    fuente: `${CA}reembolsos` },
+  { id: 'reembolso-asistencia', tema: 'reembolsos', p: '¿Cómo pido el reembolso de una asistencia vehicular, de hogar o de viaje?',
+    r: ['Con el formulario oficial «Solicitud de Reembolso para Asistencia Vehicular, Hogar y Asistencia de Viaje». Lo tienes en «Solicitar un reembolso», dentro de este espacio.'],
+    tramite: 'reembolso', fuente: 'https://www.zurich.cl/conocenos/formularios' },
+  // Siniestros
+  { id: 'siniestro-auto', tema: 'siniestros', p: '¿Qué hago si tengo un accidente con mi auto?',
+    r: ['En caso de que existan solo daños materiales, debes dar aviso a la compañía dentro de los 10 días corridos desde que ocurrió el siniestro. Si hay otros autos involucrados, toma nota de marca, modelo, patente, nombre del conductor, RUT del conductor, teléfono y correo de contacto, e incluye esta información en el aviso.',
+      'En caso de robo o hurto del auto, o lesiones a personas, de manera inmediata debes:'],
+    lista: ['Realizar la denuncia en el Carabineros más cercano.', 'Dar aviso a la Compañía: por el formulario en línea, llamando al 600 600 9090 o en cualquiera de las sucursales.'],
+    tramite: 'denuncia-vehiculo', fuente: `${CA}siniestros` },
+  { id: 'siniestro-hogar', tema: 'siniestros', p: '¿Qué hago si sufro un daño en mi hogar?',
+    r: ['Primero debes dar aviso a Bomberos o Carabineros, quienes dejarán constancia escrita del siniestro.',
+      'Luego debes denunciar el siniestro en la página Denuncia de Siniestros de zurich.cl, completando el formulario de la sección «Denuncias de Siniestros de Otros Seguros».',
+      'Otra forma es llamar a la plataforma de servicio al cliente al 600 600 9090. Un ejecutivo se contactará contigo y comenzará la liquidación del caso.'],
+    fuente: `${CA}siniestros` },
+  { id: 'siniestro-vida', tema: 'siniestros', p: '¿Cómo cobro un seguro de vida?',
+    r: ['Si necesitas solicitar la indemnización por el seguro de vida o vida con ahorro, el equipo de Zurich estará a tu disposición para acompañarte y guiarte en este difícil momento. Primero debes notificar:'],
+    lista: ['En www.zurich.cl, en «Denuncia Siniestros de Vida y Protección Familiar». Puedes hacerlo independientemente de si la póliza está contratada a tu nombre o no: completa los datos solicitados y así se inicia el proceso de liquidación.', 'O llamando al 600 600 9090, donde te entregarán toda la información que necesites para realizar la notificación.'],
+    tramite: 'denuncia-vida', fuente: `${CA}siniestros` },
+  { id: 'siniestro-soap', tema: 'siniestros', p: '¿Dónde denuncio un siniestro del SOAP?',
+    r: ['Ingresa a Denuncia de Siniestros y completa el formulario en la sección «Denuncias de Siniestros de Otros Seguros», con los datos necesarios.',
+      'Recuerda guardar todas las boletas de gastos médicos y certificados, junto a los documentos del Juzgado o Fiscalía que tengas a consecuencia del accidente.'],
+    fuente: `${CA}siniestros` },
+  { id: 'soap-indemnizacion', tema: 'siniestros', p: '¿Cómo cobro la indemnización del SOAP?',
+    r: ['En caso de accidente, para solicitar la indemnización de tu seguro SOAP debes:'],
+    lista: ['Realizar la denuncia en Carabineros, donde se identifique fecha, hora y lugar del accidente, las personas lesionadas o fallecidas y los datos de los vehículos involucrados (al menos patente, número de póliza y aseguradora que emitió el SOAP).', 'Solicitar el certificado otorgado por el tribunal competente o el Ministerio Público, en el cual se consignen los datos del accidente de tránsito.', 'En caso de gastos médicos: comprobantes de pago (boletas, facturas), junto con órdenes de exámenes o tratamientos y recetas de medicamentos.', 'En caso de incapacidad permanente: certificado del médico tratante que acredite la incapacidad (naturaleza y grado).', 'En caso de fallecimiento accidental: certificado de defunción y libreta de familia u otro documento que acredite legalmente la calidad de beneficiario.'],
+    fuente: `${CA}siniestros` },
+  { id: 'siniestro-celular', tema: 'siniestros', p: '¿Qué hago si me roban o se daña el celular?',
+    r: ['Puedes realizar la denuncia de un siniestro de manera fácil y rápida, siguiendo estos pasos:'],
+    lista: ['Coloca los datos del asegurado.', 'Selecciona el tipo de siniestro y la fecha del incidente.', 'Completa la información requerida.', 'Relata lo ocurrido y carga los documentos solicitados.', '¡Y listo! Tu solicitud será gestionada.'],
+    fuente: `${CA}siniestros` },
+  { id: 'liquidador', tema: 'siniestros', p: '¿Cómo pido cambiar de liquidador?',
+    r: ['Si prefieres un liquidador diferente al asignado, puedes solicitarlo informando por escrito a la compañía dentro de 5 días hábiles contados desde que se realiza el denuncio del siniestro. La carta la puedes presentar en cualquiera de las sucursales o a través de los canales digitales.'],
+    fuente: 'https://www.zurich.cl/centro-de-ayuda/productos/seguro-auto-digital' },
+  // Asistencias
+  { id: 'asistencia', tema: 'asistencias', p: '¿Cómo pido una asistencia de hogar o de auto?',
+    r: ['Para solicitar una asistencia de Hogar o Auto, solo debes llamar al proveedor del servicio. También puedes conocer el número de tu asistencia revisando tu póliza en línea:'],
+    lista: ['Ingresa a tu Portal de Clientes.', 'Verás todos los productos que tienes contratados en Zurich.', 'Selecciona el producto que deseas revisar y podrás descargar una copia.'],
+    fuente: `${CA}asistencia` },
+  // Pagos
+  { id: 'pago-opciones', tema: 'pagos', p: '¿Cómo pago la cuota de mi seguro?',
+    r: ['Las alternativas disponibles para pagar tus cuotas son:'],
+    lista: ['En www.zurich.cl, a través de los convenios habilitados (Banco de Chile, Banco Santander, Banco Estado, Banco BCI, Servipag y Webpay), en «Pago en línea de seguros».', 'Cargo automático a tu cuenta corriente (PAC).', 'Cargo automático a tu tarjeta de crédito (PAT).'],
+    tramite: 'pago', fuente: `${CA}pagar-seguro` },
+  { id: 'pago-atrasada', tema: 'pagos', p: '¿Puedo pagar una cuota atrasada?',
+    r: ['Sí, puedes pagar la cuota atrasada antes de la fecha de cancelación (para pólizas de Seguros Generales) y de caducidad (para pólizas de Seguros de Vida). Si ya se cumplió esa fecha, comunícate con tu ejecutivo o corredor de seguros para revisar opciones.'],
+    tramite: 'pago', fuente: `${CA}pagar-seguro` },
+  { id: 'pago-impaga', tema: 'pagos', p: 'Pagué mi cuota y sigue apareciendo impaga',
+    r: ['Si pagaste tu póliza y aún aparece impaga en tu Portal de Clientes, envía el detalle de tu caso a tu ejecutivo o al formulario de contacto, con esta información:'],
+    lista: ['Nombre, RUT y correo.', 'Copia del comprobante de pago.', 'N° de póliza y mes al que corresponde el pago.'],
+    cierre: ['Una vez que el pago se encuentre registrado, te notificarán al correo que entregaste. Si pagaste en Sencillito, depósito bancario o transferencia, se recomienda esperar 48 horas para ver el pago en tu Portal de Clientes.'],
+    fuente: `${CA}pagar-seguro` },
+  { id: 'pago-estado', tema: 'pagos', p: '¿Cómo sé si mi cuota está pagada?',
+    r: ['Si necesitas confirmar el estado de pago de tus cuotas:'],
+    lista: ['Ingresa a tu Portal de Clientes en www.zurich.cl.', 'Selecciona la póliza que quieres consultar y haz clic en la opción «Pagos»: ahí encontrarás las cuotas pagadas e impagas y los próximos vencimientos.'],
+    fuente: `${CA}pagar-seguro` },
+  { id: 'pago-automatico', tema: 'pagos', p: '¿Cómo activo el pago automático (PAC o PAT)?',
+    r: ['El pago PAC es un cargo automático en tu cuenta corriente, chequera electrónica, cuenta RUT o de ahorro, mientras que el PAT es un cargo automático en tu tarjeta de crédito.',
+      'Para activarlos debes acercarte a alguna de las sucursales, donde deberás firmar el mandato, y Zurich coordinará con tu banco el pago automático. En el caso del PAT, también puedes hacerlo directamente en la web de tu banco, en la sección de pagos automáticos, buscando el nombre de la compañía.'],
+    fuente: `${CA}pagar-seguro` },
+  { id: 'pago-no-puedo', tema: 'pagos', p: 'No puedo pagar mi póliza',
+    r: ['Si por diferentes motivos tienes dificultades para pagar tus pólizas, se recomienda acercarte a una sucursal o contactar directamente a tu ejecutivo para evaluar opciones que se adapten a tus necesidades.'],
+    fuente: `${CA}pagar-seguro` },
+  // Póliza
+  { id: 'poliza-duplicado', tema: 'poliza', p: '¿Cómo descargo mi póliza?',
+    r: ['Puedes descargar un duplicado de tu póliza en tu Portal de Clientes:'],
+    lista: ['Ingresa a tu Portal de Clientes.', 'Verás todos los productos que tienes contratados en Zurich.', 'Selecciona el producto que deseas revisar y podrás descargar una copia.'],
+    fuente: `${CA}duplicado-poliza` },
+  { id: 'portal-clave', tema: 'poliza', p: '¿Cómo entro al Portal de Clientes?',
+    r: ['Ingresa a www.zurich.cl, haz clic en «Acceso Clientes», digita tu RUT y clave y haz clic en «Ingresar».'],
+    lista: ['Si es primera vez que ingresas, tu clave será los 4 primeros dígitos de tu RUT.', 'También puedes crear tu clave o recuperarla haciendo clic en «Restablecer Clave».'],
+    fuente: 'https://www.zurich.cl/centro-de-ayuda/fichas/seguros' },
+  // Auto Digital (preguntas frecuentes del producto)
+  { id: 'perdida-total', tema: 'auto', p: '¿Qué pasa con las cuotas si hay pérdida total?',
+    r: ['Si los daños de tu auto son mayores al porcentaje que se define en tu póliza, o si es robado y han pasado más de 30 días desde el hecho, el siniestro es declarado como pérdida total. En este caso deberás pagar todas las cuotas que resten hasta cumplir la vigencia de la póliza: si tienes una póliza con compromiso de pago de 12 meses y sufres un siniestro al mes 8, debes pagar las 4 cuotas restantes para recibir tu vehículo nuevo.',
+      'Puedes hacerlo en www.zurich.cl, en «Pago en línea»: ingresa tu RUT y correo y, en el detalle de los pagos de tu póliza, selecciona «Adelanta tus cuotas». No se pagará la indemnización hasta que el monto total se encuentre regularizado.'],
+    fuente: 'https://www.zurich.cl/seguros-auto/auto-digital' },
+  { id: 'gps', tema: 'auto', p: '¿Me entregan un GPS con el seguro?',
+    r: ['La Ley 21.170 dispone que es obligación de la Compañía de Seguros incluir la entrega sin costo de un GPS con la contratación de la póliza, para todos los clientes que requieran este dispositivo. Los costos de instalación, del servicio de datos mensual y del despacho a domicilio son de responsabilidad del propietario del vehículo. La instalación y activación no es obligatoria, pero se sugiere hacerla para resguardo de tu vehículo.',
+      'Puedes pedirlo desde el Portal de Clientes, en el banner «Entrega de GPS», con despacho a domicilio, o retirarlo sin costo en cualquier sucursal de Zurich.'],
+    fuente: 'https://www.zurich.cl/seguros-auto/auto-digital' },
+  { id: 'terminar-auto', tema: 'poliza', p: '¿Cómo termino mi póliza de seguro de auto?',
+    r: ['Tienes tres caminos:'],
+    lista: ['Llamar al 600 600 9090: previa validación de identidad, se anula tu póliza.', 'Ingresar una consulta mediante el formulario de contacto, y serás contactado por un ejecutivo.', 'Contactar a tu agente de ventas, enviándole una carta simple solicitando la anulación e imágenes de tu cédula de identidad. Si contrataste por medio de un intermediario o corredor, acércate directamente a ellos.'],
+    fuente: 'https://www.zurich.cl/centro-de-ayuda/productos/seguro-auto-digital' },
+];
+
+/** MatIAs: el asistente de la maqueta (viene del piloto de ecommerce). */
+export const MATIAS = {
+  id: 'matias',
+  nombre: 'MatIAs',
+  oficio: 'tu IA de seguros',
+  porValidar: [
+    'MatIAs viene del piloto de ecommerce: nombre, ícono (un fox terrier en el Azul de Zurich) y forma de hablar. Validar con Marca y con Banco BICE.',
+    'No usa un modelo generativo: elige entre respuestas aprobadas. En «Ayuda» responde con el Centro de Ayuda de zurich.cl (leído el 10 de octubre de 2026); en Auto y Hogar, con el catálogo y con la cotización en pantalla.',
+    'Reconoce al cliente con dos datos (RUT y patente, o RUT y comuna) sobre una base ficticia. En producción, validar con Legal el segundo dato y la cláusula de consentimiento antes de mostrar datos de una persona.',
+    'El traspaso a un ejecutivo no está conectado: hoy entrega los Canales de Atención Remota (600 600 9090 y WhatsApp).',
+  ],
+};
 
 /* ------------------------------------------------------------------------ */
 /* La alianza · texto del brief                                              */

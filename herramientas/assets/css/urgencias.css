@@ -17,4 +17,6 @@
 .lista-check { display: grid; gap: var(--e3); }
 .lista-check li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--e3); align-items: start; font-size: var(--t-sm); }
 .lista-check svg { color: var(--azul); margin-top: 1px; }
-.bloque-apagado { opacity: .5; }
+/* Apagado: gris sólido y texto suave, sin transparencia. */
+.bloque-apagado { background: #f5f5f5; border-radius: 12px; padding: 12px; }
+.bloque-apagado :is(label, p, span, strong, h3) { color: #4b5a78; }

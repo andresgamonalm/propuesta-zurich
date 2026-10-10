@@ -8,7 +8,7 @@
 .el-6 { color:var(--alerta) !important; }
 .el-7 { color:var(--texto) !important; }
 .el-8 { font-style:italic !important; }
-.el-9 { border-color:rgba(33,103,174,.3) !important; border-top-color:var(--azul) !important; }
+.el-9 { border-color:#bcd1e7 !important; border-top-color:var(--azul) !important; }
 .el-10 { font-size:var(--t-lg) !important; }
 .el-11 { display:flex !important; gap:16px !important; }
 .el-12 { width:30px !important; height:30px !important; border-radius:50% !important; flex:none !important; background:var(--azul) !important; color:#fff !important; display:grid !important; place-items:center !important; font-weight:700 !important; font-size:var(--t-sm) !important; }
@@ -19,7 +19,7 @@
 .el-17 { font-size:inherit !important; }
 .el-18 { margin-bottom:16px !important; }
 .el-19 { text-transform:uppercase !important; letter-spacing:.08em !important; font-weight:700 !important; }
-.el-20 { border-color:rgba(33,103,174,.25) !important; border-top-color:var(--azul) !important; }
+.el-20 { border-color:#c8d9eb !important; border-top-color:var(--azul) !important; }
 .el-21 { padding:0 !important; }
 .el-22 { margin-bottom:24px !important; }
 .el-23 { font-size:var(--t-lg) !important; margin-top:32px !important; }

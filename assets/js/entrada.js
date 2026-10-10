@@ -47,6 +47,8 @@ async function arrancar() {
     escucharClics(ambito);
     const mod = await import(`./paginas/${pagina}.js`);
     await mod.render({ main, id, sesion: s, ambito });
+    /* MatIAs: el botón abajo a la derecha. Si no carga, la página sigue igual. */
+    import('./matias/lanzador.js').then((m) => m.montar(s)).catch(() => {});
   } else {
     escucharClics(ambito);
     const mod = await import(`./paginas/${pagina}.js`);
