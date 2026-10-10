@@ -19,6 +19,13 @@
 //   4. Prueba los flujos: acceso, perfiles, asesoría, configuración, medición
 //      por paso, sesión vencida, menús, cajón móvil, promoción vencida y los
 //      marcos de integración (solo el formulario, al lado de la promoción).
+//      Hace las tres compras completas DENTRO del sitio, en los cotizadores
+//      de demostración (Auto, Hogar y Protección Urgencias), y comprueba que
+//      los pasos de arriba avancen, que el marco tome el alto y que quede
+//      medida la compra.
+//
+// Las pantallas de /herramientas/ se recorren con ?demo=1: así cada una abre
+// con el estado completo y no rebota al primer paso.
 //   5. Audita el contraste de lo que se pinta (no de lo declarado) en todas las
 //      páginas, y comprueba que midió la página que creía medir.
 //
@@ -69,6 +76,8 @@ function rutas(dir = RAIZ, base = '/') {
   return salida.sort();
 }
 const RUTAS = rutas().filter((r) => r !== '/login/');
+/* Las pantallas de los cotizadores necesitan estado: ?demo=1 lo siembra. */
+const conEstado = (r) => (r.startsWith('/herramientas/') ? `${r}?demo=1` : r);
 
 let correctas = 0; const fallas = [];
 const ok = (cond, texto) => { if (cond) correctas++; else fallas.push(texto); };
@@ -98,7 +107,7 @@ for (const ancho of [1440, 820, 390]) {
   await entrar(p, ADMIN);
   for (const ruta of RUTAS) {
     errores.length = 0;
-    await p.goto(BASE + ruta, { waitUntil: 'networkidle' });
+    await p.goto(BASE + conEstado(ruta), { waitUntil: 'networkidle' });
     await listo(p).catch(() => errores.push('no terminó de cargar'));
     const d = await p.evaluate(() => ({
       url: location.pathname,
@@ -170,13 +179,20 @@ console.log('Flujos');
   await p.locator('input[data-id="pago"][data-campo="visible"]').uncheck(); await p.waitForSelector('.aviso-flotante');
   await p.fill('#d-pago', 'https://ejemplo.com/pago'); await p.locator('#d-pago').dispatchEvent('change');
   ok(await p.isVisible('text=no está entre los orígenes permitidos'), 'se acepta un dominio no permitido');
-  await p.goto(`${BASE}/personas/auto/cotizador/auto-digital/datos/`); await listo(p);
+  /* La simulación del contrato, en un marco que no envía pasos propios (SOAP). */
+  await p.goto(`${BASE}/personas/auto/cotizador/soap/patente/`); await listo(p);
   await p.click('[data-probar]'); await p.click('[data-probar]'); await p.waitForTimeout(150);
-  ok(await p.getAttribute('.pasos-flujo li[aria-current="step"]', 'data-paso') === 'planes', 'la medición por paso no avanza');
+  ok(await p.getAttribute('.pasos-flujo li[aria-current="step"]', 'data-paso') === 'pago', 'la medición por paso no avanza');
   await p.goto(`${BASE}/configuracion/#medicion`); await listo(p);
-  ok(await p.locator('td code:text("auto_digital_rec_avance_paso")').count() >= 2, 'los avances de paso no quedan registrados');
+  ok(await p.locator('td code:text("soap_rec_avance_paso")').count() >= 2, 'los avances de paso no quedan registrados');
   const [d] = await Promise.all([p.waitForEvent('download'), p.click('[data-accion="csv-medicion"]')]);
   ok(d.suggestedFilename() === 'registro_medicion.csv', 'no se descarga el CSV');
+  /* Apagar «Cargar dentro del sitio» vuelve a la vista referencial. */
+  await p.goto(`${BASE}/configuracion/`); await listo(p);
+  await p.locator('input[data-id="hogar-facil-plus"][data-campo="embebido"]').uncheck(); await p.waitForSelector('.aviso-flotante');
+  await p.goto(`${BASE}/personas/hogar/cotizador/hogar-facil-plus/datos/`); await listo(p);
+  ok(await p.locator('.marco iframe').count() === 0 && await p.isVisible('.marco__referencial'), 'apagar la carga no vuelve a la vista referencial');
+  ok(await p.isVisible('.lateral .promo-lateral'), 'la vista referencial no muestra la promoción al lado');
   await p.evaluate(() => localStorage.removeItem('zb:sesion'));
   await entrar(p, 'cliente@correo.cl');
   ok(!(await p.locator('.rapida[href="/servicios/pago/"]').count()), 'el trámite oculto sigue visible');
@@ -200,8 +216,9 @@ console.log('Flujos');
   const [m, l] = [await p.locator('.marco').boundingBox(), await p.locator('.lateral').boundingBox()];
   ok(l.x >= m.x + m.width, 'en escritorio la promoción no queda al lado del flujo');
   await p.goto(`${BASE}/personas/auto/cotizador/auto-digital/datos/`); await listo(p);
-  ok(await p.locator('.marco iframe').count() === 0, 'sin dirección de formulario se carga la página completa del producto');
-  ok(await p.isVisible('.lateral .promo-lateral'), 'la vista referencial no muestra la promoción al lado');
+  ok(await p.getAttribute('.marco iframe', 'src') === '/herramientas/auto-digital/datos/', 'Auto Digital no carga su cotizador de demostración');
+  ok((await p.textContent('.marco__barra')).includes('Demostración'), 'el cotizador de demostración no se rotula como tal');
+  ok(await p.getAttribute('.marco iframe', 'sandbox') === null, 'el cotizador del mismo sitio va aislado sin necesidad');
   await p.goto(`${BASE}/servicios/pago/`); await listo(p);
   ok((await p.getAttribute('.marco iframe', 'src')).startsWith('https://www9.chilena.cl/'), 'el pago no carga su formulario');
   await p.waitForSelector('.marco__lienzo[data-estado="listo"]', { timeout: 10000 }).catch(() => {});
@@ -223,6 +240,92 @@ console.log('Flujos');
   await p.clock.runFor(16000);
   ok(await p.getAttribute('.marco__lienzo', 'data-estado') === 'lento', 'una herramienta que no responde no ofrece la pestaña nueva');
   ok(await p.isVisible('text=Está tardando más de lo normal'), 'el aviso de demora no se ve');
+  await ctx.close();
+}
+/* ---- Las tres compras completas, dentro del sitio ---------------------- */
+const enPaso = (p, paso) => p.waitForSelector(`.pasos-flujo li[aria-current="step"][data-paso="${paso}"]`, { timeout: 10000 }).then(() => true).catch(() => false);
+async function comprar(nombre, ancho, ruta, amb, pasos, recorrer) {
+  const { ctx, p, errores } = await contexto({ width: ancho, height: 900 });
+  await entrar(p, 'cliente@correo.cl');
+  await p.goto(BASE + ruta); await listo(p);
+  const f = p.frameLocator('.marco iframe');
+  /* El alto llega cuando el cotizador ya corrió: recién ahí se mira. */
+  ok(await p.waitForSelector('.marco__lienzo[data-alto="auto"]', { timeout: 10000 }).then(() => true).catch(() => false), `[${nombre}] el marco no recibe el alto del cotizador`);
+  ok(await enPaso(p, pasos[0]), `[${nombre}] el marco no avisa el primer paso`);
+  ok(await f.locator('#correo').inputValue() === 'cliente@correo.cl', `[${nombre}] el correo del sitio no llega precargado`);
+  ok(await f.locator('#rut-ejemplos').textContent().then((t) => t.includes('patente')) === (nombre === 'auto'), `[${nombre}] los datos de prueba ofrecen patentes donde no corresponde`);
+  try {
+    await recorrer(f, async (paso) => ok(await enPaso(p, paso), `[${nombre}] la barra de pasos no llega a «${paso}»`));
+  } catch (e) { ok(false, `[${nombre}] la compra se cortó: ${e.message.split('\n')[0]}`); }
+  ok(await enPaso(p, pasos[pasos.length - 1]), `[${nombre}] no llega a la póliza emitida`);
+  ok(await p.locator('.pasos-flujo li.hecho').count() === pasos.length, `[${nombre}] los pasos no quedan todos hechos`);
+  ok(await p.getAttribute('.marco__lienzo', 'data-alto') === 'auto', `[${nombre}] el marco no toma el alto del contenido`);
+  const eventos = await p.evaluate(() => (window.dataLayer || []).map((x) => x.event));
+  ok(eventos.includes(`${amb}_rec_fin_flujo`), `[${nombre}] la compra no queda medida`);
+  ok(eventos.filter((x) => x === `${amb}_rec_avance_paso`).length >= pasos.length - 1, `[${nombre}] faltan avances de paso medidos`);
+  ok(await p.evaluate(() => document.documentElement.scrollWidth - innerWidth) <= 1, `[${nombre}] desborde horizontal`);
+  ok(errores.length === 0, `[${nombre}] errores: ${errores.join(' | ')}`);
+  await ctx.close();
+}
+const firmarYPagar = async (f, docs) => {
+  await f.locator('#dia').selectOption('5');
+  for (const id of docs) { await f.locator(`#ver-documento-${id}`).click(); await f.locator('#modal-documento [data-cerrar-modal] >> nth=0').click(); }
+  await f.locator('#cedula').fill('123456789'); await f.locator('#validar').click();
+  await f.locator('#firma-ok').waitFor();
+  await f.locator('#btn-pagar').click();
+};
+await comprar('auto', 1440, '/personas/auto/cotizador/auto-digital/datos/', 'auto_digital',
+  ['datos', 'vehiculo', 'planes', 'confirmacion', 'pago', 'listo'], async (f, paso) => {
+    await f.locator('#rut').fill('10111222-5'); await f.locator('#nombres').fill('Daniela'); await f.locator('#apellidos').fill('Fuentes');
+    await f.locator('#celular').fill('912345678'); await f.locator('#continuar-p1').click(); await paso('vehiculo');
+    await f.locator('#patente').fill('AAAA11'); await f.locator('#c-patente[data-estado="ok"]').waitFor();
+    await f.locator('#color').selectOption('Blanco'); await f.locator('#continuar-p2').click(); await paso('planes');
+    await f.locator('#meses-24').click(); await f.locator('#continuar').click(); await paso('confirmacion');
+    await f.locator('#motor').fill('MOTOR12345'); await f.locator('#chasis').fill('CHASIS12345');
+    await f.locator('#direccion').fill('Avenida Providencia'); await f.locator('#numero').fill('1234'); await f.locator('#comuna-dom').fill('Providencia');
+    await f.locator('#form-confirmar [type=submit]').click(); await paso('pago');
+    await firmarYPagar(f, ['propuesta', 'condicionado', 'privacidad']);
+  });
+await comprar('hogar', 820, '/personas/hogar/cotizador/hogar-facil-plus/datos/', 'hogar_facil_plus',
+  ['datos', 'vivienda', 'planes', 'confirmacion', 'pago', 'listo'], async (f, paso) => {
+    await f.locator('#rut').fill('20111222-2'); await f.locator('#nombres').fill('Ignacio'); await f.locator('#apellidos').fill('Muñoz');
+    await f.locator('#celular').fill('987654321'); await f.locator('#continuar-p1').click(); await paso('vivienda');
+    await f.locator('#direccion').fill('Calle del Ensayo'); await f.locator('#numero').fill('200'); await f.locator('#comuna').fill('Las Condes');
+    await f.locator('#m2').fill('90'); await f.locator('#anio').selectOption({ index: 5 });
+    await f.locator('#continuar-p2').click(); await paso('planes');
+    await f.locator('#continuar-p3').click(); await paso('confirmacion');
+    /* Se toca el texto de la casilla, como una persona: la casilla real es
+       invisible, y un clic forzado en su punto puede caer en la cabecera
+       fija del sitio, que queda encima al desplazar. */
+    await f.locator('#nacimiento').fill('1985-05-20'); await f.locator('label:has(#declaro)').click();
+    ok(await f.locator('#declaro').isChecked(), '[hogar] la declaración no queda marcada');
+    await f.locator('#continuar-p4').click(); await paso('pago');
+    const docs = await f.locator('[data-doc]').evaluateAll((bs) => bs.map((x) => x.dataset.doc));
+    await firmarYPagar(f, docs);
+  });
+await comprar('urgencias', 390, '/personas/vida-y-salud/cotizador/proteccion-urgencias/datos/', 'proteccion_urgencias',
+  ['datos', 'planes', 'beneficiarios', 'pago', 'listo'], async (f, paso) => {
+    await f.locator('#rut').fill('10111222-5'); await f.locator('#nacimiento').fill('1985-05-20');
+    await f.locator('#nombres').fill('Daniela'); await f.locator('#apellidos').fill('Fuentes'); await f.locator('#celular').fill('912345678');
+    await f.locator('#continuar').click(); await paso('planes');
+    await f.locator('#elegir-premium').click(); await f.locator('#continuar').click(); await paso('beneficiarios');
+    await f.locator('#designar-si').click();
+    await f.locator('#b-nombre-0').fill('Tomás Fuentes'); await f.locator('#b-rut-0').fill('20111222-2');
+    await f.locator('#b-parentesco-0').selectOption('Hijo o hija'); await f.locator('#b-porcentaje-0').fill('60');
+    await f.locator('#continuar').click();
+    ok((await f.locator('#error-beneficiarios').textContent()).includes('100%'), '[urgencias] acepta porcentajes que no suman 100');
+    await f.locator('#b-porcentaje-0').fill('100'); await f.locator('#continuar').click(); await paso('pago');
+    await firmarYPagar(f, ['propuesta', 'condiciones', 'privacidad']);
+  });
+console.log('  3 compras completas dentro del sitio');
+
+/* ---- La promoción del cotizador respeta las fechas de sus bases -------- */
+for (const [fecha, debe] of [['2026-10-05T12:00:00', true], ['2026-10-15T12:00:00', false]]) {
+  const { ctx, p } = await contexto({ width: 1280, height: 900 });
+  await p.clock.setFixedTime(new Date(fecha));
+  await p.goto(`${BASE}/herramientas/auto-digital/planes/?demo=1&meses=24`);
+  await p.waitForSelector('.precio-col');
+  ok((await p.locator('.precio-col__ahorro').count() > 0) === debe, `Zurich Days ${debe ? 'no aparece en fecha' : 'sigue después de vencer'} (${fecha.slice(0, 10)})`);
   await ctx.close();
 }
 {
@@ -259,11 +362,12 @@ console.log('Contraste');
   await p.goto(`${BASE}/login/`);
   let medidos = (await auditar()).n;
   await p.fill('#correo', ADMIN); await p.click('button[type=submit]'); await p.waitForURL('**/home/');
-  for (const ruta of [...RUTAS, '/configuracion/#solicitudes', '/configuracion/#medicion', '/configuracion/#pendientes']) {
+  const promoAuto = ['/herramientas/auto-digital/planes/?demo=1&meses=24', '/herramientas/auto-digital/confirmacion/?demo=1&meses=24', '/herramientas/auto-digital/pago/?demo=1&meses=24', '/herramientas/auto-digital/listo/?demo=1&meses=24'];
+  for (const ruta of [...RUTAS.map(conEstado), ...promoAuto, '/configuracion/#solicitudes', '/configuracion/#medicion', '/configuracion/#pendientes']) {
     await p.goto(BASE + ruta); await listo(p);
     await p.evaluate(() => document.querySelectorAll('details').forEach((d) => (d.open = true)));
     const r = await auditar();
-    ok(r.url === ruta.split('#')[0], `contraste: pedí ${ruta} y medí ${r.url}`);
+    ok(r.url === ruta.split(/[?#]/)[0], `contraste: pedí ${ruta} y medí ${r.url}`);
     ok(r.malos.length === 0, `contraste en ${ruta}: ${r.malos.join(' | ')}`);
     medidos += r.n;
   }

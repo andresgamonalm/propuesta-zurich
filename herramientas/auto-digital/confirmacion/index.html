@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confirmación · Seguro de Auto Digital</title>
+<meta name="description" content="Revisa tus datos antes de contratar.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#23366f">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script src="/herramientas/assets/js/temprano.js"></script>
+<link rel="stylesheet" href="/herramientas/assets/css/herramienta.css">
+<link rel="stylesheet" href="/herramientas/assets/css/en-linea.css">
+</head>
+<body data-pagina="confirmar">
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<div class="aviso-demo">
+  <strong>Cotizador de demostración.</strong> Datos ficticios y precios simulados. No se cobra nada. Lo que escribas se guarda siete días, solo en este equipo.
+</div>
+
+<header class="cabecera" id="cabecera">
+  <div class="contenedor cabecera__fila">
+    <img class="cabecera__logo" src="/assets/img/marca/zurich_logo_horizontal.png" alt="Zurich" width="1120" height="260">
+    <span class="cabecera__producto">Seguro de Auto Digital</span>
+    <div class="cabecera__acciones">
+      <a class="cabecera__fono" href="tel:6006009090">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+        <span class="oculta-movil">¿Dudas? 600 600 9090</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="pasos" aria-label="Progreso de contratación">
+  <div class="contenedor"><ol class="pasos__lista" id="pasos"></ol></div>
+</nav>
+
+<main id="contenido">
+<section class="seccion seccion--compacta seccion--nieve">
+  <div class="contenedor contenedor--ancho">
+
+    <form id="form-confirmar" class="panel" novalidate>
+      <div class="titulo-paso">
+        <h1 class="el-16">Confirma tus datos</h1>
+      </div>
+      <p class="bajada-paso el-22">Esto es lo que va a decir tu póliza. Si algo está mal, lo corriges aquí mismo.</p>
+
+      <div class="revision revision--compacta" id="revision"></div>
+
+      <!-- La promoción va aquí, como franja, justo antes de los campos:
+           es el último momento en que se puede anunciar antes de pedir
+           motor, chasis y domicilio. El panel de la derecha se eliminó. -->
+      <div class="franja-beneficio" id="franja-beneficio"></div>
+
+      <h2 class="el-23">Datos para emitir la póliza</h2>
+      <p class="campo__pista el-18">El motor y el chasis están en tu padrón y en el permiso de circulación.</p>
+
+      <!-- La diagramación que pediste: motor y chasis arriba en dos, la
+           dirección a lo ancho porque es el campo largo, y abajo número,
+           depto y comuna en tres. «Tipo de domicilio» se eliminó: repetía
+           lo que ya dice «N° casa o depto», y se deduce de ahí. -->
+      <div class="rejilla-campos--2">
+        <div class="campo" id="c-motor">
+          <label class="campo__rotulo" for="motor">
+            N° de motor
+            <span class="porque" data-campo="motor">
+              <button type="button" class="porque__btn js-ev" id="porque-motor" aria-expanded="false" aria-label="Por qué pedimos el número de motor">?</button>
+              <span class="porque__globo" role="note">El número de motor y de chasis identifican tu auto en la póliza. Están en el padrón y en el permiso de circulación.</span>
+            </span>
+          </label>
+          <div class="campo__caja"><input class="el-24" id="motor" type="text" autocomplete="off" size="1" placeholder="SQR371FBHJG50564"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-chasis">
+          <label class="campo__rotulo" for="chasis">N° de chasis</label>
+          <div class="campo__caja"><input class="el-24" id="chasis" type="text" autocomplete="off" size="1" placeholder="LVVDB12B9KB010829"></div>
+          <p class="campo__pista"></p>
+        </div>
+      </div>
+
+      <div class="campo" id="c-direccion">
+        <label class="campo__rotulo" for="direccion">
+          Dirección
+          <span class="porque" data-campo="direccion">
+            <button type="button" class="porque__btn js-ev" id="porque-direccion" aria-expanded="false" aria-label="Por qué pedimos tu dirección">?</button>
+            <span class="porque__globo" role="note">Va en la póliza como domicilio del asegurado y es donde llega el auto de reemplazo si lo necesitas.</span>
+          </span>
+        </label>
+        <div class="campo__caja"><input id="direccion" type="text" autocomplete="street-address" size="1" placeholder="Calle o avenida"></div>
+        <p class="campo__pista"></p>
+      </div>
+
+      <div class="rejilla-campos--3">
+        <div class="campo" id="c-numero">
+          <label class="campo__rotulo" for="numero">Número</label>
+          <div class="campo__caja"><input id="numero" type="text" inputmode="numeric" size="1" placeholder="1234"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-depto">
+          <label class="campo__rotulo" for="depto">N° casa o depto <span class="campo__opcional">(opcional)</span></label>
+          <div class="campo__caja"><input id="depto" type="text" size="1" placeholder="101, Casa B…"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-comuna-dom">
+          <label class="campo__rotulo" for="comuna-dom">Comuna</label>
+          <div class="campo__caja"><input id="comuna-dom" type="text" autocomplete="address-level2" size="1" placeholder="Empieza a escribir…"></div>
+          <p class="campo__pista"></p>
+        </div>
+      </div>
+
+      <div class="paso-acciones">
+          <a class="btn btn--fantasma js-ev" id="volver-p4" data-ev="auto_p4_click_volver" href="/herramientas/auto-digital/planes/">Volver</a>
+          <button class="btn btn--primario js-ev" id="continuar-p4" type="submit">Ir a pagar</button>
+        </div>
+    </form>
+
+  </div>
+</section>
+</main>
+
+<footer class="pie pie--corto">
+  <div class="contenedor">
+    <div class="pie__legal">
+      <p>Seguro de Auto Digital es un seguro ofrecido y cubierto por Zurich Chile Seguros Generales S.A. El detalle de sus características, requisitos de asegurabilidad, extensión de la cobertura, sus limitaciones y el monto y forma de pago de la prima se detallan en las condiciones particulares y en el condicionado general POL 1 2016 0279, depositado en la Comisión para el Mercado Financiero.</p>
+      <p><strong>Cotizador de demostración.</strong> Datos de clientes ficticios y precios simulados a partir de una cotización de ejemplo. No constituye una oferta ni una tarifa vigente. En producción, este paso lo resuelve la herramienta oficial de Zurich.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/herramientas/assets/js/p-confirmar.js"></script>
+</body>
+</html>

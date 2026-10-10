@@ -14,7 +14,9 @@ un subdominio y se abre desde el espacio privado del banco. Reúne en un solo
 lugar:
 
 - los productos de Zurich, con su promoción o precio arriba;
-- los cotizadores oficiales de Zurich, cargados dentro del sitio;
+- los cotizadores oficiales de Zurich, cargados dentro del sitio, y tres
+  cotizadores de demostración que funcionan de punta a punta (Auto Digital,
+  Hogar Fácil Plus y Protección Urgencias);
 - los trámites (denunciar un siniestro, pedir un reembolso, pagar);
 - las asesorías para los seguros de vida que no se contratan en línea;
 - Mundo Zurich y la explicación de qué hace cada compañía en la alianza.
@@ -30,7 +32,7 @@ Chile). No es técnico. Se le habla en castellano y sin jerga.
 | Fuente | Qué se tomó |
 |---|---|
 | Brief «Propuesta de contenidos · Estructura y contenidos del mini sitio de seguros Zurich para Banco BICE» (`Brief-Zurich-Bice.docx`, octubre 2026) | Estructura, secciones, textos de portada, acceso y alianza, reglas editoriales, medición, protocolo de revisión |
-| Apunte `Como_se_construyo_el_ecommerce_de_seguros.docx` y repositorio `andresgamonalm/piloto-ecommerce-zurich` | La forma de construir: HTML estático sin dependencias, la carpeta es la dirección, una sola fuente de contenido, medición con `dataLayer`, verificación automática en tres anchos y auditoría de contraste |
+| Apunte `Como_se_construyo_el_ecommerce_de_seguros.docx` y repositorio `andresgamonalm/piloto-ecommerce-zurich` | La forma de construir: HTML estático sin dependencias, la carpeta es la dirección, una sola fuente de contenido, medición con `dataLayer`, verificación automática en tres anchos y auditoría de contraste. Desde el 10 de octubre, además, **los flujos de Auto y Hogar** (copiados a `/herramientas/`; el piloto no se toca) |
 | Skill `lineamientos-marca-zurich` (Brandbook Zurich 2024) | Colores, tipografía, logo, formas, fotografía, contraste |
 | Drive · Marca Zurich (`15qA06PcR7EkiX0kHCWfHbZZD_2IUMG7Y`) | Logos Zurich y fotos (`assets/img/marca`, `assets/img/fotos`) |
 | Drive · Marca BICE (`11zs7uQlMxJeL-QCbJ9ex0srMRVKjzJDG`) | Logo de Banco BICE (solo existe azul sobre blanco) |
@@ -52,6 +54,13 @@ Chile). No es técnico. Se le habla en castellano y sin jerga.
    intentar cargarlos dentro del mini sitio y, después, **usar solo la parte
    del formulario o del flujo**, para que el resto de la propuesta se mantenga:
    **el flujo a un lado y, al otro, una promoción o un aviso**.
+7. **Cotizadores que funcionen de verdad** (10 de octubre de 2026): «me
+   interesa que los cotizadores, flujos o formularios funcionen perfecto.
+   Como esta es una maqueta, IT no me pasará nada. En el caso de Hogar y Auto
+   Digital debieras usar el flujo que creamos nosotros». Al plan respondió
+   **«Sí, y suma Urgencias»**. Auto y Hogar usan el flujo del piloto,
+   vestido de Zurich; Protección Urgencias se armó con las mismas piezas. Es
+   la única excepción a «no reconstruir cotizadores».
 
 ## 4 · Qué se construyó
 
@@ -59,7 +68,8 @@ Repositorio `andresgamonalm/propuesta-zurich`, rama
 `claude/magical-newton-n0tjyb`. No se ha abierto solicitud de cambios ni se ha
 publicado.
 
-**34 páginas** (más la 404):
+**34 páginas** (más la 404) y **17 pantallas de los cotizadores de
+demostración**:
 
 | | Dirección |
 |---|---|
@@ -71,6 +81,7 @@ publicado.
 | 3 asesorías y su confirmación | `/personas/vida-y-salud/asesoria/<producto>/` y `…/enviada/` |
 | 4 trámites integrados | `/servicios/denuncia-vehiculo/`, `/servicios/denuncia-vida/`, `/servicios/reembolso/`, `/servicios/pago/` |
 | Otras | `/servicios/`, `/alianza/`, `/mundo-zurich/`, `/configuracion/` (solo administrador) |
+| Cotizadores de demostración (se cargan dentro del marco) | `/herramientas/auto-digital/` (datos, vehículo, planes, confirmación, pago, listo), `/herramientas/hogar-facil-plus/` (datos, vivienda, planes, confirmación, pago, listo), `/herramientas/proteccion-urgencias/` (datos, planes, beneficiarios, pago, listo) |
 
 **Cómo funciona por dentro**
 
@@ -87,12 +98,30 @@ publicado.
 - **Seguridad:** `_headers` lleva la política de seguridad. Solo se pueden
   cargar dentro del sitio los dominios de Zurich, y esa lista se cambia junto
   con `ORIGENES_PERMITIDOS` en `assets/js/paginas/configuracion.js`.
+- **Cotizadores de demostración** (`/herramientas/`):
+  - código en `herramientas/assets/js` y estilos en `herramientas/assets/css`;
+    los de Auto (`p-*.js`, `datos.js`, `cotizacion.js`) y Hogar (`h-*.js`,
+    `datos-hogar.js`, `cotizacion-hogar.js`) vienen del piloto; Urgencias
+    (`u-*.js`, `datos-urgencias.js`, `comun-urgencias.js`) es nuevo;
+  - `temprano.js` detecta si está dentro del marco y esconde su cabecera,
+    pasos y pie (los pone el sitio); `marco.js` le avisa al sitio el paso, el
+    fin, el alto y el foco;
+  - el contenido sale del catálogo del sitio: coberturas y precios publicados,
+    y la promoción Zurich Days (`promocion.js`) solo a 24 meses y solo en las
+    fechas de sus bases. Hogar y Urgencias no tienen promoción publicada;
+  - clientes de prueba ficticios: RUT `10111222-5` (patente `AAAA11`) y
+    `20111222-2` (patente `BBBB22`); la cédula acepta nueve dígitos
+    cualesquiera; el pago es simulado;
+  - se puede volver a la vista referencial desmarcando «Cargar dentro del
+    sitio» en Configuración › Contenidos.
 
 **Entregables** en `_entregables/`:
 
-- documentación general y técnica (Word, 7 páginas);
-- descripción publicitaria (Word, 4 páginas);
-- 6 capturas de pantalla y una portada de presentación;
+- documentación general y técnica (Word, versión 1.2);
+- descripción publicitaria (Word);
+- 7 capturas de pantalla (entre ellas el cotizador de Auto dentro del sitio,
+  en «Tus datos» y en «Planes» con Zurich Days) y una portada de
+  presentación;
 - íconos (`.ico` y PNG de 1000 px).
 
 ## 5 · Cómo verlo y comprobarlo
@@ -127,6 +156,10 @@ publicado.
    al otro una promoción o un aviso.»** Hecho: sección 8.
 7. **«Deja escrito de qué se trata y todo lo que hiciste para abrir luego otro
    chat»:** este documento.
+8. **«Me interesa que los cotizadores, flujos o formularios funcionen
+   perfecto… En el caso de Hogar y Auto Digital debieras usar el flujo que
+   creamos nosotros».** Se le propuso el plan y respondió «Sí, y suma
+   Urgencias». Hecho: sección 8.
 
 ## 7 · ¿Se pueden cargar las herramientas de Zurich dentro del sitio?
 
@@ -137,7 +170,7 @@ estas direcciones lo hace.
 
 | Herramienta | Dirección revisada | Resultado |
 |---|---|---|
-| Auto Digital, SOAP, Celular Protegido, Hogar Fácil Plus, Protección Urgencias | páginas de producto en `www.zurich.cl` | Se pueden cargar. La política de seguridad de zurich.cl está solo en modo informe. **No se usan:** traen el menú y el pie de zurich.cl |
+| Auto Digital, SOAP, Celular Protegido, Hogar Fácil Plus, Protección Urgencias | páginas de producto en `www.zurich.cl` | Se pueden cargar. La política de seguridad de zurich.cl está solo en modo informe. **No se usan:** traen el menú y el pie de zurich.cl. Desde el 10 de octubre, Auto, Hogar y Urgencias cargan los cotizadores de demostración |
 | Cotizador de Celular Protegido | `celularprotegido.zurich.cl/cl/` (lleva a un recorrido nuevo en cada visita) | Se puede cargar. Es solo el flujo |
 | Denuncia de vehículo | `clientes.zurich.cl/Portalclientes/denuncios/motors` | Se puede cargar. Sus cookies no declaran `SameSite`: puede perder la sesión dentro del marco |
 | Siniestro de vida | `www9.zurich.cl/vida/web/Portal/productos/life/reembolso/0` | Se puede cargar |
@@ -181,9 +214,9 @@ textos legales.
 |---|---|---|
 | SOAP 2026 | Portal de compra `soap.zurich.cl` | Promoción «Tu SOAP 2026 desde $5.690*» |
 | Celular Protegido | Cotizador `celularprotegido.zurich.cl/cl/` | Promoción «Protege tu celular desde $29.990*» |
-| Auto Digital | Vista referencial (primera pantalla): falta la dirección del formulario | Oferta Zurich Days, hasta el 10-10-2026 |
-| Hogar Fácil Plus | Vista referencial: falta la dirección del formulario | Gancho «5 planes · Incendio, sismo y robo» |
-| Protección Urgencias | Vista referencial: falta la dirección del formulario | Concurso «Año de supermercado» y «Desde $13.900*» |
+| Auto Digital | Desde el 10-10: cotizador de demostración (flujo del piloto) | Oferta Zurich Days, hasta el 10-10-2026 |
+| Hogar Fácil Plus | Desde el 10-10: cotizador de demostración (flujo del piloto) | Gancho «5 planes · Incendio, sismo y robo» |
+| Protección Urgencias | Desde el 10-10: cotizador de demostración (nuevo) | Concurso «Año de supermercado» y «Desde $13.900*» |
 | Denuncia de vehículo | Formulario del Portal de Clientes | Aviso «Antes de denunciar» y Mundo Zurich |
 | Denuncia de vida | Formulario de `www9.zurich.cl` | Mundo Zurich |
 | Reembolso | El PDF oficial, con botón de descarga siempre a la vista | Aviso «Cómo se envía» y Mundo Zurich |
@@ -203,6 +236,25 @@ textos legales.
   choque real: el permiso de pago solo se delegaba a `www.zurich.cl`. Ya está
   corregido.
 
+**Los cotizadores de demostración (10 de octubre de 2026):**
+
+| Cotizador | Pasos | De dónde sale cada cosa |
+|---|---|---|
+| Auto Digital | Tus datos → Tu auto → Planes → Confirmación → Pago → Listo | Flujo del piloto. Tarifa simulada en UF. Zurich Days (2 cuotas gratis + gift card Apprecio de $60.000) solo a 24 meses y solo del 1 al 10 de octubre, según sus bases |
+| Hogar Fácil Plus | Tus datos → Tu vivienda → Planes → Confirmación → Pago → Listo | Flujo del piloto. Planes Estándar (solo estructura, o estructura y contenido) y Premium; tasa simulada. Vacacional, Rural e Hipotecario derivan a un ejecutivo |
+| Protección Urgencias | Tus datos → Planes → Beneficiarios → Pago → Listo | Nuevo, con las mismas piezas. Los tres planes y el precio «desde» publicado en zurich.cl, rotulado «precio referencial publicado». Beneficiarios opcionales (hasta cuatro, suman 100%) |
+
+- Cada uno termina en la póliza emitida, con comprobante descargable. Antes
+  de pagar se elige el día de cargo, se leen los contratos y se firma con la
+  cédula, como se emite de verdad. El pago es simulado: no se cobra nada.
+- Dentro del sitio, la barra de pasos de arriba avanza con el cotizador, el
+  marco toma el alto del contenido y cada paso queda medido
+  (`<producto>_rec_avance_paso` y `…_rec_fin_flujo`).
+- El correo con que se entró al sitio llega precargado.
+- **Verificación:** 996 comprobaciones, 0 fallas, con las tres compras
+  completas dentro del sitio (Auto en escritorio, Hogar en tablet, Urgencias
+  en celular) y el contraste de las 17 pantallas. Se revisaron además a ojo.
+
 **Lo que queda pendiente:**
 
 1. **Andrés** prueba en su computador con el lanzador. Esto no se pudo ver
@@ -212,12 +264,14 @@ textos legales.
    - Si alguno sale en blanco, se apaga en Configuración › Contenidos.
 2. **Pedir a TI de Zurich:**
    - la dirección del formulario de Auto Digital, Hogar Fácil Plus y
-     Protección Urgencias;
+     Protección Urgencias, para reemplazar los de demostración;
    - la pasarela de pago de cada flujo;
    - si la sesión se mantiene dentro del marco en Safari;
    - si implementan el aviso de pasos (`postMessage`).
-3. **Lo demás está en Configuración › Pendientes:** 50 definiciones antes de
-   producción.
+3. **Lo demás está en Configuración › Pendientes:** 54 definiciones antes de
+   producción. Las nuevas: qué planes de Hogar se contratan en línea, la
+   regla de designación de beneficiarios y la nota de demostración de cada
+   cotizador.
 
 ## 9 · Registro de cambios posteriores
 
@@ -225,6 +279,7 @@ textos legales.
 |---|---|
 | 9-10-2026 | Se crea este traspaso (antes de implementar la sección 8) |
 | 9-10-2026 | Solo el formulario dentro del marco, con promoción o aviso al lado; verificador con las cabeceras de `_headers`; documentos y captura actualizados |
+| 10-10-2026 | Cotizadores de demostración que funcionan completos dentro del sitio: Auto y Hogar con el flujo del piloto, Protección Urgencias nuevo (`/herramientas/`). Verificador con las tres compras completas: 996 comprobaciones, 0 fallas. Documentos y capturas actualizados |
 
 ## 10 · Para empezar el próximo chat
 

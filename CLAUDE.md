@@ -43,6 +43,14 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   (su menú taparía la propuesta). Al lado: la promoción (cotizadores) o el
   aviso (trámites). Sin dirección de formulario (`formulario` en
   `catalogo.js`), el marco queda en vista referencial.
+- **Cotizadores de demostración** (10-10-2026, «Sí, y suma Urgencias»): como
+  es una maqueta, quiere que los cotizadores funcionen de punta a punta. Auto
+  Digital y Hogar Fácil Plus usan **el flujo del piloto de ecommerce**
+  (`piloto-ecommerce-zurich`), vestido de Zurich; Protección Urgencias se armó
+  con las mismas piezas. Viven en `/herramientas/` y se rotulan
+  «Demostración»: datos ficticios, precios simulados o referenciales, sin
+  cobro. En producción se reemplazan por la herramienta oficial de Zurich. El
+  repositorio del piloto **no se toca**.
 
 ## Lo que nunca se hace
 
@@ -51,6 +59,11 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
 - **No inventar textos legales ni campos de consentimiento.** Se muestran como
   pendientes.
 - **No reconstruir cotizadores, pagos ni denuncias:** se integran en el marco.
+  Única excepción, decidida por él: los tres cotizadores de demostración de
+  `/herramientas/`. Tampoco ahí se redacta contenido: coberturas, precios y
+  promoción salen del catálogo.
+- **No publicar datos de personas reales** (el repositorio es público): los
+  clientes de prueba de `/herramientas/` son ficticios.
 - **No usar colores de BICE** fuera del identificador de la alianza.
 - **Sobre el Azul de Zúrich `#2167AE` solo va texto blanco** (5,81:1). El
   `--texto-invertido-suave` da 4,36:1 ahí y no cumple: es solo para azul oscuro.
@@ -68,8 +81,17 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
 - Orígenes que pueden cargarse en el marco: `ORIGENES_PERMITIDOS` en
   `paginas/configuracion.js`, `frame-src` **y** `payment` de
   `Permissions-Policy` en `_headers`. Se cambian juntos. Hoy: `*.zurich.cl`,
-  `*.chilena.cl` (formulario de pago) y `edge.sitecorecloud.io` (PDF).
+  `*.chilena.cl` (formulario de pago) y `edge.sitecorecloud.io` (PDF), más
+  `'self'` en `frame-src` para los cotizadores de demostración.
 - Sin estilos ni scripts en línea: la política de seguridad los bloquea.
+- **Cotizadores de demostración** (`/herramientas/<producto>/<paso>/`): mismo
+  sitio, por eso `frame-src` lleva `'self'` y su marco va sin `sandbox`.
+  Hablan con el sitio por `postMessage` (`herramientas/assets/js/marco.js`):
+  el paso (nombre de la carpeta, igual a los `pasos` del catálogo), el fin, el
+  alto y el foco. Leen el catálogo (`/assets/js/catalogo.js`) para coberturas,
+  precios y la promoción Zurich Days (`promocion.js`: solo a 24 meses y solo
+  en las fechas de sus bases), y la sesión del sitio para precargar el correo.
+  Una sola UF para toda la maqueta (`datos.js › UF`), la que publica zurich.cl.
 
 ## Antes de cada commit
 
@@ -81,7 +103,8 @@ Debe terminar en 0 fallas. Recorre todo de forma recursiva (nunca una lista
 escrita a mano), en 1440, 820 y 390 px, prueba los flujos y mide el contraste
 de lo pintado. Si se agrega una página, se agrega sola al recorrido. Sirve el
 sitio con las cabeceras de `_headers` y reemplaza las herramientas de Zurich
-por una página simulada (desde aquí zurich.cl está bloqueado). En esta
+por una página simulada (desde aquí zurich.cl está bloqueado). Hace las tres
+compras completas dentro del sitio (Auto, Hogar y Urgencias). En esta
 máquina: `PLAYWRIGHT_MODULE=/opt/node-tools/node_modules/playwright/index.mjs`.
 
 ## Trampas conocidas
@@ -100,3 +123,11 @@ máquina: `PLAYWRIGHT_MODULE=/opt/node-tools/node_modules/playwright/index.mjs`.
 - Una página de otro dominio no se puede recortar desde fuera. Para «solo el
   formulario» se necesita la dirección del formulario, no un truco de
   posición.
+- Las pantallas de `/herramientas/` necesitan estado: sin `?demo=1` rebotan al
+  primer paso. El verificador las recorre con `?demo=1`.
+- La barra de pasos del sitio ya marca el primer paso antes de que el
+  cotizador cargue: para saber que el cotizador corrió, esperar el alto
+  (`.marco__lienzo[data-alto="auto"]`), no el primer paso.
+- Un botón que el módulo marca al cargar (volver a un paso) hacía un fundido
+  que el medidor de contraste pillaba a medias: `temprano.js` pone `cargando`
+  y el CSS apaga las transiciones hasta dos cuadros después de `load`.

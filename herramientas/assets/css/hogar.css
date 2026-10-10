@@ -1,0 +1,188 @@
+/* =====================================================================
+   Cotizador de demostración · Hogar Fácil Plus — hogar.css
+   ---------------------------------------------------------------------
+   ESTE ARCHIVO ES CORTO A PROPÓSITO.
+
+   El encargo era demostrar que el cotizador de hogar se construye con
+   las mismas piezas que el de auto. Si hogar trajera su propio sistema
+   de diseño, la demostración se caería sola. Así que aquí solo viven
+   las seis piezas que el recorrido de auto no necesitaba, todas hechas
+   con los tokens de herramienta.css §1: ni un color, ni un radio, ni una
+   sombra nuevos.
+
+   Todo lo demás —panel, campo, casilla, rejillas, bloque-titulo, barra
+   fija, precios-tres, plegable, tabla, revisión, franja del beneficio,
+   boleta, modal, mensajes, éxito— se usa tal cual desde herramienta.css.
+
+   §H1 Tarjetas de opción · §H2 Sufijo en el campo · §H3 Monto estimado
+   §H5 Requisitos         · §H6 Precio tachado
+   ===================================================================== */
+
+/* ── §H1 · TARJETAS DE OPCIÓN ─────────────────────────────────────────
+   Casa o departamento. Dos tarjetas grandes con dibujo, no un
+   desplegable. El elegido cambia borde, fondo y peso tipográfico a la
+   vez: un borde de 1 px como única señal no se ve en un monitor con el
+   brillo bajo, que es la mitad de las pantallas de oficina. */
+.grupo-opcion { border: 0; padding: 0; margin: 0 0 var(--e6); }
+.grupo-opcion legend { padding: 0; margin-bottom: var(--e3); }
+
+.opciones-tarjeta {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e4); max-width: 520px;
+}
+
+.opcion-tarjeta {
+  display: flex; align-items: center; gap: var(--e4);
+  padding: var(--e4) var(--e5);
+  border: 2px solid var(--linea-fuerte); border-radius: var(--radio);
+  background: #fff; cursor: pointer; text-align: left;
+  font-family: inherit; font-size: var(--t-base); color: var(--texto);
+  transition: border-color var(--transicion), background var(--transicion),
+              box-shadow var(--transicion);
+}
+.opcion-tarjeta:hover { border-color: var(--azul-medio); }
+.opcion-tarjeta:focus-visible {
+  outline: 0; border-color: var(--azul);
+  box-shadow: 0 0 0 4px rgba(33,103,174,.14);
+}
+.opcion-tarjeta[aria-checked="true"] {
+  border-color: var(--azul); background: var(--t-celeste-sv); font-weight: 700;
+}
+.opcion-tarjeta svg { flex: none; color: var(--azul); }
+.opcion-tarjeta[aria-checked="true"] svg { color: var(--azul-oscuro); }
+
+/* Tres opciones —cómo se usa la vivienda— en vez de dos. Más ancho que
+   el par de tarjetas porque tres en 520 px dejan el rótulo en tres
+   líneas. El dibujo se omite acá: con tres tarjetas, tres íconos
+   compiten con el texto en vez de ayudarlo. */
+.opciones-tarjeta--tres {
+  grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 760px;
+}
+.opciones-tarjeta--tres .opcion-tarjeta { display: block; }
+.opcion-tarjeta__detalle {
+  display: block; margin-top: 2px;
+  font-size: var(--t-xs); font-weight: 400; color: var(--texto-suave);
+}
+.opcion-tarjeta[aria-checked="true"] .opcion-tarjeta__detalle { color: var(--texto); }
+
+@media (max-width: 860px) {
+  .opciones-tarjeta--tres { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .opciones-tarjeta { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── §H2 · SUFIJO DENTRO DEL CAMPO ────────────────────────────────────
+   Los «m²» van dentro de la caja, no en la etiqueta: el cliente escribe
+   90 y ve «90 m²» completo, sin tener que mirar arriba para saber en
+   qué unidad estaba escribiendo. */
+.campo__sufijo {
+  flex: none; font-size: var(--t-sm); font-weight: 700;
+  color: var(--texto-tenue); white-space: nowrap;
+}
+
+/* ── §H3 · EL MONTO ASEGURADO ESTIMADO ────────────────────────────────
+   La pieza que evita el campo «tasación bancaria de la vivienda», que
+   manda al cliente a llamar al banco en mitad de la cotización. Aquí el
+   número llega calculado y se puede corregir.
+
+   Va en crema y no en amarillo: el amarillo del brandbook es acento —en
+   filete, en punto, en pastilla— y como fondo de un panel entero arrastra
+   el texto de encima a 3:1. La versión crema da 10,6:1 con el azul
+   oscuro. Misma regla que ya está escrita en herramienta.css §1. */
+.estimado {
+  margin: var(--e6) 0;
+  padding: var(--e5);
+  border-radius: var(--radio);
+  background: var(--t-crema);
+  border: 1px solid rgba(35,54,111,.10);
+}
+.estimado__fila {
+  display: flex; flex-wrap: wrap; align-items: flex-end;
+  justify-content: space-between; gap: var(--e4);
+}
+.estimado__rotulo {
+  font-size: var(--t-xs); font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--sobre-crema);
+}
+.estimado__monto {
+  font-size: var(--t-2xl); font-weight: 700; line-height: 1.05;
+  color: var(--azul-oscuro); margin-top: var(--e1);
+}
+.estimado__equivalente { font-size: var(--t-sm); color: var(--sobre-crema); margin-top: var(--e1); }
+.estimado__nota {
+  margin-top: var(--e4); padding-top: var(--e3);
+  border-top: 1px solid rgba(35,54,111,.12);
+  font-size: var(--t-xs); color: var(--sobre-crema);
+}
+.estimado__editar {
+  display: flex; align-items: center; gap: var(--e3); flex-wrap: wrap;
+  margin-top: var(--e4);
+}
+.estimado__editar label { font-size: var(--t-sm); font-weight: 700; }
+.estimado__editar .campo__caja { background: #fff; max-width: 220px; }
+
+/* ── §H5 · REQUISITOS DE ASEGURABILIDAD ───────────────────────────────
+   Los siete de la ficha del producto. Van plegados: son condición de
+   suscripción, no una pantalla que haya que leer antes de cotizar: un
+   muro de letra chica antes del precio no lo lee nadie. */
+.lista-requisitos { display: grid; gap: var(--e2); margin-bottom: var(--e4); }
+.lista-requisitos li {
+  display: flex; gap: var(--e3); align-items: flex-start;
+  font-size: var(--t-sm); color: var(--texto-suave);
+}
+.lista-requisitos li::before {
+  content: ""; flex: none; width: 6px; height: 6px; margin-top: 8px;
+  border-radius: 50%; background: var(--azul-claro);
+}
+
+/* ── §H6 · EL PRECIO DE LISTA, TACHADO ────────────────────────────────
+   Una línea sobre el precio grande de la tarjeta, para que el descuento
+   por seguridad se vea y no haya que creerlo. Vive aquí y no en §29
+   porque el recorrido de auto no lo usa. */
+.precio-col__antes {
+  margin-top: var(--e3); font-size: var(--t-xs);
+  color: var(--texto-tenue); min-height: 1em;
+}
+.precio-col__antes s { color: var(--tachado); }
+.precio-col__antes + .precio-col__monto { margin-top: 2px; }
+.precio-col__nota-plan {
+  margin-top: var(--e2); font-size: var(--t-xs); color: var(--texto-suave);
+}
+
+/* ── La fila de la dirección ──────────────────────────────────────────
+   40 / 20 / 20 / 20. La dirección es el único campo de los cuatro que
+   necesita ancho de verdad: «Avenida Presidente Riesco» no entra en un
+   cuarto de fila y «1234» no necesita más. Antes eran tres filas —la
+   dirección sola, luego número/depto/comuna, luego región/referencia—
+   y el formulario se hacía eterno antes de llegar a lo que importa,
+   que son los metros y el material. */
+.rejilla-direccion {
+  display: grid; gap: 0 var(--e4);
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+}
+@media (max-width: 720px) {
+  .rejilla-direccion { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+}
+@media (max-width: 520px) {
+  .rejilla-direccion { grid-template-columns: minmax(0,1fr); }
+}
+
+/* ── §H7 · LA LETRA QUE OBLIGA LA NORMA ───────────────────────────────
+   El valor de la UF del día y los dos avisos que acompañan a un precio
+   de seguros. Van bajo las tarjetas de precio, no al pie de la página:
+   un aviso sobre el precio tiene que estar donde se mira el precio.
+   Texto tenue sobre blanco, 7,4:1. */
+.nota-precios {
+  margin-top: var(--e4); font-size: var(--t-xs); color: var(--texto-tenue);
+  max-width: 78ch; line-height: 1.5;
+}
+
+/* El código de la condición general depositada y el deducible, bajo el
+   nombre de cada cobertura. En bloque y no en línea, para que el nombre
+   de la cobertura siga siendo lo primero que se lee. */
+.tabla__codigo {
+  display: block; margin-top: 2px;
+  font-size: var(--t-xs); font-weight: 400; color: var(--texto-tenue);
+}

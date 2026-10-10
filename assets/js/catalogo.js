@@ -18,11 +18,14 @@
  *    hallazgos de la lectura de las fuentes. Aparece en Configuración.
  * 4. `formulario`: la dirección que es SOLO el formulario o el flujo, sin la
  *    página de producto alrededor (menú, fotos y pie de zurich.cl). Es lo que
- *    se carga dentro del sitio. Encontradas y revisadas el 9 de octubre de
- *    2026: ninguna trae `X-Frame-Options` ni `frame-ancestors` (salvo
- *    soap.zurich.cl, que no se pudo revisar). Donde no hay `formulario`, el
- *    marco queda en vista referencial: cargar la página completa del producto
- *    taparía la propuesta con la navegación de zurich.cl.
+ *    se carga dentro del sitio. Las de zurich.cl se encontraron y revisaron el
+ *    9 de octubre de 2026: ninguna trae `X-Frame-Options` ni
+ *    `frame-ancestors` (salvo soap.zurich.cl, que no se pudo revisar).
+ *    Auto Digital, Hogar Fácil Plus y Protección Urgencias no tienen una
+ *    dirección pública así: por decisión de Andrés (9-10-2026), en la maqueta
+ *    cargan los cotizadores de demostración de /herramientas/ (Auto y Hogar
+ *    vienen del piloto de ecommerce; Urgencias se armó con las mismas
+ *    piezas). Marcados con `demostracion: true`.
  */
 
 export const FECHA_FUENTES = '9 de octubre de 2026';
@@ -137,6 +140,11 @@ export const PRODUCTOS = [
       hasta: '2026-10-10',
       boton: 'Conocer oferta',
       bases: BASES_ZURICH_DAYS,
+      // Lo mismo, en datos, para que el cotizador lo aplique (bases y titular de zurich.cl).
+      vigenciaMeses: 24,
+      cuotasGratis: [3, 6],
+      beneficio: 'Gift card Apprecio de $60.000',
+      entregaBeneficio: 'Se entrega a más tardar el 30 de noviembre de 2026, una por cliente.',
     },
     beneficios: [
       { icono: 'escudo', titulo: 'Tranquilidad', texto: 'Te respaldamos ante robo, daños materiales y responsabilidad civil.' },
@@ -189,6 +197,8 @@ export const PRODUCTOS = [
       pasos: ['datos', 'vehiculo', 'planes', 'confirmacion', 'pago', 'listo'],
       etiquetas: ['Tus datos', 'Tu vehículo', 'Planes', 'Confirmación', 'Pago', 'Listo'],
       referencia: 'https://www.zurich.cl/seguros-auto/auto-digital',
+      formulario: '/herramientas/auto-digital/datos/',
+      demostracion: true,
       previa: [
         { etiqueta: 'RUT', tipo: 'text', ayuda: 'Ej.: 12.345.678-9' },
         { etiqueta: 'Nombre y apellido', tipo: 'text' },
@@ -199,7 +209,8 @@ export const PRODUCTOS = [
     },
     porValidar: [
       'Vigencia y condiciones de «Zurich Days» para clientes de Banco BICE: las bases oficiales dicen 2 cuotas gratis (N°3 y N°6) + gift card $60.000, del 1 al 10 de octubre de 2026. La página del producto dice «3 cuotas gratis»: se usó lo que dicen las bases.',
-      'Dirección del cotizador sin la página del producto alrededor (versión para marco): no es pública. Las cabeceras de zurich.cl permiten cargarse dentro de otro sitio (revisado el 9 de octubre de 2026).',
+      'Dentro del marco carga un cotizador de demostración (el del piloto de ecommerce, vestido de Zurich): datos ficticios y precios simulados a partir de una cotización de ejemplo, sin cobro. En producción se reemplaza por la herramienta oficial de Zurich, cuya dirección para marco no es pública.',
+      'Promoción dentro del cotizador: solo Zurich Days, con sus bases oficiales (24 meses, cuotas 3 y 6 sin pago y gift card). Las promociones por persona del piloto no se trajeron.',
       'Enlace a la ficha del producto (zurich.cl lo publica, la URL no está en el brief).',
     ],
   },
@@ -429,6 +440,8 @@ export const PRODUCTOS = [
       pasos: ['datos', 'vivienda', 'planes', 'confirmacion', 'pago', 'listo'],
       etiquetas: ['Tus datos', 'Tu vivienda', 'Planes', 'Confirmación', 'Pago', 'Listo'],
       referencia: 'https://www.zurich.cl/bienes-y-viaje/hogar-facil-plus',
+      formulario: '/herramientas/hogar-facil-plus/datos/',
+      demostracion: true,
       previa: [
         { etiqueta: 'RUT', tipo: 'text', ayuda: 'Ej.: 12.345.678-9' },
         { etiqueta: 'Nombre y apellido', tipo: 'text' },
@@ -439,7 +452,9 @@ export const PRODUCTOS = [
     },
     porValidar: [
       'Nombre y URL oficial: el brief dice «Seguro de Hogar» con URL pendiente. La página pública vigente es «Seguro Hogar Fácil Plus»; existe además un «Seguro Hogar Digital» que solo aparece en el Centro de Ayuda.',
-      'Mecanismo de contratación digital y dirección del cotizador sin la página del producto alrededor (no es pública).',
+      'Mecanismo de contratación digital de la compañía.',
+      'Dentro del marco carga un cotizador de demostración (el del piloto de ecommerce, vestido de Zurich): datos ficticios y precios simulados, sin cobro. En producción se reemplaza por la herramienta oficial de Zurich, cuya dirección para marco no es pública.',
+      'Planes del cotizador de demostración: de los cinco que publica zurich.cl cotiza Estándar (solo estructura, o estructura y contenido) y Premium, para vivienda urbana de uso permanente; Vacacional, Rural e Hipotecario derivan a un ejecutivo. En las tarjetas se rotulan por lo que cubren (Estructura, Completo, Premium) y en la póliza con su nombre oficial. Confirmar con Zurich qué planes se contratan en línea.',
     ],
   },
 
@@ -504,6 +519,8 @@ export const PRODUCTOS = [
       pasos: ['datos', 'planes', 'beneficiarios', 'pago', 'listo'],
       etiquetas: ['Tus datos', 'Planes', 'Beneficiarios', 'Pago', 'Listo'],
       referencia: 'https://www.zurich.cl/vida-y-salud/salud/proteccion-urgencias',
+      formulario: '/herramientas/proteccion-urgencias/datos/',
+      demostracion: true,
       previa: [
         { etiqueta: 'RUT', tipo: 'text', ayuda: 'Ej.: 12.345.678-9' },
         { etiqueta: 'Fecha de nacimiento', tipo: 'text', ayuda: 'dd/mm/aaaa' },
@@ -516,7 +533,8 @@ export const PRODUCTOS = [
       'Modalidad: el brief la deja «digital por confirmar»; zurich.cl la ofrece 100% online.',
       'Nombre oficial: «Seguro Protección Urgencias» (el brief dice «Protección de Urgencias»).',
       'Concurso «Año de supermercado»: confirmar si aplica a clientes de Banco BICE.',
-      'Dirección del cotizador sin la página del producto alrededor (no es pública).',
+      'Dentro del marco carga un cotizador de demostración (armado para la maqueta con las piezas del piloto): datos ficticios y precios referenciales publicados en zurich.cl, sin cobro. En producción se reemplaza por la herramienta oficial de Zurich, cuya dirección para marco no es pública.',
+      'Reglas de designación de beneficiarios: el cotizador solo exige que los porcentajes sumen 100%. Validar con Zurich.',
     ],
   },
 

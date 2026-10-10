@@ -12,6 +12,13 @@
  * su pie. Al lado, la promoción del producto (cotizadores) o el aviso del
  * trámite (servicios).
  *
+ * Cotizadores de demostración (decisión de Andrés, 9 de octubre de 2026):
+ * Auto Digital, Hogar Fácil Plus y Protección Urgencias no tienen una
+ * dirección pública que sea solo el formulario, así que en la maqueta
+ * cargan los cotizadores propios de /herramientas/ (mismo origen). Cumplen
+ * el contrato completo, así que la barra de pasos avanza de verdad y el
+ * marco toma el alto del contenido. Se rotulan como demostración.
+ *
  * Dos modos, y ninguno finge lo que no es:
  * - EMBEBIDO: hay una dirección que es solo el formulario (`formulario` en el
  *   catálogo, o la que fije el administrador) y la carga está activa. Una
@@ -23,6 +30,8 @@
  * Contrato de eventos para TI (postMessage desde la herramienta embebida):
  *   { fuente: 'zurich', tipo: 'paso', paso: '<nombre>' }   → avance de paso
  *   { fuente: 'zurich', tipo: 'fin' }                       → finalización
+ *   { fuente: 'zurich', tipo: 'alto', alto: <px> }          → el marco toma ese alto
+ *   { fuente: 'zurich', tipo: 'foco', y: <px>, alto: <px> } → mostrar esa zona
  * Solo se aceptan mensajes del origen exacto de la URL configurada.
  * Cada paso se registra además como vista virtual de la ruta
  * /…/cotizador/<producto>/<paso>/, que es la nomenclatura propuesta.
@@ -53,7 +62,9 @@ export function render({ main, id, sesion }) {
   const titulo = esCotizador ? p.flujo.titulo : s.nombre;
   const base = location.pathname.replace(/[^/]+\/$/, '');
   let origen = '';
-  try { origen = new URL(a.destino || datos.referencia).origin; } catch { origen = ''; }
+  try { origen = new URL(a.destino || datos.referencia, location.origin).origin; } catch { origen = ''; }
+  /* Mismo origen = cotizador de demostración de /herramientas/. */
+  const demo = embebido && origen === location.origin;
 
   const camino = esCotizador
     ? [{ texto: 'Seguros', href: '/personas/' }, { texto: ramo(p.ramo)?.nombre ?? '', href: ramo(p.ramo)?.ruta }, { texto: p.nombre, href: p.ruta }, { texto: p.modalidad === 'digital' ? 'Cotizar' : 'Contratar' }]
@@ -64,7 +75,7 @@ export function render({ main, id, sesion }) {
   <section class="cabeza-pagina" aria-labelledby="titulo-flujo">
     <div class="contenedor cabeza-flujo">
       <h1 id="titulo-flujo">${esc(titulo)}</h1>
-      <p class="texto-suave">${esCotizador ? 'La herramienta oficial de Zurich, dentro de este espacio: cotiza y contrata sin salir de aquí.' : esc(s.bajada)}</p>
+      <p class="texto-suave">${!esCotizador ? esc(s.bajada) : demo ? 'Cotiza y contrata sin salir de este espacio.' : 'La herramienta oficial de Zurich, dentro de este espacio: cotiza y contrata sin salir de aquí.'}</p>
       <ol class="pasos-flujo" aria-label="Pasos">${datos.etiquetas.map((/** @type {string} */ e, /** @type {number} */ i) => `<li data-paso="${datos.pasos[i]}"${i === 0 ? ' aria-current="step"' : ''}>${esc(e)}</li>`).join('')}</ol>
     </div>
   </section>
@@ -72,10 +83,10 @@ export function render({ main, id, sesion }) {
   <div class="contenedor integracion">
     <div class="marco">
       <div class="marco__barra">
-        <span class="marco__origen">${icono('candado')}<span>Herramienta oficial de Zurich · <code>${esc(origen.replace(/^https?:\/\//, '') || 'origen por definir')}</code></span></span>
-        ${embebido ? '<span class="chip chip--exito">' + icono('check') + 'Integración activa</span>' : '<span class="chip chip--aviso">' + icono('reloj') + 'Vista referencial</span>'}
+        <span class="marco__origen">${icono('candado')}<span>${demo ? 'Cotizador de demostración · en producción, la herramienta oficial de Zurich' : `Herramienta oficial de Zurich · <code>${esc(origen.replace(/^https?:\/\//, '') || 'origen por definir')}</code>`}</span></span>
+        ${demo ? '<span class="chip chip--info">' + icono('info') + 'Demostración</span>' : embebido ? '<span class="chip chip--exito">' + icono('check') + 'Integración activa</span>' : '<span class="chip chip--aviso">' + icono('reloj') + 'Vista referencial</span>'}
       </div>
-      ${embebido ? marcoActivo(a.destino, titulo, item) : referencial(item, datos, esCotizador)}
+      ${embebido ? marcoActivo(a.destino, titulo, item, demo) : referencial(item, datos, esCotizador)}
     </div>
 
     <aside class="lateral" aria-label="${esCotizador ? 'Promoción y ayuda' : 'Aviso y ayuda'}">
@@ -89,12 +100,12 @@ export function render({ main, id, sesion }) {
     </aside>
   </div>`;
 
-  registrar(`${amb}_rec_inicio_flujo`, { modo: embebido ? 'embebido' : 'referencial', ruta_virtual: `${base}${datos.pasos[0]}/` });
+  registrar(`${amb}_rec_inicio_flujo`, { modo: demo ? 'demostracion' : embebido ? 'embebido' : 'referencial', ruta_virtual: `${base}${datos.pasos[0]}/` });
 
   /* ---- Carga del marco: aviso mientras llega y salida si tarda ---- */
   const lienzo = /** @type {HTMLElement|null} */ (main.querySelector('.marco__lienzo'));
-  if (lienzo) {
-    const marco = /** @type {HTMLIFrameElement} */ (lienzo.querySelector('iframe'));
+  const marco = /** @type {HTMLIFrameElement|null} */ (lienzo?.querySelector('iframe') ?? null);
+  if (lienzo && marco) {
     const espera = setTimeout(() => {
       if (lienzo.dataset.estado !== 'cargando') return;
       lienzo.dataset.estado = 'lento';
@@ -115,15 +126,46 @@ export function render({ main, id, sesion }) {
     });
     return true;
   };
+  /* La cabecera del sitio es fija: lo que se muestra queda bajo ella. */
+  const bajoCabecera = () => (document.querySelector('.cabecera')?.getBoundingClientRect().height ?? 72) + 16;
+  /* Al cambiar de paso dentro del marco, la página sube hasta el comienzo
+     del marco si quedó fuera de la vista. La primera carga no mueve nada. */
+  let pasosVistos = 0;
+  const alinearMarco = () => {
+    const caja = main.querySelector('.marco');
+    if (!caja) return;
+    const r = caja.getBoundingClientRect();
+    if (r.top < bajoCabecera() || r.top > innerHeight * 0.5) {
+      window.scrollTo({ top: scrollY + r.top - bajoCabecera(), behavior: 'smooth' });
+    }
+  };
+  let finRegistrado = false;
   window.addEventListener('message', (e) => {
     const d = e.data;
     if (!d || d.fuente !== 'zurich') return;
     const simulado = d.simulado === true && e.origin === location.origin && admin;
     if (e.origin !== origen && !simulado) return;
     const extra = simulado ? { simulado: true } : {};
-    if (d.tipo === 'paso' && typeof d.paso === 'string' && marcar(d.paso)) {
-      registrar(`${amb}_rec_avance_paso`, { paso: d.paso, ruta_virtual: `${base}${d.paso}/`, ...extra });
-    } else if (d.tipo === 'fin') {
+    if (d.tipo === 'alto' && marco && Number(d.alto) > 0) {
+      /* El marco toma el alto del contenido: sin segunda barra de desplazamiento. */
+      marco.style.height = `${Math.max(360, Math.ceil(Number(d.alto)))}px`;
+      lienzo?.setAttribute('data-alto', 'auto');
+    } else if (d.tipo === 'foco' && marco) {
+      /* Un modal o un error dentro del marco: se desplaza la página hasta él. */
+      const y = marco.getBoundingClientRect().top + Number(d.y || 0);
+      const alto = Math.min(Number(d.alto || 0), innerHeight - bajoCabecera());
+      if (y < bajoCabecera() || y + alto > innerHeight) {
+        window.scrollTo({ top: scrollY + y - Math.max(bajoCabecera(), (innerHeight - alto) / 2), behavior: 'smooth' });
+      }
+    } else if (d.tipo === 'paso' && typeof d.paso === 'string' && marcar(d.paso)) {
+      pasosVistos += 1;
+      if (pasosVistos > 1) alinearMarco();
+      /* El primer aviso del primer paso es la carga, no un avance. */
+      if (!(pasosVistos === 1 && d.paso === datos.pasos[0])) {
+        registrar(`${amb}_rec_avance_paso`, { paso: d.paso, ruta_virtual: `${base}${d.paso}/`, ...extra });
+      }
+    } else if (d.tipo === 'fin' && !finRegistrado) {
+      finRegistrado = !simulado;
       marcar(datos.pasos[datos.pasos.length - 1]);
       lista.forEach((li) => li.classList.add('hecho'));
       registrar(`${amb}_rec_fin_flujo`, extra);
@@ -142,21 +184,24 @@ export function render({ main, id, sesion }) {
 
 /**
  * Solo el formulario de Zurich, en un marco aislado.
- * @param {string} url @param {string} titulo @param {any} item
+ * @param {string} url @param {string} titulo @param {any} item @param {boolean} demo
  */
-function marcoActivo(url, titulo, item) {
+function marcoActivo(url, titulo, item, demo) {
   const pdf = Boolean(item.documento);
   // Chrome no muestra un PDF dentro de un marco aislado: el formulario en PDF
   // va sin aislar. El origen igual queda limitado por frame-src (_headers).
-  const aislado = pdf ? '' : ' allow="payment; camera" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads"';
+  // El cotizador de demostración es de este mismo sitio: aislarlo no protege
+  // nada (con scripts y mismo origen, el aislamiento se puede quitar) y el
+  // navegador lo advierte. Las herramientas de Zurich sí van aisladas.
+  const aislado = pdf || demo ? '' : ' allow="payment; camera" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads"';
   const descarga = pdf ? `<a class="btn btn--linea btn--chico" href="${esc(url)}" target="_blank" rel="noopener" data-medir="descargar_formulario">${icono('descarga')} Descargar formulario (${esc(item.documento.formato)})</a>` : '';
   return `<div class="marco__lienzo" data-estado="cargando">
-      <iframe src="${esc(url)}" title="${esc(titulo)} · herramienta oficial de Zurich" loading="eager"
+      <iframe src="${esc(url)}" title="${esc(titulo)} · ${demo ? 'cotizador de demostración' : 'herramienta oficial de Zurich'}" loading="eager"
         referrerpolicy="strict-origin-when-cross-origin"${aislado}></iframe>
-      <div class="marco__carga" role="status"><span class="marco__giro" aria-hidden="true"></span><span data-carga-texto>Cargando la herramienta oficial de Zurich…</span></div>
+      <div class="marco__carga" role="status"><span class="marco__giro" aria-hidden="true"></span><span data-carga-texto>${demo ? 'Cargando el cotizador…' : 'Cargando la herramienta oficial de Zurich…'}</span></div>
     </div>
     <div class="marco__pie">
-      <p>${icono('info')}<span>${pdf ? 'En el celular, descarga el formulario para verlo completo.' : 'Si el formulario no aparece, ábrelo en una pestaña nueva.'}</span></p>
+      <p>${icono('info')}<span>${pdf ? 'En el celular, descarga el formulario para verlo completo.' : demo ? 'Demostración: datos ficticios y precios simulados o referenciales. No se cobra nada.' : 'Si el formulario no aparece, ábrelo en una pestaña nueva.'}</span></p>
       <div class="acciones">${descarga}<a class="enlace-flecha" href="${esc(url)}" target="_blank" rel="noopener" data-medir="abrir_pestana">Abrir en una pestaña nueva ${icono('externo')}</a></div>
     </div>`;
 }

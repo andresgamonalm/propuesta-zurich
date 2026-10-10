@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confirmación · Seguro Hogar Fácil Plus</title>
+<meta name="description" content="Revisa tu cotización antes de emitir.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#23366f">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script src="/herramientas/assets/js/temprano.js"></script>
+<link rel="stylesheet" href="/herramientas/assets/css/herramienta.css">
+<link rel="stylesheet" href="/herramientas/assets/css/hogar.css">
+<link rel="stylesheet" href="/herramientas/assets/css/en-linea.css">
+</head>
+<body data-pagina="hogar-confirmar">
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<div class="aviso-demo">
+  <strong>Cotizador de demostración.</strong> Datos ficticios y precios simulados. No se cobra nada. Lo que escribas se guarda siete días, solo en este equipo.
+</div>
+
+<header class="cabecera" id="cabecera">
+  <div class="contenedor cabecera__fila">
+    <img class="cabecera__logo" src="/assets/img/marca/zurich_logo_horizontal.png" alt="Zurich" width="1120" height="260">
+    <span class="cabecera__producto">Seguro Hogar Fácil Plus</span>
+    <div class="cabecera__acciones">
+      <a class="cabecera__fono" href="tel:6006009090">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+        <span class="oculta-movil">¿Dudas? 600 600 9090</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="pasos" aria-label="Progreso de contratación">
+  <div class="contenedor"><ol class="pasos__lista" id="pasos"></ol></div>
+</nav>
+
+<main id="contenido">
+<section class="seccion seccion--compacta seccion--nieve">
+  <div class="contenedor contenedor--ancho">
+
+    <form id="form-confirmar" class="panel" novalidate>
+      <div class="titulo-paso">
+        <h1 class="el-16">Confirma tu cotización</h1>
+      </div>
+      <p class="bajada-paso el-22">Esto es lo que va a decir tu póliza. Si algo está mal, lo corriges aquí mismo.</p>
+
+      <div class="revision revision--compacta" id="revision"></div>
+
+      <div class="franja-beneficio" id="franja-beneficio"></div>
+
+      <h2 class="el-23">Datos para emitir la póliza</h2>
+      <p class="campo__pista el-18">Dos datos y ya está. El resto lo tenemos.</p>
+
+      <div class="rejilla-campos--2">
+        <div class="campo" id="c-nacimiento">
+          <label class="campo__rotulo" for="nacimiento">
+            Fecha de nacimiento
+            <span class="porque" data-campo="nacimiento">
+              <button type="button" class="porque__btn js-ev" id="porque-nacimiento" aria-expanded="false" aria-label="Por qué pedimos tu fecha de nacimiento">?</button>
+              <span class="porque__globo" role="note">Identifica al contratante en la póliza. Es el único dato personal que no teníamos.</span>
+            </span>
+          </label>
+          <div class="campo__caja"><input id="nacimiento" type="date" size="1"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-inicio">
+          <label class="campo__rotulo" for="inicio">
+            Inicio de la vigencia
+            <span class="porque" data-campo="inicio">
+              <button type="button" class="porque__btn js-ev" id="porque-inicio" aria-expanded="false" aria-label="Desde cuándo estás cubierto">?</button>
+              <span class="porque__globo" role="note">Desde ese día estás cubierto y por doce meses seguidos. Puede ser hoy mismo.</span>
+            </span>
+          </label>
+          <div class="campo__caja"><input id="inicio" type="date" size="1"></div>
+          <p class="campo__pista" id="pista-vigencia"></p>
+        </div>
+      </div>
+
+      <!-- Quién paga. Puede no ser el titular —un hijo que le paga el
+           seguro a su madre, una empresa que le paga el de un socio— y
+           la póliza tiene que decirlo. Se pregunta acá y no antes porque
+           no cambia el precio: cambia a quién se le cobra. -->
+      <h2 class="el-23">Quién paga</h2>
+      <fieldset class="grupo-opcion el-15">
+        <legend class="solo-lectores">¿El titular es quien paga el seguro?</legend>
+        <div class="opciones-tarjeta" id="sel-pagador" role="radiogroup" aria-label="Quién paga el seguro"></div>
+      </fieldset>
+
+      <div class="rejilla-campos--2" id="datos-pagador" hidden>
+        <div class="campo" id="c-pagador-rut">
+          <label class="campo__rotulo" for="pagador-rut">RUT de quien paga</label>
+          <div class="campo__caja"><input id="pagador-rut" type="text" inputmode="numeric" size="1" placeholder="12.345.678-9"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-pagador-nombre">
+          <label class="campo__rotulo" for="pagador-nombre">Nombre de quien paga</label>
+          <div class="campo__caja"><input id="pagador-nombre" type="text" autocomplete="name" size="1" placeholder="Nombre y apellidos"></div>
+          <p class="campo__pista"></p>
+        </div>
+      </div>
+
+      <!-- La declaración del riesgo. El cotizador de la compañía la
+           resuelve con doce viñetas y un «sí, cumplo» antes de ver un
+           precio; acá quedan tres, en positivo y legibles, y van donde se
+           revisa todo lo demás, que es donde de verdad se firma una
+           propuesta. Las otras nueve ya las comprobamos con la comuna, el
+           año y el material.
+
+           Esta casilla SÍ es obligatoria, a diferencia de la del paso 1:
+           no es una autorización de uso de datos, es aquello sobre lo que
+           se construye el contrato. -->
+      <h2 class="el-23">Lo que declaras de tu vivienda</h2>
+      <p class="campo__pista el-31">Sobre esto se emite la póliza. Léelo: si algo no calza, es mejor saberlo hoy que el día de un siniestro.</p>
+
+      <ul class="lista-requisitos" id="lista-declaraciones"></ul>
+
+      <label class="casilla caja-consentimiento">
+        <input type="checkbox" id="declaro">
+        <span class="casilla__marca" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Declaro que las tres afirmaciones son correctas para mi vivienda.</span>
+      </label>
+      <p class="campo__pista" id="pista-declaro">
+        ¿Alguna no se cumple?
+        <button type="button" class="enlace js-ev el-17" id="no-cumplo">Cuéntanos y lo ve un ejecutivo</button>.
+      </p>
+
+      <div class="paso-acciones">
+        <a class="btn btn--fantasma js-ev" id="volver-p4" data-ev="hogar_p4_click_volver" href="/herramientas/hogar-facil-plus/planes/">Volver</a>
+        <button class="btn btn--primario js-ev" id="continuar-p4" type="submit">Ir a pagar</button>
+      </div>
+    </form>
+
+  </div>
+</section>
+</main>
+
+<footer class="pie pie--corto">
+  <div class="contenedor">
+    <div class="pie__legal">
+      <p>Seguro Hogar Fácil Plus es un seguro ofrecido y cubierto por Zurich Chile Seguros Generales S.A. El detalle de sus características, requisitos de asegurabilidad, extensión de la cobertura, sus limitaciones y el monto y forma de pago de la prima se detallan en las condiciones particulares y en el condicionado general POL 1 2026 0013, depositado en la Comisión para el Mercado Financiero.</p>
+      <p><strong>Cotizador de demostración.</strong> Datos de clientes ficticios y precios simulados. El producto, sus planes, coberturas y asistencias están tomados de la ficha pública de Hogar Fácil Plus; la tarifa no. No constituye una oferta ni una tarifa vigente.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/herramientas/assets/js/h-confirmar.js"></script>
+</body>
+</html>

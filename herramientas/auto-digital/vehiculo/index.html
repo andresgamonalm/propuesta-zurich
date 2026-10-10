@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu auto · Seguro de Auto Digital</title>
+<meta name="description" content="Datos de tu vehículo para calcular tu prima.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#23366f">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script src="/herramientas/assets/js/temprano.js"></script>
+<link rel="stylesheet" href="/herramientas/assets/css/herramienta.css">
+<link rel="stylesheet" href="/herramientas/assets/css/en-linea.css">
+</head>
+<body data-pagina="vehiculo">
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<div class="aviso-demo">
+  <strong>Cotizador de demostración.</strong> Datos ficticios y precios simulados. No se cobra nada. Lo que escribas se guarda siete días, solo en este equipo.
+</div>
+
+<header class="cabecera" id="cabecera">
+  <div class="contenedor cabecera__fila">
+    <img class="cabecera__logo" src="/assets/img/marca/zurich_logo_horizontal.png" alt="Zurich" width="1120" height="260">
+    <span class="cabecera__producto">Seguro de Auto Digital</span>
+    <div class="cabecera__acciones">
+      <a class="cabecera__fono" href="tel:6006009090">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+        <span class="oculta-movil">¿Dudas? 600 600 9090</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="pasos" aria-label="Progreso de contratación">
+  <div class="contenedor"><ol class="pasos__lista" id="pasos"></ol></div>
+</nav>
+
+<main id="contenido">
+<section class="seccion seccion--compacta seccion--nieve">
+  <div class="contenedor">
+
+    <!-- Misma rejilla que la pantalla de datos: el formulario ocupa tres
+         tramos y el anuncio uno. Que el anuncio no cambie de lado entre
+         un paso y el siguiente es lo que hace que los dos se lean como
+         una misma pantalla y no como dos páginas distintas. -->
+    <div class="paso-doble">
+
+      <form id="form-vehiculo" class="panel" novalidate>
+      <p class="cuenta"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg> Tu precio aparece en el <strong>paso siguiente</strong>.</p>
+      <div class="titulo-paso">
+        <h1 class="el-16">Cuéntanos de tu auto</h1>
+      </div>
+
+      <!-- Una pregunta de sí o no ocupaba dos tarjetas de 75 px de alto,
+           más que cualquier dato real de la pantalla. Pasa a pastilla, que
+           es el mismo control que el deducible. -->
+      <p class="campo__rotulo" id="lbl-nuevo">¿Tu auto es nuevo?</p>
+      <div class="segmentado el-18" id="sel-nuevo" role="group" aria-labelledby="lbl-nuevo">
+        <button type="button" class="js-ev" id="nuevo-si" data-nuevo="si" aria-pressed="false">Sí, es nuevo</button>
+        <button type="button" class="js-ev" id="nuevo-no" data-nuevo="no" aria-pressed="true">No, es usado</button>
+      </div>
+
+
+      <div class="rejilla-campos">
+        <div class="campo" id="c-patente">
+          <label class="campo__rotulo" for="patente">
+            Patente
+            <span class="porque" data-campo="patente">
+              <button type="button" class="porque__btn js-ev" id="porque-patente" aria-expanded="false" aria-label="Por qué pedimos la patente">?</button>
+              <span class="porque__globo" role="note">Con la patente completamos marca, modelo y año, y verificamos que el auto sea asegurable. Es el dato que más trabajo te ahorra.</span>
+            </span>
+          </label>
+          <div class="campo__caja"><input class="el-19" id="patente" type="text" autocomplete="off" size="1" placeholder="BBBB·11" maxlength="7">
+            <span class="cargando el-20" id="patente-cargando" hidden></span>
+          </div>
+          <p class="campo__pista">Cuatro letras y dos números, o dos letras y cuatro números.</p>
+        </div>
+        <div class="campo" id="c-color">
+          <label class="campo__rotulo" for="color">Color</label>
+          <div class="campo__caja campo__caja--select"><select id="color"></select></div>
+          <p class="campo__pista"></p>
+        </div>
+      </div>
+
+      <div class="rejilla-campos--3">
+        <div class="campo" id="c-marca">
+          <label class="campo__rotulo" for="marca">Marca</label>
+          <div class="campo__caja campo__caja--select"><select id="marca"></select></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-modelo">
+          <label class="campo__rotulo" for="modelo">Modelo</label>
+          <div class="campo__caja campo__caja--select"><select id="modelo"></select></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-anio">
+          <label class="campo__rotulo" for="anio">Año</label>
+          <div class="campo__caja campo__caja--select"><select id="anio"></select></div>
+          <p class="campo__pista"></p>
+        </div>
+      </div>
+
+        <div class="paso-acciones">
+          <a class="btn btn--fantasma js-ev" id="volver-p2" data-ev="auto_p2_click_volver" href="/herramientas/auto-digital/datos/">Volver</a>
+          <button class="btn btn--primario js-ev" id="continuar-p2" type="submit">Ver mis planes</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="pie pie--corto">
+  <div class="contenedor">
+    <div class="pie__legal">
+      <p>Seguro de Auto Digital es un seguro ofrecido y cubierto por Zurich Chile Seguros Generales S.A. El detalle de sus características, requisitos de asegurabilidad, extensión de la cobertura, sus limitaciones y el monto y forma de pago de la prima se detallan en las condiciones particulares y en el condicionado general POL 1 2016 0279, depositado en la Comisión para el Mercado Financiero.</p>
+      <p><strong>Cotizador de demostración.</strong> Datos de clientes ficticios y precios simulados a partir de una cotización de ejemplo. No constituye una oferta ni una tarifa vigente. En producción, este paso lo resuelve la herramienta oficial de Zurich.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/herramientas/assets/js/p-vehiculo.js"></script>
+</body>
+</html>

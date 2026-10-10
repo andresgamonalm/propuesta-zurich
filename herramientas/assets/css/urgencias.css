@@ -1,0 +1,20 @@
+/* Cotizador de demostración · Protección Urgencias
+   Solo lo propio de este recorrido: la lista de beneficiarios. Todo lo
+   demás (campos, tarjetas de plan, boleta, contratos, firma) es el mismo
+   sistema de herramienta.css, igual que en Auto y Hogar. */
+.beneficiarios { display: grid; gap: var(--e4); margin-top: var(--e5); counter-reset: benef; }
+.beneficiario {
+  counter-increment: benef; position: relative; display: grid; gap: var(--e3);
+  padding: var(--e5); border: 1px solid var(--linea); border-radius: var(--radio); background: #fff;
+}
+.beneficiario__cabeza { display: flex; align-items: center; justify-content: space-between; gap: var(--e3); }
+.beneficiario__cabeza strong::before { content: counter(benef) ". "; }
+.beneficiario__campos { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--e3) var(--e4); }
+.beneficiario__campos .campo--chico { max-width: 160px; }
+@media (max-width: 640px) { .beneficiario__campos { grid-template-columns: minmax(0, 1fr); } }
+#despues { margin-top: var(--e4); }
+#suma { margin-left: var(--e3); }
+.lista-check { display: grid; gap: var(--e3); }
+.lista-check li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--e3); align-items: start; font-size: var(--t-sm); }
+.lista-check svg { color: var(--azul); margin-top: 1px; }
+.bloque-apagado { opacity: .5; }

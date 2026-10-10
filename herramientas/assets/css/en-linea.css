@@ -1,0 +1,33 @@
+/* Generado al portar: los estilos que el piloto escribía en línea, como clases.
+   Llevan !important para conservar la precedencia que tenía el atributo style. */
+.el-1 { padding:20px 24px !important; }
+.el-2 { color:var(--azul-oscuro) !important; margin-bottom:4px !important; }
+.el-3 { font-weight:700 !important; font-size:var(--t-md) !important; margin:0 !important; }
+.el-4 { font-size:var(--t-xs) !important; margin-top:6px !important; }
+.el-5 { font-weight:700 !important; }
+.el-6 { color:var(--alerta) !important; }
+.el-7 { color:var(--texto) !important; }
+.el-8 { font-style:italic !important; }
+.el-9 { border-color:rgba(33,103,174,.3) !important; border-top-color:var(--azul) !important; }
+.el-10 { font-size:var(--t-lg) !important; }
+.el-11 { display:flex !important; gap:16px !important; }
+.el-12 { width:30px !important; height:30px !important; border-radius:50% !important; flex:none !important; background:var(--azul) !important; color:#fff !important; display:grid !important; place-items:center !important; font-weight:700 !important; font-size:var(--t-sm) !important; }
+.el-13 { display:block !important; }
+.el-14 { font-size:var(--t-sm) !important; color:var(--texto-suave) !important; }
+.el-15 { margin-top:12px !important; }
+.el-16 { font-size:var(--t-xl) !important; }
+.el-17 { font-size:inherit !important; }
+.el-18 { margin-bottom:16px !important; }
+.el-19 { text-transform:uppercase !important; letter-spacing:.08em !important; font-weight:700 !important; }
+.el-20 { border-color:rgba(33,103,174,.25) !important; border-top-color:var(--azul) !important; }
+.el-21 { padding:0 !important; }
+.el-22 { margin-bottom:24px !important; }
+.el-23 { font-size:var(--t-lg) !important; margin-top:32px !important; }
+.el-24 { text-transform:uppercase !important; }
+.el-25 { margin:0 !important; }
+.el-26 { flex:none !important; margin:6px 0 !important; }
+.el-27 { font-size:var(--t-2xl) !important; }
+.el-28 { margin-inline:auto !important; margin-top:16px !important; }
+.el-29 { text-align:left !important; }
+.el-30 { justify-content:center !important; }
+.el-31 { margin-bottom:12px !important; }

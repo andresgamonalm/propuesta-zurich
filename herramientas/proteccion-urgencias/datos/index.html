@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tus datos · Seguro Protección Urgencias</title>
+<meta name="description" content="Tus datos para contratar el Seguro Protección Urgencias.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#23366f">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script src="/herramientas/assets/js/temprano.js"></script>
+<link rel="stylesheet" href="/herramientas/assets/css/herramienta.css">
+<link rel="stylesheet" href="/herramientas/assets/css/en-linea.css">
+<link rel="stylesheet" href="/herramientas/assets/css/urgencias.css">
+</head>
+<body data-pagina="datos">
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<div class="aviso-demo">
+  <strong>Cotizador de demostración.</strong> Datos ficticios y precios referenciales. No se cobra nada. Lo que escribas se guarda siete días, solo en este equipo.
+</div>
+
+<header class="cabecera" id="cabecera">
+  <div class="contenedor cabecera__fila">
+    <img class="cabecera__logo" src="/assets/img/marca/zurich_logo_horizontal.png" alt="Zurich" width="1120" height="260">
+    <span class="cabecera__producto">Seguro Protección Urgencias</span>
+    <div class="cabecera__acciones">
+      <a class="cabecera__fono" href="tel:6006009090">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+        <span class="oculta-movil">¿Dudas? 600 600 9090</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="pasos" aria-label="Progreso de contratación">
+  <div class="contenedor"><ol class="pasos__lista" id="pasos"></ol></div>
+</nav>
+
+<main id="contenido">
+<section class="seccion seccion--compacta seccion--nieve">
+  <div class="contenedor">
+    <div class="paso-doble">
+      <form id="form-datos" class="panel" novalidate>
+        <div class="titulo-paso">
+          <h1 class="el-16" id="titulo-datos">Tus datos</h1>
+        </div>
+        <p class="bajada-paso">Seis datos y pasamos a los planes. Con ellos se emite tu póliza.</p>
+
+        <div class="rejilla-campos--2">
+          <div class="campo" id="c-rut">
+            <label class="campo__rotulo" for="rut">RUT</label>
+            <div class="campo__caja"><input id="rut" type="text" size="1" autocomplete="off" placeholder="12345678-9" maxlength="12"></div>
+            <p class="campo__pista">Sin puntos y con guion.</p>
+          </div>
+          <div class="campo" id="c-nacimiento">
+            <label class="campo__rotulo" for="nacimiento">Fecha de nacimiento
+            <span class="porque" data-campo="nacimiento">
+              <button type="button" class="porque__btn" aria-expanded="false" aria-label="Por qué pedimos este dato">?</button>
+              <span class="porque__globo" role="note">Va en la póliza: identifica al asegurado.</span>
+            </span></label>
+            <div class="campo__caja"><input id="nacimiento" type="date" size="1" autocomplete="bday"></div>
+            <p class="campo__pista"></p>
+          </div>
+          <div class="campo" id="c-nombres">
+            <label class="campo__rotulo" for="nombres">Nombres</label>
+            <div class="campo__caja"><input id="nombres" type="text" size="1" autocomplete="given-name" placeholder="Tus nombres"></div>
+            <p class="campo__pista"></p>
+          </div>
+          <div class="campo" id="c-apellidos">
+            <label class="campo__rotulo" for="apellidos">Apellidos</label>
+            <div class="campo__caja"><input id="apellidos" type="text" size="1" autocomplete="family-name" placeholder="Tus apellidos"></div>
+            <p class="campo__pista"></p>
+          </div>
+          <div class="campo" id="c-celular">
+            <label class="campo__rotulo" for="celular">Celular</label>
+            <div class="campo__caja"><input id="celular" type="tel" size="1" inputmode="numeric" autocomplete="tel" placeholder="+56 9 1234 5678" maxlength="17"></div>
+            <p class="campo__pista"></p>
+          </div>
+          <div class="campo" id="c-correo">
+            <label class="campo__rotulo" for="correo">Correo electrónico
+            <span class="porque" data-campo="correo">
+              <button type="button" class="porque__btn" aria-expanded="false" aria-label="Por qué pedimos este dato">?</button>
+              <span class="porque__globo" role="note">Ahí te llegan la propuesta y la póliza.</span>
+            </span></label>
+            <div class="campo__caja"><input id="correo" type="email" size="1" inputmode="email" autocomplete="email" placeholder="tucorreo@mail.com"></div>
+            <p class="campo__pista"></p>
+          </div>
+        </div>
+        <div id="rut-ejemplos"></div>
+
+        <label class="casilla caja-consentimiento">
+          <input type="checkbox" id="consentimiento">
+          <span class="casilla__marca" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"><path d="m5 13 4 4L19 7"/></svg></span>
+          <span>Autorizo a Zurich a tratar mis datos personales según la
+            <button type="button" class="enlace el-17" id="abrir-consentimiento">cláusula de consentimiento</button>.</span>
+        </label>
+        <p class="campo__pista" id="pista-consentimiento">Marcarla es opcional: puedes seguir y ver tu precio igual.</p>
+
+        <div class="paso-acciones">
+          <button class="btn btn--primario" id="continuar" type="submit">Ver los planes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+<div class="modal" id="modal-consentimiento" hidden>
+  <div class="modal__fondo"></div>
+  <div class="modal__caja" role="dialog" aria-modal="true" aria-labelledby="tit-cons" tabindex="-1">
+    <div class="modal__cabeza">
+      <h2 id="tit-cons">Cláusula de consentimiento</h2>
+      <button class="modal__cerrar" type="button" data-cerrar-modal aria-label="Cerrar"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="modal__cuerpo" id="cuerpo-consentimiento"></div>
+    <div class="modal__pie">
+      <button class="btn btn--fantasma" type="button" data-cerrar-modal>Cerrar</button>
+      <button class="btn btn--primario" type="button" id="aceptar-consentimiento">Acepto</button>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer class="pie pie--corto">
+  <div class="contenedor">
+    <div class="pie__legal">
+      <p>Seguro Protección Urgencias. Riesgo asegurado por Zurich Chile Seguros de Vida S.A. El detalle del seguro (requisitos de asegurabilidad, coberturas, exclusiones, limitaciones, prima y otras características) está en sus condiciones generales y adicionales depositadas en la Comisión para el Mercado Financiero y en sus condiciones particulares.</p>
+      <p><strong>Cotizador de demostración.</strong> Datos de clientes ficticios. Coberturas y precios referenciales publicados en zurich.cl. No constituye una oferta. En producción, este paso lo resuelve la herramienta oficial de Zurich.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/herramientas/assets/js/u-datos.js"></script>
+</body>
+</html>

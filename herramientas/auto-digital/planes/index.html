@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu plan · Seguro de Auto Digital</title>
+<meta name="description" content="Elige entre Básico, Estándar y Premium.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#23366f">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script src="/herramientas/assets/js/temprano.js"></script>
+<link rel="stylesheet" href="/herramientas/assets/css/herramienta.css">
+<link rel="stylesheet" href="/herramientas/assets/css/en-linea.css">
+</head>
+<body data-pagina="planes">
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<div class="aviso-demo">
+  <strong>Cotizador de demostración.</strong> Datos ficticios y precios simulados. No se cobra nada. Lo que escribas se guarda siete días, solo en este equipo.
+</div>
+
+<header class="cabecera" id="cabecera">
+  <div class="contenedor cabecera__fila">
+    <img class="cabecera__logo" src="/assets/img/marca/zurich_logo_horizontal.png" alt="Zurich" width="1120" height="260">
+    <span class="cabecera__producto">Seguro de Auto Digital</span>
+    <div class="cabecera__acciones">
+      <a class="cabecera__fono" href="tel:6006009090">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+        <span class="oculta-movil">¿Dudas? 600 600 9090</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="pasos" aria-label="Progreso de contratación">
+  <div class="contenedor"><ol class="pasos__lista" id="pasos"></ol></div>
+</nav>
+
+<main id="contenido">
+<section class="seccion seccion--compacta seccion--nieve">
+  <div class="contenedor">
+    <p class="cuenta"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg> <strong>Este es tu precio.</strong> Lo verás desglosado en la boleta, antes de pagar.</p>
+
+    <div class="titulo-plan">
+      <div class="titulo-plan__texto">
+        <h1 class="el-16">Elige tu plan</h1>
+        <p class="titulo-plan__auto">Precios para <strong id="rotulo-vehiculo">—</strong></p>
+      </div>
+      <div class="vigencia">
+        <p class="control__titulo" id="lbl-meses">Vigencia</p>
+        <div class="segmentado segmentado--par" id="sel-meses" role="group" aria-labelledby="lbl-meses"></div>
+      </div>
+    </div>
+
+    <!-- Los tres precios a la vista. La versión anterior los escondía
+         detrás de pastillas: había que ir tocando para saber cuánto
+         costaba cada plan, y comparar precios es justamente la decisión
+         de esta pantalla. El deducible queda arriba y mueve los tres
+         precios a la vez; la vigencia va junto al título. -->
+    <div class="mandos-fila">
+      <div>
+        <p class="control__titulo" id="lbl-deducible">
+          Deducible
+          <button type="button" class="plan__secundario js-ev el-21" id="abrir-deducible" data-ev="auto_p3_click_que_es_deducible" aria-label="Qué es el deducible">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 4.5 2.6c-.9.5-1.6 1.2-1.6 2.4M12 17h.01"/></svg>
+          </button>
+        </p>
+        <div class="segmentado segmentado--fichas" id="sel-deducible" role="group" aria-labelledby="lbl-deducible"></div>
+      </div>
+
+    </div>
+    <p class="nota-ahorro" id="nota-deducible"></p>
+    <p class="nota-ahorro" id="nota-meses"></p>
+
+    <div class="precios-tres" id="precios-tres"></div>
+
+    <details class="plegable" id="comparador">
+      <summary>Comparar los tres planes, diferencia por diferencia</summary>
+      <div class="plegable__cuerpo">
+        <div class="tabla-envoltura">
+          <table class="tabla">
+            <caption class="solo-lectores">Comparación de coberturas por plan</caption>
+            <thead><tr><th scope="col">Cobertura</th><th scope="col">Básico</th><th scope="col">Estándar</th><th scope="col">Premium</th></tr></thead>
+            <tbody id="tabla-coberturas"></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <details class="plegable" id="que-es-deducible">
+      <summary>¿Qué es el deducible y por qué cambia tanto el precio?</summary>
+      <div class="plegable__cuerpo">
+        <p>El deducible es la parte del daño que asumes tú en un siniestro. Si tu deducible es de $100.000 y la reparación cuesta $180.000, la compañía paga $80.000. A mayor deducible, menor prima mensual: entre 0 UF y 20 UF el precio baja prácticamente a la mitad.</p>
+        <p><strong class="el-7">El detalle que importa:</strong> con el deducible inteligente de Auto Digital, si hay un tercero identificado y responsable del daño a tu auto, no pagas deducible. Subir el deducible te ahorra todos los meses y solo te cuesta cuando el responsable eres tú.</p>
+      </div>
+    </details>
+
+        <div class="barra-form">
+          <div class="contenedor barra-form__fila">
+            <div class="barra-form__precio">
+              <span id="barra-etiqueta">Paso 3 de 5</span>
+              <strong id="barra-precio">—</strong>
+            </div>
+            <a class="btn btn--fantasma js-ev" id="volver-p3" data-ev="auto_p3_click_volver" href="/herramientas/auto-digital/vehiculo/">Volver</a>
+            <button class="btn btn--primario js-ev" type="button" id="continuar">Continuar</button>
+          </div>
+        </div>
+  </div>
+</section>
+</main>
+
+<footer class="pie pie--corto">
+  <div class="contenedor">
+    <div class="pie__legal">
+      <p>Seguro de Auto Digital es un seguro ofrecido y cubierto por Zurich Chile Seguros Generales S.A. El detalle de sus características, requisitos de asegurabilidad, extensión de la cobertura, sus limitaciones y el monto y forma de pago de la prima se detallan en las condiciones particulares y en el condicionado general POL 1 2016 0279, depositado en la Comisión para el Mercado Financiero.</p>
+      <p><strong>Cotizador de demostración.</strong> Datos de clientes ficticios y precios simulados a partir de una cotización de ejemplo. No constituye una oferta ni una tarifa vigente. En producción, este paso lo resuelve la herramienta oficial de Zurich.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/herramientas/assets/js/p-planes.js"></script>
+</body>
+</html>

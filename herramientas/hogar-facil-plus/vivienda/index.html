@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu vivienda · Seguro Hogar Fácil Plus</title>
+<meta name="description" content="Cuéntanos de tu vivienda y estimamos el monto asegurado.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#23366f">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script src="/herramientas/assets/js/temprano.js"></script>
+<link rel="stylesheet" href="/herramientas/assets/css/herramienta.css">
+<link rel="stylesheet" href="/herramientas/assets/css/hogar.css">
+<link rel="stylesheet" href="/herramientas/assets/css/en-linea.css">
+</head>
+<body data-pagina="hogar-vivienda">
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<div class="aviso-demo">
+  <strong>Cotizador de demostración.</strong> Datos ficticios y precios simulados. No se cobra nada. Lo que escribas se guarda siete días, solo en este equipo.
+</div>
+
+<header class="cabecera" id="cabecera">
+  <div class="contenedor cabecera__fila">
+    <img class="cabecera__logo" src="/assets/img/marca/zurich_logo_horizontal.png" alt="Zurich" width="1120" height="260">
+    <span class="cabecera__producto">Seguro Hogar Fácil Plus</span>
+    <div class="cabecera__acciones">
+      <a class="cabecera__fono" href="tel:6006009090">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+        <span class="oculta-movil">¿Dudas? 600 600 9090</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="pasos" aria-label="Progreso de contratación">
+  <div class="contenedor"><ol class="pasos__lista" id="pasos"></ol></div>
+</nav>
+
+<main id="contenido">
+<section class="seccion seccion--compacta seccion--nieve">
+  <div class="contenedor">
+
+    <!-- Misma rejilla que la pantalla de datos: el formulario en tres
+         tramos y el anuncio en uno, del mismo lado. -->
+    <div class="paso-doble">
+
+
+      <form id="form-vivienda" class="panel" novalidate>
+        <p class="cuenta"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg> <strong>Falta 1 paso</strong> para ver tu precio.</p>
+      <div class="titulo-paso">
+        <h1 class="el-16">Cuéntanos de tu vivienda</h1>
+      </div>
+      <p class="bajada-paso el-22">La dirección la trajimos nosotros. Lo único que no sabemos son los metros, el material y el año.</p>
+
+      <!-- Tipo de vivienda · dos tarjetas grandes, no un desplegable. -->
+      <fieldset class="grupo-opcion">
+        <legend class="campo__rotulo">¿Casa o departamento?</legend>
+        <div class="opciones-tarjeta" id="sel-tipo" role="radiogroup" aria-label="Tipo de vivienda"></div>
+      </fieldset>
+
+      <!-- Cómo usa la vivienda. Decide si este canal puede cotizarla:
+           acá se asegura la vivienda donde se vive todo el año. Segunda
+           vivienda y sector rural son planes distintos y van a ejecutivo.
+           Se pregunta arriba, antes de la dirección y los metros, para
+           que el camino sin salida se vea en el primer clic y no después
+           de llenar la pantalla entera. -->
+      <fieldset class="grupo-opcion">
+        <legend class="campo__rotulo">¿Cómo usas esta vivienda?</legend>
+        <div class="opciones-tarjeta opciones-tarjeta--tres" id="sel-uso" role="radiogroup" aria-label="Uso de la vivienda"></div>
+      </fieldset>
+
+      <h2 class="bloque-titulo"><span class="bloque-titulo__n">1</span> Dónde está</h2>
+
+      <!-- Una sola fila, 40 / 20 / 20 / 20. La dirección es el campo que
+           de verdad necesita ancho; los otros tres son cortos y ocupaban
+           una fila entera cada grupo. Bajo 720 px se parte en dos y bajo
+           520 px en una, porque a 20% de 390 px no se escribe nada.
+
+           La región ya no es un campo: se deduce de la comuna, así que
+           se muestra como pista bajo ella. Un dato que el sistema sabe
+           no se le pregunta a nadie, y menos ocupando media fila.  -->
+      <div class="rejilla-direccion">
+        <div class="campo" id="c-direccion">
+          <label class="campo__rotulo" for="direccion">Dirección</label>
+          <div class="campo__caja"><input id="direccion" type="text" autocomplete="street-address" size="1" placeholder="Calle o avenida"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-numero">
+          <label class="campo__rotulo" for="numero">Número</label>
+          <div class="campo__caja"><input id="numero" type="text" inputmode="numeric" size="1" placeholder="1234"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-depto">
+          <label class="campo__rotulo" for="depto">N° casa o depto <span class="campo__opcional">(opcional)</span></label>
+          <div class="campo__caja"><input id="depto" type="text" size="1" placeholder="101, Casa B…"></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-comuna">
+          <label class="campo__rotulo" for="comuna">Comuna</label>
+          <div class="campo__caja"><input id="comuna" type="text" autocomplete="address-level2" size="1" placeholder="Empieza a escribir…"></div>
+          <p class="campo__pista" id="pista-comuna"></p>
+        </div>
+      </div>
+
+      <h2 class="bloque-titulo"><span class="bloque-titulo__n">2</span> Cómo es</h2>
+      <p class="campo__pista el-18">Con estos tres datos calculamos cuánto cuesta reconstruirla. No tienes que pedirle la tasación al banco.</p>
+
+      <div class="rejilla-campos--3">
+        <div class="campo" id="c-m2">
+          <label class="campo__rotulo" for="m2">
+            Metros construidos
+            <span class="porque" data-campo="m2">
+              <button type="button" class="porque__btn js-ev" id="porque-m2" aria-expanded="false" aria-label="Por qué pedimos los metros">?</button>
+              <span class="porque__globo" role="note">Con los metros y el material estimamos cuánto costaría reconstruir tu vivienda. Ese es el monto asegurado, y es el número que decide tu precio.</span>
+            </span>
+          </label>
+          <div class="campo__caja"><input id="m2" type="text" inputmode="numeric" size="1" placeholder="90" maxlength="4"><span class="campo__sufijo">m²</span></div>
+          <p class="campo__pista"></p>
+        </div>
+        <div class="campo" id="c-material">
+          <label class="campo__rotulo" for="material">Material</label>
+          <div class="campo__caja campo__caja--select"><select id="material"></select></div>
+          <!-- El material exacto. No cambia el precio: hace que lo
+               declarado coincida con lo que dirá la póliza. Aparece solo
+               cuando ya hay categoría elegida. -->
+          <div class="campo__caja campo__caja--select mt-2" id="caja-material-tipo" hidden>
+            <select id="material-tipo" aria-label="Tipo de material"></select>
+          </div>
+          <p class="campo__pista" id="pista-material"></p>
+        </div>
+        <div class="campo" id="c-anio">
+          <label class="campo__rotulo" for="anio">Año de construcción</label>
+          <div class="campo__caja campo__caja--select"><select id="anio"></select></div>
+          <p class="campo__pista"></p>
+        </div>
+      </div>
+
+      <!-- El monto asegurado, estimado y editable: así el cliente no
+           tiene que ir a consultarle la tasación al banco. -->
+      <div class="estimado" id="estimado"></div>
+
+      <details class="plegable" id="requisitos">
+        <summary>Qué viviendas se pueden asegurar por este canal</summary>
+        <div class="plegable__cuerpo">
+          <ul class="lista-requisitos" id="lista-requisitos"></ul>
+          <p class="campo__pista" id="nota-requisitos"></p>
+        </div>
+      </details>
+
+      <div class="barra-form">
+          <div class="contenedor barra-form__fila">
+            <div class="barra-form__precio">
+              <span id="barra-etiqueta">Descuento acumulado</span>
+              <strong id="barra-precio">—</strong>
+            </div>
+            <a class="btn btn--fantasma js-ev" id="volver-p2" data-ev="hogar_p2_click_volver" href="/herramientas/hogar-facil-plus/datos/">Volver</a>
+            <button class="btn btn--primario js-ev" type="submit" id="continuar-p2">Ver mi precio</button>
+          </div>
+        </div>
+    </form>
+
+    </div>
+
+  </div>
+</section>
+</main>
+
+<footer class="pie pie--corto">
+  <div class="contenedor">
+    <div class="pie__legal">
+      <p>Seguro Hogar Fácil Plus es un seguro ofrecido y cubierto por Zurich Chile Seguros Generales S.A. El detalle de sus características, requisitos de asegurabilidad, extensión de la cobertura, sus limitaciones y el monto y forma de pago de la prima se detallan en las condiciones particulares y en el condicionado general POL 1 2026 0013, depositado en la Comisión para el Mercado Financiero.</p>
+      <p><strong>Cotizador de demostración.</strong> Datos de clientes ficticios y precios simulados. El producto, sus planes, coberturas y asistencias están tomados de la ficha pública de Hogar Fácil Plus; la tarifa no. No constituye una oferta ni una tarifa vigente.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/herramientas/assets/js/h-vivienda.js"></script>
+</body>
+</html>

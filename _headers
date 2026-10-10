@@ -1,7 +1,8 @@
 # Cabeceras de seguridad para Cloudflare Pages.
 # frame-src: solo los orígenes oficiales de Zurich pueden cargarse en el marco
 # de integración (www9.chilena.cl es donde vive el formulario de «Pago en
-# línea» de zurich.cl). Agregar otro dominio exige cambiar esta línea y la lista
+# línea» de zurich.cl). 'self' es para los cotizadores de demostración de
+# /herramientas/ (Auto Digital, Hogar Fácil Plus y Protección Urgencias). Agregar otro dominio exige cambiar esta línea y la lista
 # ORIGENES_PERMITIDOS de assets/js/paginas/configuracion.js, juntas.
 # payment: el pago dentro del marco solo se delega a los mismos dominios.
 # frame-ancestors no se fija a propósito: el mini sitio podría cargarse desde el
@@ -10,4 +11,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), payment=(self "https://*.zurich.cl" "https://*.chilena.cl")
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src https://zurich.cl https://*.zurich.cl https://*.chilena.cl https://edge.sitecorecloud.io; form-action 'self'; base-uri 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self' https://zurich.cl https://*.zurich.cl https://*.chilena.cl https://edge.sitecorecloud.io; form-action 'self'; base-uri 'self'; object-src 'none'

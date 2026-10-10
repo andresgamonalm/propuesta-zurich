@@ -31,7 +31,7 @@ const PESTANAS = [
 const DECISIONES = [
   { grupo: 'Acceso y administración', items: ['Método definitivo de autenticación (correo, sesión privada de Banco BICE o inicio de sesión único).', 'Alcance del perfil administrador y vigencia del correo indicado.', 'Relación entre la sesión privada de Banco BICE y las herramientas de Zurich.'] },
   { grupo: 'Marca y asuntos legales', items: ['Manual vigente de Banco BICE y excepciones aprobadas para esta experiencia.', 'Validación conjunta de los usos de la paleta referencial de Banco BICE.', 'Composición definitiva de los identificadores de ambas compañías.', 'Biblioteca oficial de íconos de Zurich (hoy se usa una familia de trazo propia).'] },
-  { grupo: 'Integraciones y operación', items: ['Direcciones que son solo el formulario de cada cotizador (versión para marco). Hoy faltan Auto Digital, Hogar Fácil Plus y Protección Urgencias.', 'Permisos para cargar cada herramienta dentro de un marco embebido y encabezados de seguridad de los dominios de origen.', 'Pasarelas de pago dentro del marco: si un flujo lleva el pago a un dominio que no es de Zurich, ese dominio se agrega a la lista permitida o ese paso se abre en una ventana aparte.', 'Comunicación de eventos entre el mini sitio y los contenidos embebidos (contrato postMessage propuesto).', 'Herramienta de analítica y nomenclatura de eventos.', 'Responsables de actualizar productos, promociones y textos legales.'] },
+  { grupo: 'Integraciones y operación', items: ['Direcciones que son solo el formulario de cada cotizador (versión para marco). Hoy Auto Digital, Hogar Fácil Plus y Protección Urgencias cargan cotizadores de demostración.', 'Permisos para cargar cada herramienta dentro de un marco embebido y encabezados de seguridad de los dominios de origen.', 'Pasarelas de pago dentro del marco: si un flujo lleva el pago a un dominio que no es de Zurich, ese dominio se agrega a la lista permitida o ese paso se abre en una ventana aparte.', 'Comunicación de eventos entre el mini sitio y los contenidos embebidos (contrato postMessage propuesto).', 'Herramienta de analítica y nomenclatura de eventos.', 'Responsables de actualizar productos, promociones y textos legales.'] },
   { grupo: 'Arquitectura', items: ['Dominio y nombre del segmento del mini sitio (hoy: /personas).', 'Nomenclatura definitiva de pasos y reglas de seguimiento por flujo.', 'Integración futura del portal de clientes de Zurich.'] },
 ];
 
@@ -147,6 +147,8 @@ export function render({ main }) {
 /** @param {string} url */
 function validarDestino(url) {
   if (!url) return '';
+  /* Los cotizadores de demostración viven en este mismo sitio. */
+  if (/^\/herramientas\/[a-z0-9-]+\/[a-z0-9-]+\/$/.test(url)) return '';
   let u;
   try { u = new URL(url); } catch { return 'Escribe una dirección completa, que empiece con https://'; }
   if (u.protocol !== 'https:') return 'La dirección debe empezar con https://';
