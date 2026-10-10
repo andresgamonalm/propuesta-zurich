@@ -387,3 +387,51 @@ los datos; las fichas copian el dato.
 Portada y Auto Digital completas a 1440; cotizador de Auto a 1440 y de
 Hogar a 390 con la franja; Mundo Zurich a 1440; portada a 390.
 
+## Revisión 7 · 10 de octubre de 2026
+
+**Pedido:** «¿Matías contesta y orienta en temas de siniestros?» y, ante
+las tres mejoras propuestas, «en todas las que puedas».
+
+**Fuentes (leídas el 10 de octubre de 2026):** Centro de Ayuda de zurich.cl,
+Siniestros; preguntas del formulario de denuncia de vehículos
+(www9.zurich.cl/vida/web/Portal/denuncios/ingreso); página Denuncia de
+Siniestros (zurich.cl/siniestro-denuncia), con los formularios de «otros
+seguros» (clientes.zurich.cl/Portalclientes/denuncios/no-motors) y de
+celular (celularprotegido.zurich.cl/cl/fnol); números de emergencia de
+gob.cl («Consejos clave en caso de enfrentarte a una emergencia climática»).
+
+### 1 · Qué cambió
+
+| | |
+|---|---|
+| Emergencia | Nodo nuevo: con heridos o peligro, ambulancia 131, Bomberos 132 y Carabineros 133 con botón para llamar. En choque y daño en el hogar, la misma información en la primera línea. Fuente gob.cl, rotulada |
+| Formularios | Hogar y SOAP → formulario oficial de «otros seguros»; celular → formulario de celular. En otra pestaña |
+| Temas | «Siniestros» (8 preguntas) y «Después de denunciar» (estado, liquidador, reparación, auto de reemplazo) |
+| Fuente en la burbuja | Dice «Centro de Ayuda de zurich.cl» solo cuando la respuesta sale de ahí; si sale de otra página de Zurich, dice «zurich.cl» |
+| Pendientes | Dos nuevos de MatIAs (60 en total) |
+
+### 2 · Verificación automática
+
+`node _herramientas/verificar.mjs` → **1.062 comprobaciones correctas, 0 fallas.**
+Contraste AA de lo pintado: 4.914 textos.
+
+Novedades: el choque da antes los números de emergencia; con heridos, la
+respuesta es de emergencia y trae el botón al 131; celular, SOAP y hogar
+llevan a su formulario oficial en otra pestaña; hogar da el número de
+Bomberos; MatIAs dice dónde ver el estado del siniestro y qué documentos
+pide la denuncia; una pregunta de cobertura no recibe los números de
+emergencia.
+
+### 3 · Defectos encontrados y corregidos
+
+| Defecto | Corrección |
+|---|---|
+| «Se me inundó la casa» quedaba sin respuesta directa: solo se reconocía «se inundó» pegado | Se reconoce «inundó», «inundada», «filtración» y «se quemó» |
+| «Necesito un gasfiter de emergencia» podía ir a emergencias | «Emergencia» sola pesa poco: va a asistencias |
+| «¿Qué documentos necesito para denunciar?» quedaba entre dos opciones | Reconoce «necesito para denunciar» |
+
+### 4 · Revisión visual
+
+MatIAs a 1440 y 390: daño en el hogar (aviso de emergencia, formulario
+oficial y llamar) y emergencia (tres botones de llamada).
+

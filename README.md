@@ -27,7 +27,7 @@ Python o Node instalados en el equipo (el lanzador lo resuelve solo).
 | Medición | Eventos `pag` / `click` / `rec` en `window.dataLayer`, visibles en Configuración › Medición |
 | Integraciones | Dentro del marco va solo el formulario, con la promoción o el aviso al lado. Seis herramientas cargan el formulario real de Zurich; Auto Digital, Hogar Fácil Plus y Protección Urgencias cargan su cotizador de demostración hasta que Zurich entregue la dirección del suyo |
 | Para probar | A la vista en el propio sitio: botón «Datos para probar» abajo a la izquierda (también en el acceso), dentro de cada cotizador, sobre el formulario, el paso en que vas con «Completar este paso», y en el acceso y en MatIAs los datos se escriben con un clic. Clientes ficticios: RUT `10111222-5` (patente `AAAA11`) o `20111222-2` (patente `BBBB22`); la cédula acepta nueve dígitos cualesquiera |
-| Pendientes | 58 definiciones antes de producción, listadas en Configuración › Pendientes |
+| Pendientes | 60 definiciones antes de producción, listadas en Configuración › Pendientes |
 
 ## Verificar
 
@@ -39,7 +39,7 @@ Recorre todas las rutas en escritorio, tablet y celular, prueba los flujos
 (incluidas las tres compras completas dentro del sitio y las conversaciones
 de MatIAs) y audita el contraste,
 con las mismas cabeceras de seguridad que se publican.
-Última ejecución: **1.051 comprobaciones, 0 fallas**.
+Última ejecución: **1.062 comprobaciones, 0 fallas**.
 Detalle en `REVISION.md`.
 
 ## Publicar

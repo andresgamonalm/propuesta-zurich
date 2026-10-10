@@ -28,7 +28,13 @@
  *    piezas). Marcados con `demostracion: true`.
  * 5. `AYUDA` y `CANALES`: Centro de Ayuda y Canales de Atención Remota de
  *    zurich.cl, leídos el 10 de octubre de 2026. Son lo único que responde
- *    MatIAs en su espacio de servicio: textuales, sin redactar nada.
+ *    MatIAs en su espacio de servicio: textuales, sin redactar nada. Se
+ *    suman, el mismo día, las preguntas del formulario de denuncia de
+ *    vehículos (www9.zurich.cl), la página Denuncia de Siniestros y los
+ *    formularios de denuncia de «otros seguros» y de celular.
+ * 6. `EMERGENCIAS`: la única excepción, marcada. Los números de emergencia
+ *    no son de Zurich: salen de gob.cl (10 de octubre de 2026). Pedido de
+ *    Andrés: que MatIAs los dé primero cuando hay heridos o peligro.
  */
 
 export const FECHA_FUENTES = '9 de octubre de 2026';
@@ -820,6 +826,23 @@ export const CON_ASESORIA = ['oncologico-familiar', 'temporal-plus', 'vida-mas-s
 export const FECHA_AYUDA = '10 de octubre de 2026';
 
 const CA = 'https://www.zurich.cl/centro-de-ayuda/servicios/';
+/** Preguntas del formulario de denuncia de vehículos de zurich.cl. */
+const DENUNCIA_VEHICULOS = 'https://www9.zurich.cl/vida/web/Portal/denuncios/ingreso';
+/** Formularios oficiales de denuncia que no están integrados en este sitio
+    (página Denuncia de Siniestros, zurich.cl/siniestro-denuncia). */
+const DENUNCIA_OTROS = 'https://clientes.zurich.cl/Portalclientes/denuncios/no-motors';
+const DENUNCIA_CELULAR = 'https://celularprotegido.zurich.cl/cl/fnol';
+
+/** Números de emergencia de Chile. NO son de Zurich: gob.cl, leído el
+    10-10-2026 (ver PROCEDENCIA 6). MatIAs los da cuando hay heridos o peligro. */
+export const EMERGENCIAS = {
+  lista: [
+    { nombre: 'Ambulancia (SAMU)', numero: '131' },
+    { nombre: 'Bomberos', numero: '132' },
+    { nombre: 'Carabineros', numero: '133' },
+  ],
+  fuente: 'https://www.gob.cl/noticias/consejos-para-enfrentar-emergencia-climatica/',
+};
 
 /** Canales de Atención Remota (zurich.cl/conocenos/canales-atencion-remota). */
 export const CANALES = {
@@ -833,10 +856,13 @@ export const CANALES = {
 
 /**
  * Preguntas del Centro de Ayuda, textuales. `tema` agrupa; `tramite` es el
- * servicio de este sitio al que lleva el botón (si lo hay); `fuente`, la
+ * servicio de este sitio al que lleva el botón (si lo hay); `denuncia`, el
+ * formulario oficial de zurich.cl cuando no está integrado aquí (se abre en
+ * otra pestaña); `emergencia`, que antes se den los números de emergencia;
+ * `sugerir`, otra pregunta que conviene ofrecer después; `fuente`, la
  * página de zurich.cl de donde sale. Lo que zurich.cl dice «ingresa aquí»
  * o «Portal de Clientes» se deja tal cual: el portal no es parte del sitio.
- * @type {{ id: string, tema: string, p: string, r: string[], lista?: string[], cierre?: string[], tramite?: string, fuente: string }[]}
+ * @type {{ id: string, tema: string, p: string, r: string[], lista?: string[], cierre?: string[], tramite?: string, denuncia?: string, emergencia?: boolean, sugerir?: string[], fuente: string }[]}
  */
 export const AYUDA = [
   // Reembolsos
@@ -860,20 +886,30 @@ export const AYUDA = [
     r: ['En caso de que existan solo daños materiales, debes dar aviso a la compañía dentro de los 10 días corridos desde que ocurrió el siniestro. Si hay otros autos involucrados, toma nota de marca, modelo, patente, nombre del conductor, RUT del conductor, teléfono y correo de contacto, e incluye esta información en el aviso.',
       'En caso de robo o hurto del auto, o lesiones a personas, de manera inmediata debes:'],
     lista: ['Realizar la denuncia en el Carabineros más cercano.', 'Dar aviso a la Compañía: por el formulario en línea, llamando al 600 600 9090 o en cualquiera de las sucursales.'],
-    tramite: 'denuncia-vehiculo', fuente: `${CA}siniestros` },
+    tramite: 'denuncia-vehiculo', emergencia: true, fuente: `${CA}siniestros` },
+  { id: 'siniestro-auto-requisitos', tema: 'siniestros', p: '¿Cuáles son los requisitos para denunciar un siniestro de auto?',
+    r: ['Debes contar con la siguiente documentación:'],
+    lista: ['Licencia de conducir del conductor.', 'Padrón.', 'Comprobante de constancia o parte policial (en caso de robo total o parcial, y siniestros con lesionados o fallecidos).'],
+    cierre: ['En caso de que existan terceros involucrados u otros afectados, debes tener su nombre y RUT, sus datos de contacto (teléfono y mail) y los datos de su vehículo (marca, modelo, patente).'],
+    tramite: 'denuncia-vehiculo', fuente: DENUNCIA_VEHICULOS },
   { id: 'siniestro-hogar', tema: 'siniestros', p: '¿Qué hago si sufro un daño en mi hogar?',
     r: ['Primero debes dar aviso a Bomberos o Carabineros, quienes dejarán constancia escrita del siniestro.',
       'Luego debes denunciar el siniestro en la página Denuncia de Siniestros de zurich.cl, completando el formulario de la sección «Denuncias de Siniestros de Otros Seguros».',
       'Otra forma es llamar a la plataforma de servicio al cliente al 600 600 9090. Un ejecutivo se contactará contigo y comenzará la liquidación del caso.'],
-    fuente: `${CA}siniestros` },
+    denuncia: DENUNCIA_OTROS, emergencia: true, fuente: `${CA}siniestros` },
   { id: 'siniestro-vida', tema: 'siniestros', p: '¿Cómo cobro un seguro de vida?',
     r: ['Si necesitas solicitar la indemnización por el seguro de vida o vida con ahorro, el equipo de Zurich estará a tu disposición para acompañarte y guiarte en este difícil momento. Primero debes notificar:'],
     lista: ['En www.zurich.cl, en «Denuncia Siniestros de Vida y Protección Familiar». Puedes hacerlo independientemente de si la póliza está contratada a tu nombre o no: completa los datos solicitados y así se inicia el proceso de liquidación.', 'O llamando al 600 600 9090, donde te entregarán toda la información que necesites para realizar la notificación.'],
     tramite: 'denuncia-vida', fuente: `${CA}siniestros` },
+  { id: 'siniestro-vida-colectivo', tema: 'siniestros', p: '¿Cómo cobro un Seguro Colectivo de Vida?',
+    r: ['El equipo de Zurich está a tu disposición para acompañarte y guiarte en este difícil momento.',
+      'Si debes cobrar un seguro de vida asociado a un Seguro Colectivo (contratado por la empresa), es la empresa contratante quien debe enviar la solicitud adjuntando el Certificado de Defunción con la causa de muerte.',
+      'Si tienes dudas sobre el proceso, Zurich te espera en sus canales de atención.'],
+    fuente: `${CA}siniestros` },
   { id: 'siniestro-soap', tema: 'siniestros', p: '¿Dónde denuncio un siniestro del SOAP?',
     r: ['Ingresa a Denuncia de Siniestros y completa el formulario en la sección «Denuncias de Siniestros de Otros Seguros», con los datos necesarios.',
       'Recuerda guardar todas las boletas de gastos médicos y certificados, junto a los documentos del Juzgado o Fiscalía que tengas a consecuencia del accidente.'],
-    fuente: `${CA}siniestros` },
+    denuncia: DENUNCIA_OTROS, fuente: `${CA}siniestros` },
   { id: 'soap-indemnizacion', tema: 'siniestros', p: '¿Cómo cobro la indemnización del SOAP?',
     r: ['En caso de accidente, para solicitar la indemnización de tu seguro SOAP debes:'],
     lista: ['Realizar la denuncia en Carabineros, donde se identifique fecha, hora y lugar del accidente, las personas lesionadas o fallecidas y los datos de los vehículos involucrados (al menos patente, número de póliza y aseguradora que emitió el SOAP).', 'Solicitar el certificado otorgado por el tribunal competente o el Ministerio Público, en el cual se consignen los datos del accidente de tránsito.', 'En caso de gastos médicos: comprobantes de pago (boletas, facturas), junto con órdenes de exámenes o tratamientos y recetas de medicamentos.', 'En caso de incapacidad permanente: certificado del médico tratante que acredite la incapacidad (naturaleza y grado).', 'En caso de fallecimiento accidental: certificado de defunción y libreta de familia u otro documento que acredite legalmente la calidad de beneficiario.'],
@@ -881,10 +917,20 @@ export const AYUDA = [
   { id: 'siniestro-celular', tema: 'siniestros', p: '¿Qué hago si me roban o se daña el celular?',
     r: ['Puedes realizar la denuncia de un siniestro de manera fácil y rápida, siguiendo estos pasos:'],
     lista: ['Coloca los datos del asegurado.', 'Selecciona el tipo de siniestro y la fecha del incidente.', 'Completa la información requerida.', 'Relata lo ocurrido y carga los documentos solicitados.', '¡Y listo! Tu solicitud será gestionada.'],
-    fuente: `${CA}siniestros` },
-  { id: 'liquidador', tema: 'siniestros', p: '¿Cómo pido cambiar de liquidador?',
+    denuncia: DENUNCIA_CELULAR, fuente: `${CA}siniestros` },
+  // Después de denunciar
+  { id: 'siniestro-estado', tema: 'seguimiento', p: '¿Dónde reviso el estado de mi siniestro?',
+    r: ['Puedes hacerlo ingresando directamente a tu Portal de Clientes con tu RUT y contraseña.'],
+    sugerir: ['portal-clave'], fuente: DENUNCIA_VEHICULOS },
+  { id: 'liquidador', tema: 'seguimiento', p: '¿Cómo pido cambiar de liquidador?',
     r: ['Si prefieres un liquidador diferente al asignado, puedes solicitarlo informando por escrito a la compañía dentro de 5 días hábiles contados desde que se realiza el denuncio del siniestro. La carta la puedes presentar en cualquiera de las sucursales o a través de los canales digitales.'],
     fuente: 'https://www.zurich.cl/centro-de-ayuda/productos/seguro-auto-digital' },
+  { id: 'reparacion-demora', tema: 'seguimiento', p: '¿Por qué se puede demorar la reparación de mi auto?',
+    r: ['Esto se debe principalmente a que, producto del crecimiento del parque automotriz y por contingencias, los tiempos de importación y recepción de repuestos por parte de los talleres se han visto afectados. Va a depender mucho de la complejidad de los trabajos que se requiera para la reparación de tu auto y de la disponibilidad de los repuestos en plaza. Todo esto excede la responsabilidad de la Compañía.'],
+    fuente: DENUNCIA_VEHICULOS },
+  { id: 'vehiculo-reemplazo', tema: 'seguimiento', p: '¿Cómo pido un vehículo de reemplazo?',
+    r: ['Puedes hacerlo directamente en www.zurich.cl o llamando al 600 600 9090.'],
+    fuente: DENUNCIA_VEHICULOS },
   // Asistencias
   { id: 'asistencia', tema: 'asistencias', p: '¿Cómo pido una asistencia de hogar o de auto?',
     r: ['Para solicitar una asistencia de Hogar o Auto, solo debes llamar al proveedor del servicio. También puedes conocer el número de tu asistencia revisando tu póliza en línea:'],
@@ -948,6 +994,8 @@ export const MATIAS = {
     'No usa un modelo generativo: elige entre respuestas aprobadas. En «Ayuda» responde con el Centro de Ayuda de zurich.cl (leído el 10 de octubre de 2026); en Auto y Hogar, con el catálogo y con la cotización en pantalla.',
     'Reconoce al cliente con dos datos (RUT y patente, o RUT y comuna) sobre una base ficticia. En producción, validar con Legal el segundo dato y la cláusula de consentimiento antes de mostrar datos de una persona.',
     'El traspaso a un ejecutivo no está conectado: hoy entrega los Canales de Atención Remota (600 600 9090 y WhatsApp).',
+    'Números de emergencia (ambulancia 131, Bomberos 132, Carabineros 133): no vienen de Zurich sino de gob.cl (10 de octubre de 2026). MatIAs los da primero cuando hay heridos o peligro. Validar con Zurich.',
+    'Hogar, SOAP y celular se denuncian en formularios oficiales que este sitio aún no integra: MatIAs los abre en otra pestaña (Portal de Clientes «otros seguros» y celularprotegido.zurich.cl). Validar las direcciones con TI y decidir si se integran como trámites del sitio.',
   ],
 };
 

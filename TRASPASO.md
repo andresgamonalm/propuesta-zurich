@@ -361,6 +361,28 @@ secundarios).
 - **Verificación:** 1.053 comprobaciones, 0 fallas (ver REVISION.md,
   Revisión 6).
 
+**MatIAs en siniestros (10 de octubre de 2026):**
+
+Pregunta de Andrés: «¿Matías contesta y orienta en temas de siniestros?».
+Sí; se le propusieron tres mejoras y pidió «en todas las que puedas». Se
+hicieron las tres, con fuentes oficiales leídas ese día.
+
+| | |
+|---|---|
+| Emergencia primero | Con heridos o peligro («me chocaron y hay heridos», «atropellaron a mi hijo») MatIAs responde antes que nada con ambulancia (SAMU) 131, Bomberos 132 y Carabineros 133, con un botón para llamar a cada uno. En las respuestas de choque y de daño en el hogar, los números van en la primera línea. **No vienen de Zurich:** salen de gob.cl; quedó como pendiente validarlo con Zurich. Una pregunta de cobertura («¿cubre si atropello a alguien?») no los recibe |
+| Formularios oficiales | Hogar y SOAP llevan al formulario oficial de «otros seguros» del Portal de Clientes; celular, al de celularprotegido.zurich.cl. Se abren en otra pestaña, porque el sitio todavía no los integra como trámites |
+| «Después de denunciar» | Tema nuevo: dónde ver el estado del siniestro (Portal de Clientes), cambiar de liquidador, por qué se demora la reparación y cómo pedir un auto de reemplazo |
+| Preguntas nuevas | Requisitos para denunciar un siniestro de auto y cómo cobrar un Seguro Colectivo de Vida |
+| De paso | «Se me inundó la casa» no se reconocía (ahora sí), y «gasfiter de emergencia» va a asistencias, no a emergencias |
+
+- **Siguiente paso posible (necesita OK de Andrés):** sumar «Denunciar otro
+  siniestro» (hogar, SOAP y otros) y «Denunciar un siniestro de celular»
+  como trámites dentro del sitio, igual que vehículo y vida. Los
+  formularios oficiales existen y son del mismo dominio que ya se integra;
+  cambia los menús, la franja de trámites de la portada y el pie.
+- **Verificación:** 1.062 comprobaciones, 0 fallas (ver REVISION.md,
+  Revisión 7).
+
 **Lo que queda pendiente:**
 
 1. **Andrés** prueba en su computador con el lanzador. Esto no se pudo ver
@@ -374,12 +396,13 @@ secundarios).
    - la pasarela de pago de cada flujo;
    - si la sesión se mantiene dentro del marco en Safari;
    - si implementan el aviso de pasos (`postMessage`).
-3. **Lo demás está en Configuración › Pendientes:** 58 definiciones antes de
+3. **Lo demás está en Configuración › Pendientes:** 60 definiciones antes de
    producción. Las últimas: qué planes de Hogar se contratan en línea, la
    regla de designación de beneficiarios, la nota de demostración de cada
-   cotizador y cuatro de MatIAs (nombre e ícono con Marca, que no es un
-   modelo generativo, el reconocimiento con dos datos con Legal y el
-   traspaso a un ejecutivo).
+   cotizador y seis de MatIAs (nombre e ícono con Marca, que no es un
+   modelo generativo, el reconocimiento con dos datos con Legal, el
+   traspaso a un ejecutivo, los números de emergencia de gob.cl y los
+   formularios de denuncia que se abren en otra pestaña).
 
 ## 9 · Registro de cambios posteriores
 
@@ -391,6 +414,7 @@ secundarios).
 | 10-10-2026 | MatIAs (venta de Auto y Hogar + «Ayuda con mi seguro») y correcciones de diseño: gris `#f5f5f5`, sin transparencias, alturas contenidas, franja de trámites. 1.027 comprobaciones, 0 fallas |
 | 10-10-2026 | Datos para probar a la vista (botón fijo, junto a cada cotizador con «Completar este paso», en el acceso y en MatIAs), firma sin transparencia en Auto y Hogar, segunda pasada de alturas. 1.051 comprobaciones, 0 fallas. Documentos v1.4 y capturas actualizados |
 | 10-10-2026 | Datos para probar fuera del costado (franja dentro del marco del cotizador) y toques de la paleta secundaria: Cerceta y Durazno. 1.053 comprobaciones, 0 fallas. Documentos v1.5 y capturas actualizados |
+| 10-10-2026 | MatIAs en siniestros: números de emergencia primero (gob.cl), formularios oficiales de denuncia de hogar, SOAP y celular, tema «Después de denunciar» y dos preguntas nuevas. 1.062 comprobaciones, 0 fallas. Documentos v1.6 |
 
 ## 10 · Para empezar el próximo chat
 

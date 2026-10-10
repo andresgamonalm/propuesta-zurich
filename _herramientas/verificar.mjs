@@ -449,8 +449,18 @@ async function tocar(p, selector) {
     ok((await ultimaRespuesta(p).textContent()).replace(/\./g, '').includes(precioPantalla), 'el precio que dice MatIAs no es el de la pantalla');
     const ayuda = await conversar(p, '¿cómo pido un reembolso dental?');
     ok(await p.getAttribute('[data-modo="ayuda"]', 'aria-pressed') === 'true' && ayuda.includes('dentales'), 'una pregunta de servicio no pasa al espacio de ayuda');
-    await conversar(p, 'me chocaron el auto');
+    const choque = await conversar(p, 'me chocaron el auto');
     ok(await ultimaRespuesta(p).locator('a[href="/servicios/denuncia-vehiculo/"]').count() === 1, 'la respuesta de un choque no lleva a la denuncia');
+    ok(choque.includes('131') && choque.includes('133'), 'la respuesta de un choque no da antes los números de emergencia');
+    /* Siniestros: emergencia primero, formularios oficiales, después de denunciar. */
+    ok((await conversar(p, 'me chocaron y hay heridos')).includes('lo primero es pedir ayuda') && await ultimaRespuesta(p).locator('a[href="tel:131"]').count() === 1, 'con heridos MatIAs no da primero los números de emergencia');
+    await conversar(p, 'me robaron el celular');
+    ok(await ultimaRespuesta(p).locator('a[href="https://celularprotegido.zurich.cl/cl/fnol"][target="_blank"]').count() === 1, 'el robo del celular no lleva al formulario oficial de denuncia');
+    await conversar(p, '¿dónde denuncio el soap?');
+    ok(await ultimaRespuesta(p).locator('a[href="https://clientes.zurich.cl/Portalclientes/denuncios/no-motors"]').count() === 1, 'el SOAP no lleva al formulario oficial de otros seguros');
+    ok((await conversar(p, '¿en qué va mi siniestro?')).includes('Portal de Clientes'), 'MatIAs no dice dónde se revisa el estado de un siniestro');
+    ok((await conversar(p, '¿qué documentos necesito para denunciar?')).includes('Padrón'), 'MatIAs no dice qué documentos se necesitan para denunciar');
+    ok(!(await conversar(p, '¿el seguro cubre si atropello a alguien?')).includes('lo primero es pedir ayuda'), 'una pregunta de cobertura recibe los números de emergencia');
     await p.click('[data-modo="contratar"]');
     ok((await conversar(p, 'lo uso para uber')).includes('situación puntual'), 'un caso particular recibe una respuesta de catálogo');
     ok((await conversar(p, 'qwerty asdfgh')).includes('no inventarte nada'), 'MatIAs inventa una respuesta a algo que no sabe');
@@ -476,6 +486,8 @@ async function tocar(p, selector) {
     await tocar(p, '#matias-tema-srv_siniestro_hogar');
     ok((await ultimaRespuesta(p).textContent()).includes('Bomberos'), 'la respuesta de un daño en el hogar no es la del Centro de Ayuda');
     ok(await ultimaRespuesta(p).locator('a[href^="tel:"]').count() === 1, 'la respuesta de un siniestro sin trámite no ofrece llamar');
+    ok(await ultimaRespuesta(p).locator('a[href="https://clientes.zurich.cl/Portalclientes/denuncios/no-motors"][target="_blank"]').count() === 1, 'el daño en el hogar no lleva al formulario oficial de denuncia');
+    ok((await ultimaRespuesta(p).textContent()).includes('132'), 'el daño en el hogar no da el número de Bomberos');
     /* Hogar: RUT y comuna, sin autorizar (la autorización es opcional). */
     await p.click('[data-modo="contratar"]'); await p.waitForSelector('#matias-oferta-hogar_cotizar');
     await tocar(p, '#matias-oferta-hogar_cotizar');

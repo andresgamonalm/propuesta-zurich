@@ -134,6 +134,10 @@ Banco BICE. Si la marca no resuelve algo, no se improvisa: queda pendiente.
   catálogo: productos, y `AYUDA`/`CANALES` (Centro de Ayuda de zurich.cl,
   leído el 10-10-2026). Para que responda algo nuevo: el texto va al
   catálogo y los disparadores a la biblioteca. Se apaga en Configuración.
+  En siniestros: `denuncia` (formulario oficial que el sitio no integra, en
+  otra pestaña), `emergencia` (antes, los números de `EMERGENCIAS`) y el
+  nodo `srv_emergencia` (heridos o peligro). **`EMERGENCIAS` es la única
+  excepción a «todo sale de zurich.cl»:** viene de gob.cl y está marcada.
 - **Datos para probar** (`assets/js/datos-prueba.js`): los datos de cada paso
   están en **una sola tabla**, `herramientas/assets/js/prueba-pasos.js`, que
   leen el sitio (para mostrarlos) y el cotizador (para «Completar este paso»,
